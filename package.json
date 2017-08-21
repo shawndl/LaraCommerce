@@ -1,0 +1,58 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "node node_modules/webpack/bin/webpack.js --progress --hide-modules --config=$npm_package_config_webpack",
+    "watch": "npm run dev -- -w",
+    "watch-poll": "npm run dev -- -w --watch-poll",
+    "hot": "node node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=$npm_package_config_webpack",
+    "production": "npm run dev -- -p"
+  },
+  "config": {
+    "webpack": "node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "devDependencies": {
+    "axios": "^0.15.3",
+    "babel": "^6.23.0",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-env": "^1.5.1",
+    "babel-preset-es2015": "^6.24.1",
+    "bootstrap-sass": "^3.3.7",
+    "bulma": "^0.4.2",
+    "cross-env": "^3.2.4",
+    "css-loader": "^0.28.4",
+    "es2015": "0.0.0",
+    "file-loader": "^0.11.1",
+    "glob": "^7.1.2",
+    "jquery": "^3.1.1",
+    "laravel-mix": "^0.11.4",
+    "lodash": "^4.17.4",
+    "node-sass": "^4.5.3",
+    "postcss-loader": "^2.0.5",
+    "react": "^15.5.4",
+    "resolve-url-loader": "^2.0.2",
+    "sass-loader": "^6.0.5",
+    "style-loader": "^0.18.1",
+    "vue": "^2.1.10",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^12.2.1",
+    "vue-style-loader": "^3.0.1",
+    "vue-template-compiler": "^2.3.3",
+    "vuestrap-theme-loader": "^0.1.2",
+    "webpack": "^2.5.1"
+  },
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
+  "dependencies": {
+    "es2015": "0.0.0",
+    "font-awesome": "^4.7.0",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "vee-validate": "^2.0.0-rc.5",
+    "vue-lodash": "^1.0.3",
+    "vueify": "^9.4.1"
+  }
+}

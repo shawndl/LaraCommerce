@@ -1,0 +1,55 @@
+.shopping-cart-drop {
+  border: 1px solid #000;
+  position: absolute;
+  width: 400px;
+  background-color: beige;
+  border-radius: 10px;
+  list-style: none;
+  padding: 5px;
+  right: -110px;
+}
+
+.dropdown-button{
+  margin: 5px;
+}
+
+.dropdown-title {
+  font-size: 1.3em;
+  text-align: center;
+  padding: 10px;
+  font-weight: bold;
+  border-bottom: 1px solid #000;
+}
+
+.dropdown-item {
+  padding: 10px;
+  display: inline-flex;
+}
+
+.dropdown-item-info p {
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown-item-image {
+  loat: left;
+  height: 50px;
+  width: auto;
+  padding: 0 10px 0 4px;
+}
+
+.dropdown-quantity {
+  position: absolute;
+  right: 45px;
+}
+
+.remove-item-icon {
+  position: absolute;
+  right: 10px;
+}
+
+.navbar-button {
+  color: whitesmoke;
+  background-color: #222;
+  border: 1px solid whitesmoke;
+}

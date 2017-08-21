@@ -1,0 +1,18 @@
+
+// Fonts
+@import "../../../node_modules/font-awesome/scss/font-awesome";
+
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+/// Import main page layout
+@import "ecommerce/general";
+@import "ecommerce/layout";
+@import "ecommerce/forms";
+@import "ecommerce/order";
+@import "ecommerce/modal";
+@import "ecommerce/navbar";
+@import "ecommerce/payment";

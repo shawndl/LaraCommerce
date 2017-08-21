@@ -1,0 +1,103 @@
+/** Colors **/
+$darkGreen: #4a6a28;
+$lightGreen: #87ba51;
+$greyState: #DDD;
+$mainBlue: #0070c0;
+
+ol {
+
+  &.progress-track {
+    display: table;
+    list-style-type: none;
+    margin: 0;
+    padding: 2em 1em;
+    table-layout: fixed;
+    width: 100%;
+
+    li {
+      display: table-cell;
+      line-height: 3em;
+      position: relative;
+      text-align: center;
+
+      .icon-wrap {
+        border-radius: 50%;
+        top: -1.5em;
+
+        color: #fff;
+        display: block;
+        height: 2.5em;
+        margin: 0 auto -2em;
+        left: 0;
+        right: 0;
+        position: absolute;
+        width: 2.5em;
+      }
+
+      .icon-check-mark, .icon-down-arrow {
+        height: 25px;
+        width: 15px;
+        display: inline-block;
+        fill: currentColor;
+      }
+
+      .progress-text {
+        position: relative;
+        top: 10px;
+      }
+
+      &.progress-done {
+        border-top: 7px solid $lightGreen;
+        transition: border-color 1s ease-in-out;
+        -webkit-transition: border-color 1s ease-in-out;
+        -moz-transition: border-color 1s ease-in-out;
+
+        .icon-down-arrow {
+          display: none;
+        }
+
+        &.progress-current {
+
+          .icon-wrap {
+            background-color: $mainBlue;
+
+            .icon-check-mark {
+              display: none;
+            }
+
+            .icon-down-arrow {
+              display: block;
+            }
+          }
+        }
+
+        .icon-wrap {
+          background-color: $darkGreen;
+          border: 5px solid $lightGreen;
+        }
+      }
+
+      &.progress-todo {
+        border-top: 7px solid $greyState;
+        color: black;
+
+        .icon-wrap {
+          background-color: #FFF;
+          border: 5px solid $greyState;
+          border-radius: 50%;
+          bottom: 1.5em;
+          color: #fff;
+          display: block;
+          height: 2.5em;
+          margin: 0 auto -2em;
+          position: relative;
+          width: 2.5em;
+
+          .icon-check-mark, .icon-down-arrow {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
