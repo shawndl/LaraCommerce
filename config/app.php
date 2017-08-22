@@ -182,6 +182,7 @@ return [
         App\Providers\NavBarServiceProvider::class,
         App\Providers\ValidationServiceProvider::class,
         Syscover\ShoppingCart\ShoppingCartServiceProvider::class,
+        MathiasGrimm\LaravelDotEnvGen\DotEnvGenServiceProvider::class,
 
     ],
 
