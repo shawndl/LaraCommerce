@@ -1,6 +1,6 @@
 <template>
     <li>
-        <a class="dropdown-toggle" href="#" @click="toggleDropdown">
+        <a class="dropdown-toggle" id="shopping-cart" href="#" @click="toggleDropdown">
             <span>{{ cart.information.total }}</span>
             <i class="fa fa-shopping-cart" aria-hidden="true"></i>
             {{ getMessage() }}
@@ -101,7 +101,7 @@
                 if(this.cart.information.count != 1) {
                     message += 's';
                 }
-                message += ' with Subtotal of $' + this.cart.information.subTotal;
+                message += ' with total of $' + this.cart.information.total;
                 return message;
             },
 

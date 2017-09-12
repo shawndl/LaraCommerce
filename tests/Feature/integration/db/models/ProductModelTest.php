@@ -18,7 +18,11 @@ class ProductModelTest extends TestCase
         $this->setUpProduct();
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group models
+     */
     public function it_must_be_able_to_format_a_price_to_always_have_2_digits()
     {
         $this->assertEquals(18.00, $this->getProduct('book'));

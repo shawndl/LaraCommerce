@@ -38,7 +38,7 @@ class ShoppingCartUpdateSuccessTest extends AbstractHttpTestClass
 
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */
@@ -48,7 +48,7 @@ class ShoppingCartUpdateSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */
@@ -59,7 +59,7 @@ class ShoppingCartUpdateSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */

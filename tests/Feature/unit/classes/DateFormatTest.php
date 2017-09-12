@@ -11,41 +11,59 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class DateFormatTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_return_the_largest_interval_of_time()
     {
 
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_return_how_many_minutes_ago()
     {
         $time = $this->getDate('PT10M');
         $this->assertEquals('10 minutes ago', DateFormat::daysAgo($time));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_return_how_many_hours_ago()
     {
         $time = $this->getDate('PT10H');
         $this->assertEquals('10 hours ago', DateFormat::daysAgo($time));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_return_how_many_days_ago()
     {
         $time = $this->getDate('P5D');
         $this->assertEquals('5 days ago', DateFormat::daysAgo($time));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_return_how_many_months_ago()
     {
         $time = $this->getDate('P3M');
         $this->assertEquals('3 months ago', DateFormat::daysAgo($time));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_return_how_many_years_ago()
     {
         $time = $this->getDate('P3Y');

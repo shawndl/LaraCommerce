@@ -35,9 +35,9 @@ class ShowUserOrderWrongUserTest extends AbstractHttpTestClass
     }
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function the_order_must_belong_to_the_user()
     {
@@ -45,9 +45,9 @@ class ShowUserOrderWrongUserTest extends AbstractHttpTestClass
     }
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function the_redirect_must_have_an_error_message()
     {

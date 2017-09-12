@@ -25,9 +25,9 @@ class ShowUserOrderNotLoggedInTest extends AbstractHttpTestClass
     protected $getRoute = 'user/user-account/order/51';
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function the_user_must_be_logged_in()
     {

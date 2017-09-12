@@ -3,7 +3,7 @@
         <a class="dropdown-toggle" data-toggle="dropdown" href="#">
             Categories<span class="caret"></span>
         </a>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" id="navbar-category">
             <li v-for="category in categories">
                 <a :href="category_url + '/' + encodeURIComponent(category)">{{ category }}</a>
             </li>

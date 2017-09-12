@@ -16,6 +16,7 @@
                            value=""
                            autofocus>
                     <span class="help-block"
+                          id="email-error"
                           v-show="errors.has('email')">
                         <strong>{{ errors.first('email') }}</strong>
                     </span>
@@ -33,6 +34,7 @@
                            name="password"
                            v-validate="'required'">
                     <span class="help-block"
+                          id="password-error"
                           v-show="errors.has('password')">
                         <strong>{{ errors.first('password') }}</strong>
                     </span>

@@ -47,7 +47,7 @@
                         </a>
                     </li>
                 @else
-                    <li class="dropdown">
+                    <li class="dropdown" id="user-account">
                         <a href="#" class="dropdown-toggle"
                            data-toggle="dropdown"
                            role="button"

@@ -45,8 +45,8 @@ class Address extends Model
      *
      * @return bool
      */
-    public function isEmpty()
+    public function hasResult()
     {
-        return (!isset($this->id));
+        return (isset($this->id));
     }
 }

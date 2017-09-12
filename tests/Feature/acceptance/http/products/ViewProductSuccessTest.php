@@ -36,7 +36,7 @@ class ViewProductSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group payment
+     * @group products
      * @group acceptance
      * @test
      */
@@ -46,7 +46,7 @@ class ViewProductSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group payment
+     * @group products
      * @group acceptance
      * @test
      */
@@ -56,7 +56,7 @@ class ViewProductSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group payment
+     * @group products
      * @group acceptance
      * @test
      */

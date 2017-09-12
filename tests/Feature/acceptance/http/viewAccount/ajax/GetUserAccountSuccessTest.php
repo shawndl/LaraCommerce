@@ -16,7 +16,7 @@ class GetUserAccountSuccessTest extends AbstractHttpAjaxTestClass
 
     /**
      * @group acceptance
-     * @group useraccount
+     * @group user_account
      * @test
      */
     public function it_must_return_a_status_200()
@@ -26,7 +26,7 @@ class GetUserAccountSuccessTest extends AbstractHttpAjaxTestClass
 
     /**
      * @group acceptance
-     * @group useraccount
+     * @group user_account
      * @test
      */
     public function it_must_return_the_users_details()

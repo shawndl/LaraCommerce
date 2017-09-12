@@ -1950,6 +1950,8 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
 
 exports.default = {
     props: ['csrf_token', 'post_address', 'forgot_password'],
@@ -1999,9 +2001,6 @@ var uniqueEmail = {
         }
     }
 }; //
-//
-//
-//
 //
 //
 //
@@ -2784,7 +2783,7 @@ exports.default = {
             if (this.cart.information.count != 1) {
                 message += 's';
             }
-            message += ' with Subtotal of $' + this.cart.information.subTotal;
+            message += ' with total of $' + this.cart.information.total;
             return message;
         },
 
@@ -38363,7 +38362,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.errors.has('email')),
       expression: "errors.has('email')"
     }],
-    staticClass: "help-block"
+    staticClass: "help-block",
+    attrs: {
+      "id": "email-error"
+    }
   }, [_c('strong', [_vm._v(_vm._s(_vm.errors.first('email')))])])])])]), _vm._v(" "), _c('div', {
     staticClass: "row top-buffer-20"
   }, [_c('div', {
@@ -38397,7 +38399,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.errors.has('password')),
       expression: "errors.has('password')"
     }],
-    staticClass: "help-block"
+    staticClass: "help-block",
+    attrs: {
+      "id": "password-error"
+    }
   }, [_c('strong', [_vm._v(_vm._s(_vm.errors.first('password')))])])])])]), _vm._v(" "), _vm._m(0), _vm._v(" "), _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
@@ -38711,6 +38716,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('li', [_c('a', {
     staticClass: "dropdown-toggle",
     attrs: {
+      "id": "shopping-cart",
       "href": "#"
     },
     on: {
@@ -39227,7 +39233,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   return _c('li', {
     staticClass: "dropdown"
   }, [_vm._m(0), _vm._v(" "), _c('ul', {
-    staticClass: "dropdown-menu"
+    staticClass: "dropdown-menu",
+    attrs: {
+      "id": "navbar-category"
+    }
   }, _vm._l((_vm.categories), function(category) {
     return _c('li', [_c('a', {
       attrs: {
@@ -39320,7 +39329,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.errors.has('first_name')),
       expression: "errors.has('first_name')"
     }],
-    staticClass: "text-danger"
+    staticClass: "text-danger",
+    attrs: {
+      "id": "first-name-error"
+    }
   }, [_vm._v("\n                    " + _vm._s(_vm.errors.first('first_name')) + "\n                ")])])]), _vm._v(" "), _c('div', {
     staticClass: "col-sm-6"
   }, [_c('div', {
@@ -39353,7 +39365,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.errors.has('last_name')),
       expression: "errors.has('last_name')"
     }],
-    staticClass: "text-danger"
+    staticClass: "text-danger",
+    attrs: {
+      "id": "last-name-error"
+    }
   }, [_vm._v("\n                    " + _vm._s(_vm.errors.first('last_name')) + "\n                ")])])])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
@@ -39388,7 +39403,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.errors.has('username')),
       expression: "errors.has('username')"
     }],
-    staticClass: "text-danger"
+    staticClass: "text-danger",
+    attrs: {
+      "id": "username-error"
+    }
   }, [_vm._v("\n                    " + _vm._s(_vm.errors.first('username')) + "\n                ")])])]), _vm._v(" "), _c('div', {
     staticClass: "col-sm-6"
   }, [_c('div', {
@@ -39421,7 +39439,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.errors.has('email')),
       expression: "errors.has('email')"
     }],
-    staticClass: "text-danger"
+    staticClass: "text-danger",
+    attrs: {
+      "id": "email-error"
+    }
   }, [_vm._v("\n                    " + _vm._s(_vm.errors.first('email')) + "\n                ")])])])]), _vm._v(" "), _c('div', {
     staticClass: "row"
   }, [_c('div', {
@@ -39455,7 +39476,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       value: (_vm.errors.has('password')),
       expression: "errors.has('password')"
     }],
-    staticClass: "text-danger"
+    staticClass: "text-danger",
+    attrs: {
+      "id": "password-error"
+    }
   }, [_vm._v("\n                    " + _vm._s(_vm.errors.first('password')) + "\n                ")])])]), _vm._v(" "), _c('div', {
     staticClass: "col-sm-6"
   }, [_c('div', {
@@ -39474,27 +39498,18 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "type": "password",
       "name": "password_confirmation"
     }
-  }), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.errors.has('password_confirmation')),
-      expression: "errors.has('password_confirmation')"
-    }],
-    staticClass: "text-danger"
-  }, [_vm._v("\n                    " + _vm._s(_vm.errors.first('password_confirmation')) + "\n                ")])])])]), _vm._v(" "), _vm._m(0)])
+  })])])]), _vm._v(" "), _vm._m(0)])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "form-group"
   }, [_c('div', {
     staticClass: "col-md-6 col-md-offset-4"
-  }, [_c('input', {
+  }, [_c('button', {
     staticClass: "btn btn-primary",
     attrs: {
-      "type": "submit",
-      "value": "Register"
+      "type": "submit"
     }
-  })])])
+  }, [_vm._v("\n                Register\n            ")])])])
 }]}
 module.exports.render._withStripped = true
 if (false) {

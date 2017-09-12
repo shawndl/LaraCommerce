@@ -57,10 +57,15 @@ Route::get('/order/invoice/{order}', 'User\API\OrderController@show');
 
 Route::get('/test', function(){
 
-    $a = \App\Category::first()->products()->get();
-    dd($a);
-
-    dd($product->search('Queen')->get());
+    $a = new \App\Library\API\ApiResponseTracker();
+    $b = new \App\Library\API\ErrorTracker\OrderErrorTracker($a);
+    $c = \App\Address::first();
+    $d = \App\User::find(51);
+    //$d = \App\Order::find(51);
+    $b->address = $c;
+    $b->user = $d;
+    $z = $b->create(new \App\Order());
+    dd($b);
 
     /*
      * X Finish the order accuunt page by adding costs

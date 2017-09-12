@@ -28,9 +28,9 @@ class UserViewsAccountNotLoggedInTest extends AbstractHttpTestClass
     protected $getRoute = 'user/user-account';
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function the_user_must_be_redirected_to_the_login_screen()
     {

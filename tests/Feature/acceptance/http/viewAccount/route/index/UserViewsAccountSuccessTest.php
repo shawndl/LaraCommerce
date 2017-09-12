@@ -30,9 +30,9 @@ class UserViewsAccountSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function it_must_return_the_eccomerce_account_view()
     {
@@ -40,9 +40,9 @@ class UserViewsAccountSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function the_must_have_the_users_order_information()
     {

@@ -34,9 +34,9 @@ class ShowUserOrderSuccessTest extends AbstractHttpTestClass
 
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function it_must_return_the_user_account_view()
     {
@@ -44,9 +44,9 @@ class ShowUserOrderSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function the_view_must_have_the_order_id()
     {

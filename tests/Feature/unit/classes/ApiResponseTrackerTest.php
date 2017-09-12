@@ -30,32 +30,47 @@ class ApiResponseTrackerTest extends TestCase
         $this->array = $this->tracker->getResult();
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_set_a_message()
     {
         $this->assertEquals('Your record was not found', $this->array['status']);
     }
     
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_set_a_code()
     {
         $this->assertEquals(422, $this->array['code']);
     }
     
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_set_an_additional_data_array()
     {
         $this->assertEquals(33, $this->array['data']['id']);
         $this->assertEquals('book', $this->array['data']['name']);
     }
     
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_return_if_an_error_has_been_set()
     {
         $this->assertTrue($this->tracker->hasError());
     }
     
-     /** @test */
+     /**
+      * @test
+      * @group unit
+      */
      public function it_must_not_allow_any_messages_to_be_set_if_error_is_set_to_true()
      {
          $this->tracker->setResult(200, 'No Problem!');

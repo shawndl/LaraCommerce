@@ -32,40 +32,64 @@ class AddressTransformerTest extends TestCase
         $this->addresses = Address::all();
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function it_must_be_able_to_return_an_array_for_a_collection_of_addresses()
     {
         $this->assertCount(3, AddressTransformer::transform($this->addresses));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function it_must_be_able_to_return_an_array_for_single_address()
     {
         $this->assertArrayHasKey('id', $this->addressTransformed);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function it_must_return_the_state()
     {
         $this->assertContains('Colorado', $this->addressTransformed);
         $this->assertArrayHasKey('state', $this->addressTransformed);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function it_must_return_the_city()
     {
         $this->assertContains('Springfield', $this->addressTransformed);
         $this->assertArrayHasKey('city', $this->addressTransformed);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function it_must_return_the_street_address()
     {
         $this->assertContains('123 Fake St.', $this->addressTransformed);
         $this->assertArrayHasKey('street_address', $this->addressTransformed);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function it_must_return_the_postal_code()
     {
         $this->assertContains('27299', $this->addressTransformed);

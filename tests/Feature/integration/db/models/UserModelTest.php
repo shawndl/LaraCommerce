@@ -24,13 +24,21 @@ class UserModelTest extends TestCase
         $this->userAddresses = User::userAddresses($this->user->id);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group models
+     */
     public function it_must_be_able_to_return_all_of_the_users_addresses()
     {
         $this->assertCount(3, $this->userAddresses);
     }
-    
-    /** @test */
+
+    /**
+     * @test
+     * @group integration
+     * @group models
+     */
     public function it_must_be_able_to_return_the_state()
     {
         $this->assertEquals('Colorado', $this->userAddresses[0]->state->name);

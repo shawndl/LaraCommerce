@@ -40,7 +40,7 @@ class ShoppingCartGetTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */

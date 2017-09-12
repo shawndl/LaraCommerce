@@ -35,7 +35,7 @@ class ShoppingCartAddWrongProductTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */
@@ -45,7 +45,7 @@ class ShoppingCartAddWrongProductTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */

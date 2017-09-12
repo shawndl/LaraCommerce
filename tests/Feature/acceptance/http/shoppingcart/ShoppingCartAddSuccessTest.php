@@ -39,7 +39,7 @@ class ShoppingCartAddSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */
@@ -49,7 +49,7 @@ class ShoppingCartAddSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */
@@ -60,7 +60,7 @@ class ShoppingCartAddSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */
@@ -70,7 +70,7 @@ class ShoppingCartAddSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */
@@ -81,7 +81,7 @@ class ShoppingCartAddSuccessTest extends AbstractHttpTestClass
     }
 
     /**
-     * @group shoppingcart
+     * @group shopping_cart
      * @group acceptance
      * @test
      */

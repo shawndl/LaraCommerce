@@ -14,7 +14,7 @@
                            v-validate="'required|alpha_spaces'"
                            value=""
                            autofocus>
-                    <span class="text-danger" v-show="errors.has('first_name')">
+                    <span class="text-danger" id="first-name-error" v-show="errors.has('first_name')">
                         {{ errors.first('first_name') }}
                     </span>
                 </div><!-- /.form-group -->
@@ -30,7 +30,7 @@
                            v-validate="'required|alpha_spaces'"
                            name="last_name"
                            value="">
-                    <span class="text-danger" v-show="errors.has('last_name')">
+                    <span class="text-danger" id="last-name-error" v-show="errors.has('last_name')">
                         {{ errors.first('last_name') }}
                     </span>
                 </div><!-- /.form-group -->
@@ -48,7 +48,7 @@
                            name="username"
                            value=""
                            v-validate="'required|alpha_spaces|unique-username'">
-                    <span class="text-danger" v-show="errors.has('username')">
+                    <span class="text-danger" id="username-error" v-show="errors.has('username')">
                         {{ errors.first('username') }}
                     </span>
                 </div><!-- /.form-group -->
@@ -62,7 +62,7 @@
                            name="email"
                            value=""
                            v-validate="'required|email|unique-email'">
-                    <span class="text-danger" v-show="errors.has('email')">
+                    <span class="text-danger" id="email-error" v-show="errors.has('email')">
                         {{ errors.first('email') }}
                     </span>
                 </div><!-- /.form-group -->
@@ -77,7 +77,7 @@
                            class="form-control"
                            name="password"
                            v-validate="'required|min:5|confirmed'">
-                    <span class="text-danger" v-show="errors.has('password')">
+                    <span class="text-danger" id="password-error" v-show="errors.has('password')">
                         {{ errors.first('password') }}
                     </span>
                 </div><!-- /.form-group -->
@@ -89,18 +89,15 @@
                            type="password"
                            class="form-control"
                            name="password_confirmation">
-                    <span class="text-danger" v-show="errors.has('password_confirmation')">
-                        {{ errors.first('password_confirmation') }}
-                    </span>
                 </div><!-- /.form-group -->
             </div><!-- /.col -->
         </div><!-- /.row -->
 
         <div class="form-group">
             <div class="col-md-6 col-md-offset-4">
-                <input type="submit"
-                       class="btn btn-primary"
-                       value="Register">
+                <button type="submit" class="btn btn-primary">
+                    Register
+                </button>
             </div>
         </div><!-- form-group -->
     </form>

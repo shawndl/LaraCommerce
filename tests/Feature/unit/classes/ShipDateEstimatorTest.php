@@ -10,7 +10,10 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class ShipDateEstimatorTest extends TestCase
 {
-    /** @test */
+    /**
+     * @test
+     * @group unit
+     */
     public function it_must_be_able_to_return_a_date_in_the_future_based_on_the_number_of_days_parameter()
     {
         $this->assertEquals('Jun 3rd, 2017',

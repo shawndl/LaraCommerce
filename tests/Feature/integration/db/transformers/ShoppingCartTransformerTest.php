@@ -27,7 +27,11 @@ class ShoppingCartTransformerTest extends TestCase
         $this->shoppingCartTransformer = ShoppingCartTransformer::transform();
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_shopping_cart_transformer_must_return_the_total()
     {
         $this->assertArrayHasKey('total', $this->shoppingCartTransformer['information']);
@@ -35,7 +39,11 @@ class ShoppingCartTransformerTest extends TestCase
             $this->shoppingCartTransformer['information']['total']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_shopping_cart_transformer_must_return_the_sub_total()
     {
         $this->assertArrayHasKey('sub_total', $this->shoppingCartTransformer['information']);
@@ -43,7 +51,11 @@ class ShoppingCartTransformerTest extends TestCase
             $this->shoppingCartTransformer['information']['sub_total']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_shopping_cart_transformer_must_return_the_taxes()
     {
         $this->assertArrayHasKey('taxes', $this->shoppingCartTransformer['information']);
@@ -51,13 +63,21 @@ class ShoppingCartTransformerTest extends TestCase
             $this->shoppingCartTransformer['information']['taxes']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_shopping_cart_transformer_must_return_the_count()
     {
         $this->assertCount(4, $this->shoppingCartTransformer['products']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_product_id()
     {
         $this->assertArrayHasKey('id', $this->shoppingCartTransformer['products'][0]);
@@ -73,7 +93,11 @@ class ShoppingCartTransformerTest extends TestCase
             $this->shoppingCartTransformer['products'][0]['title']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_product_price()
     {
         $this->assertArrayHasKey('price', $this->shoppingCartTransformer['products'][0]);
@@ -81,7 +105,11 @@ class ShoppingCartTransformerTest extends TestCase
             $this->shoppingCartTransformer['products'][0]['price']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_product_weight()
     {
         $this->assertArrayHasKey('weight', $this->shoppingCartTransformer['products'][0]);
@@ -89,7 +117,11 @@ class ShoppingCartTransformerTest extends TestCase
             $this->shoppingCartTransformer['products'][0]['weight']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_product_image()
     {
         $this->assertArrayHasKey('image', $this->shoppingCartTransformer['products'][0]);
@@ -97,7 +129,11 @@ class ShoppingCartTransformerTest extends TestCase
             $this->shoppingCartTransformer['products'][0]['image']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_product_total()
     {
         $this->assertArrayHasKey('total', $this->shoppingCartTransformer['products'][0]);
@@ -105,11 +141,27 @@ class ShoppingCartTransformerTest extends TestCase
             $this->shoppingCartTransformer['products'][0]['total']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_product_taxes()
     {
         $this->assertArrayHasKey('taxes', $this->shoppingCartTransformer['products'][0]);
         $this->assertEquals(.36,
             $this->shoppingCartTransformer['products'][0]['taxes']);
+    }
+
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
+    public function the_array_must_return_the_quantity_of_products_requested()
+    {
+        $this->assertArrayHasKey('taxes', $this->shoppingCartTransformer['products'][0]);
+        $this->assertEquals(1,
+            $this->shoppingCartTransformer['products'][0]['quantity']);
     }
 }

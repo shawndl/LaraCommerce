@@ -34,7 +34,7 @@ class DestroyAddressAuthorizationFailedTest extends AbstractHttpAjaxTestClass
     public function the_address_must_not_be_updated()
     {
         $address = Address::find($this->addressID);
-        $this->assertFalse($address->isEmpty());
+        $this->assertTrue($address->hasResult());
     }
 
     /**

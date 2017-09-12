@@ -73,6 +73,7 @@ class OrderDatabase
         $order->update([
             'address_id'    => $address->id,
         ]);
+        $order->save();
     }
 
     /**

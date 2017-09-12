@@ -31,6 +31,8 @@ abstract class AbstractErrorTracker implements ErrorTrackerInterface
      */
     protected $user;
 
+    protected $models = ['address', 'order', 'user'];
+
     /**
      * AbstractErrorTracker constructor.
      * @param ApiResponseTracker $responseTracker
@@ -40,5 +42,33 @@ abstract class AbstractErrorTracker implements ErrorTrackerInterface
         $this->responseTracker = $responseTracker;
     }
 
+    /**
+     * can dynamically add more models
+     *
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        if(in_array($name, $this->models) && $value instanceof Model)
+        {
+            $this->{$name} = $value;
+        }
+    }
+
+    /**
+     * does the model belong to the user
+     *
+     * @return void
+     */
+    protected function belongsToUser()
+    {
+
+        if((int)$this->model->user_id !== (int)$this->user->id)
+        {
+            $this->responseTracker->setResult(403,
+                "Error: You are not authorized to perform this action", true);
+        }
+    }
 
 }

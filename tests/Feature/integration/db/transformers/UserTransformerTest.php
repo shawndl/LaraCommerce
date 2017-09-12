@@ -25,28 +25,44 @@ class UserTransformerTest extends TestCase
         $this->userTransformer = UserTransformer::transform($this->user);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_users_first_name()
     {
         $this->assertArrayHasKey('first_name', $this->userTransformer);
         $this->assertEquals($this->user->first_name, $this->userTransformer['first_name']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_users_last_name()
     {
         $this->assertArrayHasKey('last_name', $this->userTransformer);
         $this->assertEquals($this->user->last_name, $this->userTransformer['last_name']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_users_email_name()
     {
         $this->assertArrayHasKey('email', $this->userTransformer);
         $this->assertEquals($this->user->email, $this->userTransformer['email']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group integration
+     * @group transformers
+     */
     public function the_array_must_return_the_users_username()
     {
         $this->assertArrayHasKey('username', $this->userTransformer);

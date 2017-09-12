@@ -1,23 +1,23 @@
 <?php
 
-namespace Tests\Browser;
+namespace Tests\Browser\order;
 
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
-class ExampleTest extends DuskTestCase
+class CreateOrderTest extends DuskTestCase
 {
     /**
-     * A basic browser test example.
+     * A Dusk test example.
      *
      * @return void
      */
-    public function testBasicExample()
+    public function testExample()
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/')
-                    ->assertSee('Home');
+                    ->assertSee('Laravel');
         });
     }
 }

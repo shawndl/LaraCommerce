@@ -68,26 +68,11 @@ class AddressErrorTracker extends AbstractErrorTracker
      */
     protected function addressExists()
     {
-        if($this->model->isEmpty())
+        if(!$this->model->hasResult())
         {
             $this->responseTracker->setResult(422,
                 "Error: there is no address in your account that matches the one you provided!",
                 true);
-        }
-    }
-
-    /**
-     * does the address belong to the user
-     *
-     * @return void
-     */
-    protected function belongsToUser()
-    {
-
-        if((int)$this->model->user_id !== (int)$this->user->id)
-        {
-            $this->responseTracker->setResult(401,
-                "Error: You are not authorized to perform this action", true);
         }
     }
 }

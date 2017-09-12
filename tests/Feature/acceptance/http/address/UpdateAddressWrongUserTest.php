@@ -54,8 +54,8 @@ class UpdateAddressWrongUserTest  extends AbstractHttpAjaxTestClass
      * @group addresses
      * @test
      */
-    public function the_status_code_must_be_404()
+    public function the_status_code_must_be_403()
     {
-        $this->postResponse->assertStatus(401);
+        $this->postResponse->assertStatus(403);
     }
 }

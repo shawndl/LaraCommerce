@@ -21,10 +21,16 @@ abstract class AbstractUserAPIController extends Controller
         ], $code);
     }
 
+    protected function processingError()
+    {
+        return $this->hasError('There was an error processing your request!  Please try again.',
+            422);
+    }
+
     /**
      * returns a view or json depending on the success of the response
      *
-     * @return View | Json
+     * @return  Json
      */
     protected function onSuccess()
     {

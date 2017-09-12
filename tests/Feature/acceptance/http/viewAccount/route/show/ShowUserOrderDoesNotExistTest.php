@@ -30,9 +30,9 @@ class ShowUserOrderDoesNotExistTest extends AbstractHttpTestClass
     }
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function the_user_must_be_redirected_if_they_choose_an_order_that_does_not_exist()
     {
@@ -40,9 +40,9 @@ class ShowUserOrderDoesNotExistTest extends AbstractHttpTestClass
     }
 
     /**
-     *  @test
-     *  @group useraccount
-     *  @group acceptance
+     * @group acceptance
+     * @group user_account
+     * @test
      */
     public function the_redirect_must_have_an_error_message()
     {
