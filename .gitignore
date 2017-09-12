@@ -9,4 +9,3 @@ Homestead.yaml
 .env
 .env.testing
 .env.dusk.local
-Procfile
