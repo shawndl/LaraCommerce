@@ -182,6 +182,7 @@ return [
         App\Providers\NavBarServiceProvider::class,
         App\Providers\ValidationServiceProvider::class,
         Syscover\ShoppingCart\ShoppingCartServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class
 
     ],
 
@@ -232,7 +233,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'CartProvider' => Syscover\ShoppingCart\Facades\CartProvider::class,
-
+        'Image' => Intervention\Image\Facades\Image::class
     ],
 
 ];

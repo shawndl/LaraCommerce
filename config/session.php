@@ -61,7 +61,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Session Order Connection
+    | Session orders Connection
     |--------------------------------------------------------------------------
     |
     | When using the "database" or "redis" session drivers, you may specify a
@@ -74,7 +74,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Session Order Table
+    | Session orders Table
     |--------------------------------------------------------------------------
     |
     | When using the "database" session driver, you may specify the table we

@@ -7,8 +7,8 @@
 | This class is responsible for receiving either an order or a collection
 | and returning an array of information about a single order or a collection
 | of orders
-| 1) Order's pricing details [total, taxes, subTotal]
-| 2) Order address [address, city, state, postal_code]
+| 1) orders's pricing details [total, taxes, subTotal]
+| 2) orders address [address, city, state, postal_code]
 | 3) Each products details [Product name, product price
 | 4) User details [first_name, last_name, email]
 */
@@ -90,9 +90,11 @@ class OrderTransformers
         return [
             'id' => self::$order->id,
             'created' => true,
+            'paid_for' => (self::$order->paid_for) ? true : false,
             'arrival' => ShippingDateEstimator::arrivalDate(new \DateTime()),
             'order_date' => self::$order->formatOrderDate(),
             'ship_date' => self::$order->formatShipDate(),
+            'shipped' => (self::$order->shipped) ? true : false
         ];
     }
 

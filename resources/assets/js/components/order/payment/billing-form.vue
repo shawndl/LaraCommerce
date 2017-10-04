@@ -61,7 +61,7 @@
              */
             beforeSubmit() {
                 this.stripe.open({
-                    name: "Complete my Order",
+                    name: "Complete my orders",
                     description : "total items from your cart",
                     zipCode: true,
                     amount: this.total

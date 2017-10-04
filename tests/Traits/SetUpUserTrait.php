@@ -63,4 +63,14 @@ trait SetUpUserTrait
     {
         User::truncate();
     }
+
+    /**
+     * @param User $user
+     */
+    public function addAdmin(User $user)
+    {
+        \App\Role::truncate();
+        $role = factory(\App\Role::class)->create(['name' => 'admin']);
+        $user->assignRole($role);
+    }
 }

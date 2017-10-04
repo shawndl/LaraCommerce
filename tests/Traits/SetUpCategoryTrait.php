@@ -22,6 +22,7 @@ trait SetUpCategoryTrait
 
     public function setUpCategory()
     {
+        \App\Category::truncate();
         $this->category = \App\Category::create([
             'name'=> 'clothes'
         ]);

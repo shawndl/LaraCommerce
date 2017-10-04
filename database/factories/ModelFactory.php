@@ -32,6 +32,12 @@ $factory->define(App\Category::class, function(Faker\Generator $faker){
     ];
 });
 
+$factory->define(\App\Role::class, function () {
+    return [
+        'name' => 'admin'
+    ];
+});
+
 
 $factory->define(App\Product::class, function(Faker\Generator $faker) {
     $categories = \App\Category::all()->pluck('id');
@@ -59,9 +65,10 @@ $factory->define(App\Review::class, function(Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Image::class, function(Faker\Generator $faker) {
+$factory->define(App\Image::class, function() {
     return [
-        'path' =>  $faker->imageUrl(800, 300)
+        'path' =>  'http://via.placeholder.com/400x300',
+        'thumbnail' => 'http://via.placeholder.com/200x150'
     ];
 });
 
@@ -113,3 +120,12 @@ $factory->define(App\Tax::class, function(Faker\Generator $faker) {
     ];
 });
 
+$factory->define(App\Sale::class, function(Faker\Generator $faker) {
+    $products = \App\Product::all()->pluck('id');
+    return [
+        'product_id' => $faker->randomElement($products->toArray()),
+        'start' => $faker->dateTimeBetween('-14 days', 'now'),
+        'finish' => $faker->dateTimeBetween('now', '+14 days'),
+        'discount' => $faker->randomElement($array = array(.1, .15, .2, .25, .3, .35, .40))
+    ];
+});

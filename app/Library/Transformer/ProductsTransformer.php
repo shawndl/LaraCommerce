@@ -35,7 +35,8 @@ class ProductsTransformer extends AbstractTransformer
             'description' => $model->description,
             'weight' => $model->weight,
             'category' => $model->category()->first()->name,
-            'image' => $model->image()->first()->path
+            'image' => $model->image()->first()->path,
+            'thumbnail' => $model->image()->first()->thumbnail
         ];
     }
 }

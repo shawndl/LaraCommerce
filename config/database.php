@@ -4,12 +4,12 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Order Connection Name
+    | Default orders Connection Name
     |--------------------------------------------------------------------------
     |
     | Here you may specify which of the database connections below you wish
     | to use as your default connection for all database work. Of course
-    | you may use many connections at once using the Order library.
+    | you may use many connections at once using the orders library.
     |
     */
 
@@ -17,7 +17,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Order Connections
+    | orders Connections
     |--------------------------------------------------------------------------
     |
     | Here are each of the database connections setup for your application.

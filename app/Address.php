@@ -23,7 +23,7 @@ class Address extends Model
      * @param $id
      * @return mixed
      */
-    public function scopefull($query, $id)
+    public function scopeFull($query, $id)
     {
         return $query->where('id', $id)
             ->with('state')

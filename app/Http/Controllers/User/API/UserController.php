@@ -24,7 +24,7 @@ class UserController extends AbstractUserAPIController
     public function index()
     {
         return response()->json([
-            'user' => UserTransformer::transform(Auth::user())
+            'user' => UserTransformer::single(Auth::user())
         ], 200);
     }
 }

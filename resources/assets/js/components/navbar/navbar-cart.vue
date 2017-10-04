@@ -13,8 +13,7 @@
             <li class="dropdown-title">
                 {{ getTotalMessage() }}
             </li>
-            <li class="dropdown-item"
-                v-for="product in cart.products">
+            <li class="dropdown-item" v-for="product in cart.products">
                 <img class="dropdown-item-image"
                      :src="product.image"
                      :alt="'Image of ' + product.title">
@@ -36,7 +35,7 @@
                                   @remove-item="removeItem">
 
                 </remove-item-icon>
-
+                <hr>
             </li>
             <li class="dropdown-button">
                 <a class="btn btn-success" :href="order_url + '/select-address'">Check Out</a>

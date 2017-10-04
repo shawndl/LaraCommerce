@@ -1,11 +1,11 @@
 <?php
 /*
 |--------------------------------------------------------------------------
-| OrderController.php
+| OrdersController.php
 |--------------------------------------------------------------------------
 | Created by Shawn Legge
 | This class is responsible for returning views with order information.  Routes
-| that return ajax requests are in the Controllers\User\API\OrderController.php
+| that return ajax requests are in the Controllers\User\API\OrdersController.php
 | file
 */
 namespace App\Http\Controllers\User;

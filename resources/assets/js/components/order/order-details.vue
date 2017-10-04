@@ -62,7 +62,7 @@
         created() {
             Event.$on('user-pick-address',
                 //TODO: this event is firing twice
-                (address) => this.createOrder(address)
+                (address) =>  this.createOrder(address)
             );
 
             Event.$on('user-paid-for-order',

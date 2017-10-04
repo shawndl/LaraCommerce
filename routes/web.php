@@ -42,46 +42,65 @@ Route::get('user/user-account', 'User\UserAccountController@index');
 Route::get('user/user-account/order/{id}', 'User\UserAccountController@show');
 Route::get('user/users-details', 'User\API\UserController@index');
 
-//Order Page
+//orders Page
 Route::get('/order/{stage}', 'User\OrderController@index');
 Route::post('/order', 'User\API\OrderController@store');
 Route::patch('/order/{order}', 'User\API\OrderController@update');
 Route::post('/order/billing-form', 'User\API\BillingController@store');
 Route::resource('user/address', 'User\API\AddressController');
 
-
-//Order API
+//orders API
 Route::get('/order/invoice/{order}', 'User\API\OrderController@show');
 
-//Tests
+/*
+|--------------------------------------------------------------------------
+| Admin Section
+|--------------------------------------------------------------------------
+| The following routes are from the admin section of Lara-Commerce.  In order
+| to access these pages the user must have admin privileges.
+*/
+Route::get('admin', 'Admin\AdminHomeController@index');
+
+//Products
+Route::resource('admin/products', 'Admin\ProductsController');
+Route::post('admin/products/image/{product}', 'Admin\API\ProductsAPIController@image');
+Route::get('admin/products-api/', 'Admin\API\ProductsAPIController@index');
+
+
+// Sales
+Route::resource('admin/products/sales', 'Admin\SalesController');
+
+// Users
+Route::get('admin/users', 'Admin\UsersController@index');
+Route::get('admin/users/addresses/{user}', 'Admin\UsersController@addresses');
+Route::get('admin/users/orders/{user}', 'Admin\UsersController@orders');
+
+// Orders
+Route::get('admin/orders', 'Admin\OrdersController@index');
+Route::get('admin/orders/{id}', 'Admin\OrdersController@show');
+Route::get('admin/orders/view/{order}', 'Admin\API\OrdersAPIController@show');
+Route::post('admin/orders/view/{order}', 'Admin\API\OrdersAPIController@store');
+
+// Categories
+Route::get('admin/categories', 'Admin\CategoriesController@index');
+Route::resource('admin/api/categories', 'Admin\API\CategoriesAPIController');
+
+//Taxes
+Route::get('admin/taxes', 'Admin\TaxesController@index');
+Route::get('admin/api/taxes/all', 'Admin\API\TaxesAPIController@all');
+Route::resource('admin/api/taxes', 'Admin\API\TaxesAPIController');
+
+
 
 Route::get('/test', function(){
+    dd(\Illuminate\Support\Facades\Schema::hasTable('roles'));
 
-    $a = new \App\Library\API\ApiResponseTracker();
-    $b = new \App\Library\API\ErrorTracker\OrderErrorTracker($a);
-    $c = \App\Address::first();
-    $d = \App\User::find(51);
-    //$d = \App\Order::find(51);
-    $b->address = $c;
-    $b->user = $d;
-    $z = $b->create(new \App\Order());
-    dd($b);
-
-    /*
-     * X Finish the order accuunt page by adding costs
-     * X Add search function
-     * X Move API search routes to User/API folder
-     * 4) write tests
-     * X Side bar needs to collapse when screen is small
-     * X Fix navbar cart screen so it does not close for no reason
-     * X When address is picked two orders are triggered
-     * X Update nav bar and add an about page and contact page
-     * 9) Write a review
-     */
+    return view('test');
 });
 
 
 Route::post('/test', function(\Illuminate\Http\Request $request){
-    dd($request);
+
+
 })->middleware('ajax.auth');;
 

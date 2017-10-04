@@ -84,6 +84,7 @@
              */
             beforeSubmit() {
                 this.$validator.validateAll().then(() => {
+                    // Add callback
                     Event.$emit('user-pick-address', this.pickedAddress);
                 });
             },

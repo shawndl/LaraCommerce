@@ -3,13 +3,11 @@
         <div class="modal-wrapper">
             <div class="modal-container">
                 <div class="pull-right">
-                    <i class="fa fa-times close-modal"
+                    <i class="fa fa-times close-modal" id="close-icon" role="button"
                        aria-hidden="true" @click="cancel"></i>
                 </div>
                 <div class="modal-body">
-                    <slot>
-                        default body
-                    </slot>
+                    <slot>default body</slot>
                 </div><!-- /.modal-body -->
             </div><!-- /.modal-container -->
         </div><!-- /.modal-wrapper -->

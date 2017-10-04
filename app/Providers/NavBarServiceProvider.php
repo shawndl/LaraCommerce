@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Syscover\ShoppingCart\Facades\CartProvider;
@@ -16,11 +17,17 @@ class NavBarServiceProvider extends ServiceProvider
     public function boot()
     {
         View::composer('_includes._ecommerce._navbar', function($view){
+            $isAdmin = false;
+            if(Auth::check() && Auth::user()->hasRole('admin')) {
+                $isAdmin = true;
+            }
+
             $numberOfItems = $this->formatNumberOfItems(CartProvider::instance()->getCartItems()->count());
             $total = '$' . CartProvider::instance()->getTotal();
             $view->with([
                 'numberOfItems' => $numberOfItems,
-                'total' => $total
+                'total' => $total,
+                'isAdmin' => $isAdmin
             ]);
         });
     }

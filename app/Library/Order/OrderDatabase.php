@@ -4,7 +4,7 @@
 | OrderDatabase.php
 |--------------------------------------------------------------------------
 | Created by Shawn Legge
-| This class is responsible for receiving an App\Order object and adding
+| This class is responsible for receiving an App\orders object and adding
 | or editing items from the database.  It will return a response based on
 | if the order was created successfully.  If it is successful then it will
 | create a session with the order information

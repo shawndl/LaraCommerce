@@ -2,7 +2,7 @@
     @foreach($products->items() as $product)
         <div class="col-sm-4 col-lg-4 col-md-4">
             <div class="thumbnail">
-                <img src="{{ $product->image->path }}" alt="">
+                <img src="{{ $product->thumbnail() }}" alt="">
                 <div class="caption">
                     <h4 class="pull-right">{{ $product->price }}</h4>
                     <h4>
@@ -11,8 +11,7 @@
                     <p>{{ $product->description }}</p>
                 </div><!-- /.caption -->
                 <add-cart-icon :product_id="'{{ $product->id }}'"
-                                @add-to-cart="addToCart"
-                               >
+                                @add-to-cart="addToCart">
 
                 </add-cart-icon>
                 <div class="ratings">

@@ -6,6 +6,7 @@
                     <div class="pull-right close-modal" @click="cancel">
                         <i class="fa fa-times"
                            aria-hidden="true"
+                           role="button"
                            @click="cancel"></i>
                     </div>
                     <slot name="header">

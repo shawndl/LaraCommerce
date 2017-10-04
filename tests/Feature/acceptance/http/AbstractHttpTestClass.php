@@ -60,6 +60,22 @@ class AbstractHttpTestClass extends TestCase
             ->call('GET', $this->getRoute);
     }
 
+    /**
+     * sets the post response
+     *
+     * @param bool $originalUser
+     * @return void
+     */
+    protected function setGetResponseAdmin($originalUser = true)
+    {
+        $this->destroyUsers();
+        $this->setUpUser();
+        $user = ($originalUser) ? $this->user : $this->secondUser;
+        $this->addAdmin($user);
+        $this->getResponse = $this->actingAs($user)
+            ->call('GET', $this->getRoute);
+    }
+
 
     /**
      * sets the get response with a session

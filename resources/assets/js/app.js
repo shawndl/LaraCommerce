@@ -58,7 +58,7 @@ Vue.component('user-account-header', require('./components/account/user-account-
 Vue.component('user-account-address', require('./components/account/user-account-address.vue'));
 Vue.component('user-account-order', require('./components/account/user-account-order.vue'));
 
-//Order Page
+//orders Page
 Vue.component('order-total-details', require('./components/order/shared/order-total-details.vue'));
 Vue.component('order-page', require('./components/order/order-page.vue'));
 Vue.component('order-details', require('./components/order/order-details.vue'));

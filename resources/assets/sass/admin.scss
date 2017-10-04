@@ -1,0 +1,19 @@
+// Fonts
+@import "../../../node_modules/font-awesome/scss/font-awesome";
+
+// Bootstrap
+@import "../../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+// Gentelella Template
+@import "admin/custom";
+@import "admin/panels";
+@import "admin/tables";
+
+// Shared
+@import "shared/message";
+
+// Custom Sass
+@import "ecommerce/general";
+@import "ecommerce/modal";
+@import "ecommerce/products";
+@import "ecommerce/order";

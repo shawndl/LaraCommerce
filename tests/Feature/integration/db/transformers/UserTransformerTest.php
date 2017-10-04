@@ -22,7 +22,7 @@ class UserTransformerTest extends TestCase
     {
         parent::setUp();
         $this->setUpUser();
-        $this->userTransformer = UserTransformer::transform($this->user);
+        $this->userTransformer = UserTransformer::single($this->user);
     }
 
     /**

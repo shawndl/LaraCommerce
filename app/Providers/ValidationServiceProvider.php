@@ -21,12 +21,12 @@ class ValidationServiceProvider extends ServiceProvider
 
         Validator::extend('alpha_numeric_spaces', function($attribute, $value)
         {
-            return preg_match('/^[\pL1-9\s]+$/u', $value);
+            return preg_match('/^[\pL1-90\s]+$/u', $value);
         });
 
         Validator::extend('basic_characters', function($attribute, $value)
         {
-            return preg_match('/^[\pL1-9\s.\',?]+$/u', $value);
+            return preg_match('/^[\pL1-90\s.\',?!]+$/u', $value);
         });
     }
 

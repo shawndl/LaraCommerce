@@ -92,6 +92,7 @@ class NavbarTest extends DuskTestCase
             $browser->visit('/')
                 ->assertVisible('#shopping-cart')
                 ->click('#shopping-cart')
+                ->pause(2000)
                 ->assertSee('0 Items with total of $0.00')
                 ->assertSee('Check Out')
                 ->clickLink('Check Out');

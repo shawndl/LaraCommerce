@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
 
@@ -16,6 +17,26 @@ class Product extends Model
     protected $fillable = [
         'category_id', 'tax_id', 'image_id', 'title', 'price', 'description', 'weight'
     ];
+
+    /**
+     * returns the image path
+     *
+     * @return string
+     */
+    public function path()
+    {
+        return $this->image->path;
+    }
+
+    /**
+     * returns the thumbnail path
+     *
+     * @return string
+     */
+    public function thumbnail()
+    {
+        return $this->image->thumbnail;
+    }
 
     /**
      * gets the price value and formats it with two digits
@@ -36,6 +57,20 @@ class Product extends Model
     public function setPriceAttribute($value)
     {
         $this->attributes['price'] = money_format('%i', $value);
+    }
+
+    /**
+     * is the product on sale
+     *
+     * @return bool
+     */
+    public function hasSale()
+    {
+        $current = $this->sales
+            ->where('start', '<=', Carbon::now()->format('Y-m-d'))
+            ->where('finish', '>=', Carbon::now()->format('Y-m-d'))
+            ->count();
+        return ($current >= 1) ? true : false;
     }
 
     /**
@@ -76,6 +111,16 @@ class Product extends Model
     public function tax()
     {
         return $this->belongsTo('App\Tax');
+    }
+
+    /**
+     * a product can have many sales
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sales()
+    {
+        return $this->hasMany('App\Sale');
     }
 
     /**

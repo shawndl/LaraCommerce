@@ -13,6 +13,10 @@ class Category extends Model
         'name',
     ];
 
+    protected $hidden = [
+        'created_at', 'updated_at'
+    ];
+
     /**
      * a category has many products
      *
@@ -21,5 +25,10 @@ class Category extends Model
     public function products()
     {
         return $this->hasMany('App\Product');
+    }
+
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = ucwords($value);
     }
 }

@@ -45,6 +45,7 @@ class OrderController extends AbstractUserAPIController
      * OrderController constructor.
      * @param Order $order
      * @param Address $address
+     * @param OrderErrorTrackerBuilder $orderErrorTrackerBuilder
      */
     function __construct(Order $order, Address $address, OrderErrorTrackerBuilder $orderErrorTrackerBuilder)
     {
@@ -140,7 +141,7 @@ class OrderController extends AbstractUserAPIController
             'order' => [
                 'order_id'  => $this->order->id,
                 'address'   => AddressTransformer::single($this->address),
-                'user'      => UserTransformer::transform(Auth::user())
+                'user'      => UserTransformer::single(Auth::user())
             ]
         ];
     }

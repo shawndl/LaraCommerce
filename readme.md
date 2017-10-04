@@ -10,7 +10,7 @@ Lara-commerce is a free e-commerce app that use the Laravel framework and Vue.  
 For detailed information about installation or the features please visit the documents at …
 
 ## Documentation 
-View our documentation at [Documentation](https://laravel.com).
+View our documentation at [Documentation](https://shawndl.github.io/LaraCommerceDocs).
 
 ## Demo
 View a demo at [Documentation](https://laravel.com).

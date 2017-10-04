@@ -1,0 +1,26 @@
+$product-font-size: 1.1em;
+
+.product-title {
+  color: darkslategray;
+  font-size: $product-font-size;
+  font-weight: bold;
+}
+
+.product-details {
+  font-weight: bold;
+  font-size: $product-font-size;
+  color: #00aeef;
+}
+
+.price-cut {
+  color: #080808;
+  font-weight: 100;
+  font-size: $product-font-size;
+  text-decoration: line-through
+}
+
+.price-amount {
+  color:#d58512;
+  font-size: $product-font-size;
+  font-weight: bold;
+}

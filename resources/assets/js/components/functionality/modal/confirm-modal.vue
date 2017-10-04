@@ -8,23 +8,17 @@
                     </slot>
                 </div><!-- /.modal-header -->
                 <div class="modal-body">
-                    <slot name="body">
-                        default body
-                    </slot>
+                    <slot name="body">default body</slot>
                 </div><!-- /.modal-body -->
 
                 <div class="modal-footer">
                     <slot name="footer">
                         <div class="row">
                             <div class="col-xs-3 col-xs-offset-3">
-                                <button class="btn btn-primary" @click="confirm">
-                                    OK
-                                </button>
+                                <button class="btn btn-primary" @click="confirm">OK</button>
                             </div><!-- /.col -->
                             <div class="col-xs-3 col-xs-offset-1">
-                                <button class="btn btn-danger" @click="cancel">
-                                    Cancel
-                                </button>
+                                <button class="btn btn-danger" @click="cancel">Cancel</button>
                             </div><!-- /.col -->
                         </div><!-- /.row -->
                     </slot>
@@ -36,10 +30,6 @@
 
 <script>
     export default {
-        props : [
-
-        ],
-
         methods: {
             /**
              * emits message to parent that the user confirmed the action

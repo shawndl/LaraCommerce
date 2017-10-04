@@ -34,6 +34,23 @@ class AbstractHttpAjaxTestClass extends AbstractHttpTestClass
 
 
     /**
+     * sets the post response
+     *
+     * @param bool $originalUser
+     * @return void
+     */
+    protected function setGetResponseAdmin($originalUser = true)
+    {
+        $this->destroyUsers();
+        $this->setUpUser();
+        $user = ($originalUser) ? $this->user : $this->secondUser;
+        $this->addAdmin($user);
+        $this->getResponse = $this->actingAs($user)
+            ->json('GET', $this->getRoute);
+    }
+
+
+    /**
      * sets the get response with a session
      *
      * @param array $session
@@ -83,6 +100,23 @@ class AbstractHttpAjaxTestClass extends AbstractHttpTestClass
         $this->destroyUsers();
         $this->setUpUser();
         $user = ($originalUser) ? $this->user : $this->secondUser;
+        $this->postResponse = $this->actingAs($user)
+            ->json('POST', $this->postRoute, $post);
+    }
+
+    /**
+     * sets the post response
+     *
+     * @param $post
+     * @param bool $originalUser
+     * @return void
+     */
+    protected function setPostResponseAdmin($post, $originalUser = true)
+    {
+        $this->destroyUsers();
+        $this->setUpUser();
+        $user = ($originalUser) ? $this->user : $this->secondUser;
+        $this->addAdmin($user);
         $this->postResponse = $this->actingAs($user)
             ->json('POST', $this->postRoute, $post);
     }

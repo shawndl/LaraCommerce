@@ -29,7 +29,7 @@ class UserAccountTransformer
     public static function transform(User $user)
     {
         return [
-            'user' => UserTransformer::transform($user),
+            'user' => UserTransformer::single($user),
             'addresses' => AddressTransformer::transform($user->addresses),
             'orders'    => OrderTransformers::transform($user->orders)
         ];
