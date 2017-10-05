@@ -2,7 +2,7 @@
     <hr>
     <footer>
         <div class="row">
-            <div class="col-lg-12">
+            <div class="col-sm-12">
                 <p>Copyright &copy; Shawn Legge</p>
             </div><!-- /.col -->
         </div><!-- /.row -->

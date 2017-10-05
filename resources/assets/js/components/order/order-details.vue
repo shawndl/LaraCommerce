@@ -7,9 +7,8 @@
 
             </order-information>
             <user-address v-if="current === 2"
-                          :addresses="JSON.parse(addresses)"
-                          :isForm="true">
-
+                          :isForm="true"
+                          :order_id="order.id">
             </user-address>
             <order-payment v-if="current === 3"
                            :cart="cart"
@@ -61,8 +60,7 @@
 
         created() {
             Event.$on('user-pick-address',
-                //TODO: this event is firing twice
-                (address) =>  this.createOrder(address)
+                (response) =>  this.createOrder(response)
             );
 
             Event.$on('user-paid-for-order',
@@ -89,77 +87,18 @@
             },
 
             /**
-             * if an order has not been created then create an order
-             * @return void
-             */
-            createOrder(address) {
-                let post = {address_id : address};
-                if(!this.order.id && this.order.created === false) {
-                    this.addOrder(post);
-                    return;
-                }
-                this.updateOrder(post);
-            },
-
-            /**
-             * performs an ajax request to post an order
-             * @param post
-             * @return void
-             */
-            addOrder(post) {
-                this.order.created = true;
-                this.ajaxRequest(window.Laravel.urls.order_url, post);
-            },
-
-            /**
-             * performs an ajax request to post an order
-             * @param post Object
-             * @return void
-             */
-            updateOrder(post) {
-                post = Object.assign({_method : 'patch'}, post);
-                this.ajaxRequest(window.Laravel.urls.order_url + '/' + this.order.id, post);
-            },
-
-            /**
-             * does an ajax request to the OrderController
-             *
-             * @return void
-             */
-            ajaxRequest(url, post) {
-                let self = this;
-                axios.post(url, post)
-                    .then(function (response) {
-                        self.successOrder(response.data)
-                    })
-                    .catch(function (error) {
-                        self.orderError(error.response);
-                    });
-            },
-
-            /**
              * On a successful creation of  an order
              * update the order property to add an order id and update the steps property
              * @param response
              */
-            successOrder(response) {
+            createOrder(response) {
                 this.order.created = true;
                 this.order.id = response.order.order_id;
                 this.order.address = response.order.address;
                 this.order.user = response.order.user;
                 this.$emit('address-is-complete', true);
                 Event.$emit('update-user-message', response.message);
-            },
-
-            /**
-             * If there is an error creating an order then emit that error to the user
-             * @param error
-             * @return void
-             */
-            orderError(error) {
-                this.order.created = false;
-                Event.$emit('update-user-error', error.message);
-            },
+            }
         }
     }
 </script>

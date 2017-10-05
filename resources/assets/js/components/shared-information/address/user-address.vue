@@ -1,13 +1,14 @@
 <template>
     <div>
-        <select-user-address v-if="(states && isForm)"
-                           :addresses="userAddresses"
-                           :states="states">
+        <select-user-address v-if="isForm"
+                             :addresses="addresses"
+                             :states="states"
+                             :order_id="order_id"
+                             :refreshAddress="getAddresses">
 
         </select-user-address>
-        <user-account-address v-if="(states && userAddresses && !isForm)"
-                              :addresses="userAddresses"
-                              :states="states">
+        <user-account-address v-else
+                              :addresses="addresses">
 
         </user-account-address>
     </div>
@@ -16,20 +17,13 @@
 <script>
 
     export default {
-        props : [
-            'addresses', 'isForm'
-        ],
+        props : ['isForm', 'order_id'],
 
         data : function() {
             return {
-                userAddresses : null,
+                addresses : null,
                 states : null
             }
-        },
-
-        mounted() {
-            this.formatAddresses(this.addresses);
-            this.setStates();
         },
 
         created() {
@@ -42,7 +36,25 @@
             );
         },
 
+        mounted() {
+            this.getAddresses();
+        },
+
         methods: {
+            /**
+             * Performs an ajax request to get the users addresses
+             * @return {void}
+             */
+            getAddresses() {
+                axios.get(window.Laravel.urls.address_url)
+                    .then(
+                        (response) => this.formatAddresses(response.data.addresses)
+                    )
+                    .catch(
+                        () => this.updateError()
+                    );
+            },
+
             /**
              * formats the addresses into chunks of 2 to 3 depending on the window screen
              * these chunks are used by the child class to create bootstrap rows with columns
@@ -50,73 +62,16 @@
              * @return {void}
              */
             formatAddresses(addresses) {
-                this.userAddresses = _.chunk(addresses, 2);
-            },
-
-            /**
-             * performs an ajax request for the states
-             * @return {void}
-             */
-            setStates() {
-                let self = this;
-                axios.get(window.Laravel.urls.state_url)
-                    .then(function (response) {
-                        self.states = response.data.states;
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            },
-
-            /**
-             * when the child class confirms the update the method will send an ajax request
-             * to the server to delete the address
-             * @return void
-             */
-            onDelete(address) {
-                let self = this;
-                axios.post(window.Laravel.urls.address_url + '/' + address, {_method : 'Delete'})
-                    .then(function (response) {
-                        self.updateMessage(response.data.message);
-                        self.formatAddresses(response.data.addresses);
-                    })
-                    .catch(function (error) {
-                        self.updateError(error);
-                    });
-            },
-
-            /**
-             * performs an ajax request to either update or create a new address
-             * @param details
-
-             * @return {void}
-             */
-            onAdd(details) {
-                let self = this;
-                axios.post(details.url, details.form)
-                    .then(function (response) {
-                        self.formatAddresses(response.data.addresses);
-                        self.updateMessage(response.data.message);
-                    })
-                    .catch(function (error) {
-                        console.log(error);
-                    });
-            },
-
-            /**
-             * updates the message property in the parent component
-             * @return {void}
-             */
-            updateMessage(message) {
-                Event.$emit('update-user-message', message);
+                this.addresses = _.chunk(addresses, 2);
             },
 
             /**
              * updates the error property in the parent component
              * @param error
              */
-            updateError(error) {
-                //TODO: add error property
+            updateError() {
+                Event.$emit('update-user-error',
+                    'There was an error retrieving your addresses, please try again!');
             }
         }
     }

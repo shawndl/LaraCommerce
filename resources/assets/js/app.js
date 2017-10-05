@@ -26,6 +26,7 @@ Vue.use(VeeValidate);
  * Add vue components to the project.
  */
 Vue.component('main-page', require('./components/main-page.vue'));
+Vue.component('main-shopping-cart', require('./components/main-shopping-cart.vue'))
 
 
 //Auth Pages
@@ -45,6 +46,10 @@ Vue.component('review-stars', require('./components/functionality/review-stars.v
 Vue.component('select-cart-quantity', require('./components/functionality/select-cart-quantity.vue'))
 Vue.component('view-message', require('./components/functionality/view-message.vue'));
 Vue.component('step-progress-bar', require('./components/order/step-progress-bar.vue'));
+
+// Messages
+Vue.component('success-message', require('./components/functionality/messages/success-message.vue'));
+Vue.component('error-message', require('./components/functionality/messages/error-message.vue'));
 
 
 //Navbar

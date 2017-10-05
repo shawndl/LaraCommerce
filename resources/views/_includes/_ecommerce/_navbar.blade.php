@@ -33,7 +33,7 @@
                         </ul>
                     </li>
                 @endif
-                <categories-navbar v-if="!showComponents.showSideBar"
+                <categories-navbar v-if="!show.showSideBar"
                                    :categories="{{ $categories }}">
 
                 </categories-navbar>

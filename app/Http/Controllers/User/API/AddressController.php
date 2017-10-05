@@ -28,6 +28,20 @@ class AddressController extends AbstractUserAPIController
         $this->middleware('ajax.auth');
     }
 
+    public function index()
+    {
+        try {
+            $addresses = AddressTransformer::transform(Auth::user()->addresses);
+        } catch (\Exception $exception) {
+
+        }
+
+
+        return response()->json([
+            'addresses' => $addresses
+        ], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -103,7 +117,6 @@ class AddressController extends AbstractUserAPIController
     {
         return response()->json([
             'message' => $message,
-            'addresses' => AddressTransformer::transform(Auth::user()->addresses)
         ], 200);
     }
 }

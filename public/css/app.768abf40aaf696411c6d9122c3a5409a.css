@@ -11992,3 +11992,10 @@ ol.progress-track li.progress-todo .icon-wrap .icon-check-mark,
 ol.progress-track li.progress-todo .icon-wrap .icon-down-arrow {
   display: none;
 }
+
+.message-container {
+  position: fixed;
+  top: 50px;
+  z-index: 1000;
+  width: 100%;
+}

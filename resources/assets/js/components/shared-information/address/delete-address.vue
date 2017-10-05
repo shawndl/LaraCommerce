@@ -20,7 +20,7 @@
 
     export default {
         props : [
-            'address'
+            'address', 'refresh'
         ],
 
         data : function() {
@@ -44,7 +44,42 @@
              */
             onDelete(){
                 this.showConfirm = false;
-                Event.$emit('delete-user-address', this.address);
+                this.ajaxRequest();
+            },
+
+            /**
+             * Deletes the selected address with an ajax request
+             * @return void
+             */
+            ajaxRequest() {
+                let self = this;
+                axios.post(window.Laravel.urls.address_url + '/' + this.address.id, {_method : 'Delete'})
+                    .then(function (response) {
+                        self.updateMessage(response.data);
+                    })
+                    .catch(function () {
+                        self.updateError();
+                    });
+            },
+
+            /**
+             * displays a user message on success
+             * @param data
+             * @return void
+             */
+            updateMessage(data) {
+                Event.$emit('update-user-message', data.message);
+                this.showConfirm = false;
+                this.refresh();
+            },
+
+            /**
+             * displays an error message
+             * @return void
+             */
+            updateError() {
+                Event.$emit('update-user-error',
+                    'An error occurred please try again!');
             }
         }
 

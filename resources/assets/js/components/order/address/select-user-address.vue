@@ -1,7 +1,7 @@
 <template>
     <div>
         <h4>Where do you want the package shipped</h4>
-        <add-new-address :states="states">
+        <add-new-address :refresh="refreshAddress">
 
         </add-new-address>
         <form  @submit.prevent="beforeSubmit">
@@ -30,14 +30,14 @@
                             </label>
                             <div class="address-box-footer">
                                 <div class="address-edit-button">
-                                    <edit-address v-if="states"
-                                                  :address="address"
-                                                  :states="states">
+                                    <edit-address :address="address"
+                                                  :refresh="refreshAddress">
 
                                     </edit-address>
                                 </div><!-- /.address-edit -->
                                 <div class="address-delete-button">
-                                    <delete-address :address="address">
+                                    <delete-address :address="address"
+                                                    :refresh="refreshAddress">
 
                                     </delete-address>
                                 </div><!-- /.address-edit -->
@@ -58,7 +58,7 @@
 <script>
     export default {
         props : [
-            'addresses', 'states'
+            'addresses', 'order_id', 'refreshAddress'
         ],
 
         data: function() {
@@ -83,11 +83,44 @@
              * @return {void}
              */
             beforeSubmit() {
+                let self = this;
+                let post = {address_id : this.pickedAddress};
                 this.$validator.validateAll().then(() => {
-                    // Add callback
-                    Event.$emit('user-pick-address', this.pickedAddress);
+                    if(!self.order_id) {
+                        self.ajaxRequest(window.Laravel.urls.order_url, post)
+                    } else {
+                        self.edit(post);
+                    }
                 });
             },
+
+            edit(post) {
+                post._method = 'PATCH';
+                let url = window.Laravel.urls.order_url + '/' + this.order_id;
+                this.ajaxRequest(url, post);
+            },
+
+            /**
+             * does an ajax request to the OrderController
+             *
+             * @return void
+             */
+            ajaxRequest(url, post) {
+                let self = this;
+                axios.post(url, post)
+                    .then(function (response) {
+                        self.updateMessage(response.data)
+                    })
+                    .catch(function (error) {
+                        console.log(error)
+                    });
+            },
+
+            updateMessage(data) {
+                Event.$emit('update-user-message', data.message)
+                Event.$emit('user-pick-address', data);
+            }
+
         }
     }
 </script>

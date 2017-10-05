@@ -77,11 +77,12 @@ class OrderController extends UserPagesController
      */
     private function getOrder()
     {
-        $order = session()->get('user_order');
+        //$order = session()->get('user_order');
+        $order = null;
         if(is_null($order))
         {
             return false;
         }
-        return $order;
+        return $order['order'];
     }
 }

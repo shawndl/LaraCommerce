@@ -8,8 +8,7 @@
             <h3 slot="header">Edit this Address</h3>
             <div slot="body">
                 <user-address-form :editAddress="address"
-                                   :states="states"
-                                   @form-submit="toggleForm">
+                                   @form-submit="formSubmit">
 
                 </user-address-form>
             </div>
@@ -21,7 +20,7 @@
 
     export default {
         props : [
-            'address', 'states'
+            'address', 'refresh'
         ],
 
         data : function() {
@@ -37,7 +36,16 @@
              */
             toggleForm() {
                 this.showForm = !this.showForm;
-            }
+            },
+
+            /**
+             * closes the form and refreshes the addresses on the screen
+             * @return void
+             */
+            formSubmit() {
+                this.refresh();
+                this.showForm = false;
+            },
         }
 
     }

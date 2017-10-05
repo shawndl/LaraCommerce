@@ -81,10 +81,11 @@
 
 <script>
     export default {
-        props : ['editAddress', 'states'],
+        props : ['editAddress'],
 
         data : function () {
             return {
+                states : null,
                 address : {
                     street_address : '',
                     state : '',
@@ -95,12 +96,28 @@
         },
 
         mounted() {
+            this.setStates();
             if(this.editAddress) {
                 this.setAddress();
             }
         },
 
         methods : {
+            /**
+             * performs an ajax request for the states
+             * @return {void}
+             */
+            setStates() {
+                let self = this;
+                axios.get(window.Laravel.urls.state_url)
+                    .then(function (response) {
+                        self.states = response.data.states;
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            },
+
             /**
              * sets the address when the user is editing an address
              * it will bind the values to the form fields
@@ -122,28 +139,49 @@
              */
             beforeSubmit() {
                 this.$validator.validateAll().then(() => {
-                    let form = {};
-                    let url = window.Laravel.urls.address_url
                     if(this.editAddress) {
-                        form = Object.assign({_method : 'patch'}, this.address);
-                        url = url + '/' + this.editAddress.id;
+                        this.edit();
                     } else {
-                        form = this.address;
+                        this.ajaxRequest(window.Laravel.urls.address_url)
                     }
-                    this.onSubmit(form, url);
                 });
             },
 
             /**
-             * emits details so the parent class can make a call to the database
+             * on edit it will add patch and change url
              * @return {boolean}
              */
-            onSubmit(form, url) {
+            edit() {
+                this.address._method = 'patch';
+                this.ajaxRequest(window.Laravel.urls.address_url + '/' + this.editAddress.id);
+
+            },
+
+            /**
+             * performs an ajax request to add or edit an address
+             * @return {boolean}
+             */
+            ajaxRequest(url) {
+                axios.post(url, this.address)
+                    .then(
+                        (response) => this.updateMessage(response.data)
+                    )
+                    .catch(
+                        (error) => console.log(error)
+                    );
+            },
+
+            /**
+             * Displays a user message
+             * @param data
+             */
+            updateMessage(data) {
+                Event.$emit('update-user-message', data.message);
                 this.$emit('form-submit');
-                Event.$emit('submit-user-address', {
-                    form : form,
-                    url : url
-                });
+            },
+
+            updateError() {
+
             }
         }
     }

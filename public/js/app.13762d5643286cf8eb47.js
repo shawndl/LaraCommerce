@@ -2147,6 +2147,62 @@ exports.default = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/messages/error-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    props: ['error-message']
+};
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/messages/success-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    props: ['message']
+};
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/modal/confirm-modal.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -2449,21 +2505,12 @@ exports.default = {
 
     data: function data() {
         return {
-            cart: {
-                information: {
-                    count: 0,
-                    total: 0,
-                    subTotal: 0,
-                    taxes: 0
-                },
-                products: []
-            },
             message: '',
-
-            postData: {},
+            errorMessage: '',
             showComponents: {
                 showSideBar: true,
                 showMessage: false,
+                showError: false,
                 fullScreen: false
             }
         };
@@ -2472,7 +2519,7 @@ exports.default = {
     mounted: function mounted() {
         var _this = this;
 
-        this.getCart();
+        //this.getCart(); //delete
         this.setShowSideBar();
         this.$nextTick(function () {
             return window.addEventListener('resize', _this.setShowSideBar);
@@ -2484,30 +2531,9 @@ exports.default = {
         Event.$on('update-user-message', function (message) {
             return _this2.displayMessage(message);
         });
-        Event.$on('close-user-message', function () {
-            return _this2.closeMessage();
+        Event.$on('update-user-error', function (error) {
+            return _this2.displayError(error);
         });
-        Event.$on('update-user-cart', function (value) {
-            return _this2.updateCart(value);
-        });
-        Event.$on('remove-item-cart', function (value) {
-            return _this2.removeItem(value);
-        });
-        Event.$on('update-user-error', function (message) {
-            return _this2.displayMessage(message);
-        });
-        Event.$on('reset-users-cart', function () {
-            return _this2.cart = {
-                information: {
-                    count: 0,
-                    total: 0,
-                    subTotal: 0,
-                    taxes: 0
-                },
-                products: []
-            };
-        });
-
         Event.$on('full-screen-window', function () {
             return _this2.showComponents.fullScreen = true;
         });
@@ -2529,6 +2555,95 @@ exports.default = {
 
 
         /**
+         * displays a message to the user for 5 seconds
+         * @return void
+         */
+        displayMessage: function displayMessage(message) {
+            this.message = message;
+            this.showComponents.showMessage = true;
+            self = this;
+            setTimeout(function () {
+                self.showComponents.showMessage = false;
+            }, 3000);
+        },
+
+
+        /**
+         * displays an error to the user for 5 seconds
+         * @return void
+         */
+        displayError: function displayError(error) {
+            console.log(error);
+            this.errorMessage = error;
+            this.showComponents.showError = true;
+            self = this;
+            setTimeout(function () {
+                self.showComponents.showError = false;
+            }, 3000);
+        }
+    }
+};
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/main-shopping-cart.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    props: ['show'],
+
+    data: function data() {
+        return {
+            postData: {},
+            cart: {
+                information: {
+                    count: 0,
+                    total: 0,
+                    subTotal: 0,
+                    taxes: 0
+                },
+                products: []
+            }
+        };
+    },
+
+    mounted: function mounted() {
+        this.getCart();
+    },
+    created: function created() {
+        var _this = this;
+
+        Event.$on('reset-users-cart', function () {
+            return _this.cart = {
+                information: {
+                    count: 0,
+                    total: 0,
+                    subTotal: 0,
+                    taxes: 0
+                },
+                products: []
+            };
+        });
+        Event.$on('update-user-cart', function (value) {
+            return _this.updateCart(value);
+        });
+        Event.$on('remove-item-cart', function (value) {
+            return _this.removeItem(value);
+        });
+        Event.$on('update-user-error', function (message) {
+            return _this.displayMessage(message);
+        });
+    },
+
+
+    methods: {
+        /**
          * ajax requrest to get the current cart information
          * and set to cart
          * @return {void}
@@ -2544,12 +2659,12 @@ exports.default = {
 
 
         /**
-        * gets the post data from the child classes and sets the postData property
-        * then it calls the ajax post request method to add to send the data to the
-        * server
-        * @param {value} post data sent from child class
-        * @return {void}
-        */
+         * gets the post data from the child classes and sets the postData property
+         * then it calls the ajax post request method to add to send the data to the
+         * server
+         * @param {value} post data sent from child class
+         * @return {void}
+         */
         addToCart: function addToCart(value) {
             this.postData = value;
             this.ajaxPostRequest(Laravel.urls.shopping_cart_add);
@@ -2585,39 +2700,17 @@ exports.default = {
         ajaxPostRequest: function ajaxPostRequest(url) {
             self = this;
             axios.post(url, this.postData).then(function (response) {
-                self.cart = response.data.cart;
-                self.displayMessage(response.data.message);
+                self.updateMessage(response.data);
             }).catch(function (error) {
-                console.log(error);
+                self.updateError(error);
             });
         },
-
-
-        /**
-         * displays a message to the user for 3 seconds
-         * @return void
-         */
-        displayMessage: function displayMessage(message) {
-            this.message = message;
-            this.openMessage();
+        updateMessage: function updateMessage(data) {
+            this.cart = data.cart;
+            Event.$emit('update-user-message', data.message);
         },
-
-
-        /**
-         * open the message box
-         * @return void
-         */
-        openMessage: function openMessage() {
-            this.showComponents.showMessage = true;
-        },
-
-
-        /**
-         * close the message box
-         * @return void
-         */
-        closeMessage: function closeMessage() {
-            this.showComponents.showMessage = false;
+        updateError: function updateError() {
+            console.log(error);
         }
     }
 };
@@ -2981,7 +3074,7 @@ Object.defineProperty(exports, "__esModule", {
 //
 
 exports.default = {
-    props: ['addresses', 'states'],
+    props: ['addresses', 'order_id', 'refreshAddress'],
 
     data: function data() {
         return {
@@ -3006,12 +3099,39 @@ exports.default = {
          * @return {void}
          */
         beforeSubmit: function beforeSubmit() {
-            var _this = this;
-
+            var self = this;
+            var post = { address_id: this.pickedAddress };
             this.$validator.validateAll().then(function () {
-                // Add callback
-                Event.$emit('user-pick-address', _this.pickedAddress);
+                if (!self.order_id) {
+                    self.ajaxRequest(window.Laravel.urls.order_url, post);
+                } else {
+                    self.edit(post);
+                }
             });
+        },
+        edit: function edit(post) {
+            post._method = 'PATCH';
+            var url = window.Laravel.urls.order_url + '/' + this.order_id;
+            this.ajaxRequest(url, post);
+        },
+
+
+        /**
+         * does an ajax request to the OrderController
+         *
+         * @return void
+         */
+        ajaxRequest: function ajaxRequest(url, post) {
+            var self = this;
+            axios.post(url, post).then(function (response) {
+                self.updateMessage(response.data);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        updateMessage: function updateMessage(data) {
+            Event.$emit('update-user-message', data.message);
+            Event.$emit('user-pick-address', data);
         }
     }
 };
@@ -3227,7 +3347,6 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
 
 exports.default = {
     props: ['current', 'cart', 'addresses', 'user_order'],
@@ -3257,10 +3376,8 @@ exports.default = {
     created: function created() {
         var _this = this;
 
-        Event.$on('user-pick-address',
-        //TODO: this event is firing twice
-        function (address) {
-            return _this.createOrder(address);
+        Event.$on('user-pick-address', function (response) {
+            return _this.createOrder(response);
         });
 
         Event.$on('user-paid-for-order', function (order) {
@@ -3289,79 +3406,17 @@ exports.default = {
 
 
         /**
-         * if an order has not been created then create an order
-         * @return void
-         */
-        createOrder: function createOrder(address) {
-            var post = { address_id: address };
-            if (!this.order.id && this.order.created === false) {
-                this.addOrder(post);
-                return;
-            }
-            this.updateOrder(post);
-        },
-
-
-        /**
-         * performs an ajax request to post an order
-         * @param post
-         * @return void
-         */
-        addOrder: function addOrder(post) {
-            this.order.created = true;
-            this.ajaxRequest(window.Laravel.urls.order_url, post);
-        },
-
-
-        /**
-         * performs an ajax request to post an order
-         * @param post Object
-         * @return void
-         */
-        updateOrder: function updateOrder(post) {
-            post = Object.assign({ _method: 'patch' }, post);
-            this.ajaxRequest(window.Laravel.urls.order_url + '/' + this.order.id, post);
-        },
-
-
-        /**
-         * does an ajax request to the OrderController
-         *
-         * @return void
-         */
-        ajaxRequest: function ajaxRequest(url, post) {
-            var self = this;
-            axios.post(url, post).then(function (response) {
-                self.successOrder(response.data);
-            }).catch(function (error) {
-                self.orderError(error.response);
-            });
-        },
-
-
-        /**
          * On a successful creation of  an order
          * update the order property to add an order id and update the steps property
          * @param response
          */
-        successOrder: function successOrder(response) {
+        createOrder: function createOrder(response) {
             this.order.created = true;
             this.order.id = response.order.order_id;
             this.order.address = response.order.address;
             this.order.user = response.order.user;
             this.$emit('address-is-complete', true);
             Event.$emit('update-user-message', response.message);
-        },
-
-
-        /**
-         * If there is an error creating an order then emit that error to the user
-         * @param error
-         * @return void
-         */
-        orderError: function orderError(error) {
-            this.order.created = false;
-            Event.$emit('update-user-error', error.message);
         }
     }
 };
@@ -3884,11 +3939,10 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
 
 
 exports.default = {
-    props: ['states'],
+    props: ['refresh'],
 
     data: function data() {
         return {
@@ -3904,6 +3958,16 @@ exports.default = {
          */
         onNewAddress: function onNewAddress() {
             this.toggleForm();
+        },
+
+
+        /**
+         * closes the form and refreshes the addresses on the screen
+         * @return void
+         */
+        formSubmit: function formSubmit() {
+            this.refresh();
+            this.showForm = false;
         },
 
 
@@ -3950,7 +4014,7 @@ Object.defineProperty(exports, "__esModule", {
 
 
 exports.default = {
-    props: ['address'],
+    props: ['address', 'refresh'],
 
     data: function data() {
         return {
@@ -3974,7 +4038,42 @@ exports.default = {
          */
         onDelete: function onDelete() {
             this.showConfirm = false;
-            Event.$emit('delete-user-address', this.address);
+            this.ajaxRequest();
+        },
+
+
+        /**
+         * Deletes the selected address with an ajax request
+         * @return void
+         */
+        ajaxRequest: function ajaxRequest() {
+            var self = this;
+            axios.post(window.Laravel.urls.address_url + '/' + this.address.id, { _method: 'Delete' }).then(function (response) {
+                self.updateMessage(response.data);
+            }).catch(function () {
+                self.updateError();
+            });
+        },
+
+
+        /**
+         * displays a user message on success
+         * @param data
+         * @return void
+         */
+        updateMessage: function updateMessage(data) {
+            Event.$emit('update-user-message', data.message);
+            this.showConfirm = false;
+            this.refresh();
+        },
+
+
+        /**
+         * displays an error message
+         * @return void
+         */
+        updateError: function updateError() {
+            Event.$emit('update-user-error', 'An error occurred please try again!');
         }
     }
 
@@ -4009,11 +4108,10 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
 
 
 exports.default = {
-    props: ['address', 'states'],
+    props: ['address', 'refresh'],
 
     data: function data() {
         return {
@@ -4028,6 +4126,16 @@ exports.default = {
          */
         toggleForm: function toggleForm() {
             this.showForm = !this.showForm;
+        },
+
+
+        /**
+         * closes the form and refreshes the addresses on the screen
+         * @return void
+         */
+        formSubmit: function formSubmit() {
+            this.refresh();
+            this.showForm = false;
         }
     }
 
@@ -4153,10 +4261,11 @@ Object.defineProperty(exports, "__esModule", {
 //
 
 exports.default = {
-    props: ['editAddress', 'states'],
+    props: ['editAddress'],
 
     data: function data() {
         return {
+            states: null,
             address: {
                 street_address: '',
                 state: '',
@@ -4167,6 +4276,7 @@ exports.default = {
     },
 
     mounted: function mounted() {
+        this.setStates();
         if (this.editAddress) {
             this.setAddress();
         }
@@ -4174,6 +4284,20 @@ exports.default = {
 
 
     methods: {
+        /**
+         * performs an ajax request for the states
+         * @return {void}
+         */
+        setStates: function setStates() {
+            var self = this;
+            axios.get(window.Laravel.urls.state_url).then(function (response) {
+                self.states = response.data.states;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+
+
         /**
          * sets the address when the user is editing an address
          * it will bind the values to the form fields
@@ -4198,30 +4322,49 @@ exports.default = {
             var _this = this;
 
             this.$validator.validateAll().then(function () {
-                var form = {};
-                var url = window.Laravel.urls.address_url;
                 if (_this.editAddress) {
-                    form = Object.assign({ _method: 'patch' }, _this.address);
-                    url = url + '/' + _this.editAddress.id;
+                    _this.edit();
                 } else {
-                    form = _this.address;
+                    _this.ajaxRequest(window.Laravel.urls.address_url);
                 }
-                _this.onSubmit(form, url);
             });
         },
 
 
         /**
-         * emits details so the parent class can make a call to the database
+         * on edit it will add patch and change url
          * @return {boolean}
          */
-        onSubmit: function onSubmit(form, url) {
-            this.$emit('form-submit');
-            Event.$emit('submit-user-address', {
-                form: form,
-                url: url
+        edit: function edit() {
+            this.address._method = 'patch';
+            this.ajaxRequest(window.Laravel.urls.address_url + '/' + this.editAddress.id);
+        },
+
+
+        /**
+         * performs an ajax request to add or edit an address
+         * @return {boolean}
+         */
+        ajaxRequest: function ajaxRequest(url) {
+            var _this2 = this;
+
+            axios.post(url, this.address).then(function (response) {
+                return _this2.updateMessage(response.data);
+            }).catch(function (error) {
+                return console.log(error);
             });
-        }
+        },
+
+
+        /**
+         * Displays a user message
+         * @param data
+         */
+        updateMessage: function updateMessage(data) {
+            Event.$emit('update-user-message', data.message);
+            this.$emit('form-submit');
+        },
+        updateError: function updateError() {}
     }
 };
 
@@ -4251,22 +4394,19 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
 
 
 exports.default = {
-    props: ['addresses', 'isForm'],
+    props: ['isForm', 'order_id'],
 
     data: function data() {
         return {
-            userAddresses: null,
+            addresses: null,
             states: null
         };
     },
 
-    mounted: function mounted() {
-        this.formatAddresses(this.addresses);
-        this.setStates();
-    },
     created: function created() {
         var _this = this;
 
@@ -4278,9 +4418,27 @@ exports.default = {
             return _this.onDelete(address.id);
         });
     },
+    mounted: function mounted() {
+        this.getAddresses();
+    },
 
 
     methods: {
+        /**
+         * Performs an ajax request to get the users addresses
+         * @return {void}
+         */
+        getAddresses: function getAddresses() {
+            var _this2 = this;
+
+            axios.get(window.Laravel.urls.address_url).then(function (response) {
+                return _this2.formatAddresses(response.data.addresses);
+            }).catch(function () {
+                return _this2.updateError();
+            });
+        },
+
+
         /**
          * formats the addresses into chunks of 2 to 3 depending on the window screen
          * these chunks are used by the child class to create bootstrap rows with columns
@@ -4288,62 +4446,7 @@ exports.default = {
          * @return {void}
          */
         formatAddresses: function formatAddresses(addresses) {
-            this.userAddresses = _.chunk(addresses, 2);
-        },
-
-
-        /**
-         * performs an ajax request for the states
-         * @return {void}
-         */
-        setStates: function setStates() {
-            var self = this;
-            axios.get(window.Laravel.urls.state_url).then(function (response) {
-                self.states = response.data.states;
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-
-
-        /**
-         * when the child class confirms the update the method will send an ajax request
-         * to the server to delete the address
-         * @return void
-         */
-        onDelete: function onDelete(address) {
-            var self = this;
-            axios.post(window.Laravel.urls.address_url + '/' + address, { _method: 'Delete' }).then(function (response) {
-                self.updateMessage(response.data.message);
-                self.formatAddresses(response.data.addresses);
-            }).catch(function (error) {
-                self.updateError(error);
-            });
-        },
-
-
-        /**
-         * performs an ajax request to either update or create a new address
-         * @param details
-          * @return {void}
-         */
-        onAdd: function onAdd(details) {
-            var self = this;
-            axios.post(details.url, details.form).then(function (response) {
-                self.formatAddresses(response.data.addresses);
-                self.updateMessage(response.data.message);
-            }).catch(function (error) {
-                console.log(error);
-            });
-        },
-
-
-        /**
-         * updates the message property in the parent component
-         * @return {void}
-         */
-        updateMessage: function updateMessage(message) {
-            Event.$emit('update-user-message', message);
+            this.addresses = _.chunk(addresses, 2);
         },
 
 
@@ -4351,8 +4454,8 @@ exports.default = {
          * updates the error property in the parent component
          * @param error
          */
-        updateError: function updateError(error) {
-            //TODO: add error property
+        updateError: function updateError() {
+            Event.$emit('update-user-error', 'There was an error retrieving your addresses, please try again!');
         }
     }
 };
@@ -6973,6 +7076,21 @@ exports.push([module.i, "\n.address-header {\n    text-align: center;\n}\n", ""]
 
 /***/ }),
 
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-41e7436a\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/messages/error-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-44b537bc\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/modal/confirm-modal.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7012,6 +7130,21 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 // module
 exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b20ad8f4\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/messages/success-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -38475,8 +38608,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     }
   }) : _vm._e(), _vm._v(" "), (_vm.current === 2) ? _c('user-address', {
     attrs: {
-      "addresses": JSON.parse(_vm.addresses),
-      "isForm": true
+      "isForm": true,
+      "order_id": _vm.order.id
     }
   }) : _vm._e(), _vm._v(" "), (_vm.current === 3) ? _c('order-payment', {
     attrs: {
@@ -38683,11 +38816,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_vm._v("Add a New Address")]), _vm._v(" "), _c('div', {
     slot: "body"
   }, [_c('user-address-form', {
-    attrs: {
-      "states": _vm.states
-    },
     on: {
-      "form-submit": _vm.toggleForm
+      "form-submit": _vm.formSubmit
     }
   })], 1)]) : _vm._e()], 1)
 },staticRenderFns: []}
@@ -38829,6 +38959,30 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-41e7436a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/error-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "message-container"
+  }, [_c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-sm-6 col-sm-offset-3"
+  }, [_c('div', {
+    staticClass: "alert alert-danger"
+  }, [_c('strong', [_vm._v("Error!")]), _vm._v(" " + _vm._s(_vm.errorMessage) + "\n            ")])])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-41e7436a", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-44b537bc\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/confirm-modal.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -38879,7 +39033,7 @@ if (false) {
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', [_c('h4', [_vm._v("Where do you want the package shipped")]), _vm._v(" "), _c('add-new-address', {
     attrs: {
-      "states": _vm.states
+      "refresh": _vm.refreshAddress
     }
   }), _vm._v(" "), _c('form', {
     on: {
@@ -38950,16 +39104,17 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         staticClass: "address-box-footer"
       }, [_c('div', {
         staticClass: "address-edit-button"
-      }, [(_vm.states) ? _c('edit-address', {
+      }, [_c('edit-address', {
         attrs: {
           "address": address,
-          "states": _vm.states
+          "refresh": _vm.refreshAddress
         }
-      }) : _vm._e()], 1), _vm._v(" "), _c('div', {
+      })], 1), _vm._v(" "), _c('div', {
         staticClass: "address-delete-button"
       }, [_c('delete-address', {
         attrs: {
-          "address": address
+          "address": address,
+          "refresh": _vm.refreshAddress
         }
       })], 1)])])])
     }))
@@ -39791,6 +39946,30 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b20ad8f4\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/success-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "message-container"
+  }, [_c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-sm-6 col-sm-offset-3"
+  }, [_c('div', {
+    staticClass: "alert alert-success"
+  }, [_c('strong', [_vm._v("Success!")]), _vm._v(" " + _vm._s(_vm.message) + "\n            ")])])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-b20ad8f4", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b242f982\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/edit-address.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -39811,11 +39990,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     slot: "body"
   }, [_c('user-address-form', {
     attrs: {
-      "editAddress": _vm.address,
-      "states": _vm.states
+      "editAddress": _vm.address
     },
     on: {
-      "form-submit": _vm.toggleForm
+      "form-submit": _vm.formSubmit
     }
   })], 1)]) : _vm._e()], 1)
 },staticRenderFns: []}
@@ -39925,17 +40103,18 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [((_vm.states && _vm.isForm)) ? _c('select-user-address', {
+  return _c('div', [(_vm.isForm) ? _c('select-user-address', {
     attrs: {
-      "addresses": _vm.userAddresses,
-      "states": _vm.states
+      "addresses": _vm.addresses,
+      "states": _vm.states,
+      "order_id": _vm.order_id,
+      "refreshAddress": _vm.getAddresses
     }
-  }) : _vm._e(), _vm._v(" "), ((_vm.states && _vm.userAddresses && !_vm.isForm)) ? _c('user-account-address', {
+  }) : _c('user-account-address', {
     attrs: {
-      "addresses": _vm.userAddresses,
-      "states": _vm.states
+      "addresses": _vm.addresses
     }
-  }) : _vm._e()], 1)
+  })], 1)
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -40310,6 +40489,33 @@ if(false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-41e7436a\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/messages/error-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-41e7436a\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/messages/error-message.vue");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("1769de2b", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../../node_modules/css-loader/index.js!../../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-41e7436a\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./error-message.vue", function() {
+     var newContent = require("!!../../../../../../node_modules/css-loader/index.js!../../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-41e7436a\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./error-message.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-44b537bc\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/modal/confirm-modal.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -40381,6 +40587,33 @@ if(false) {
  if(!content.locals) {
    module.hot.accept("!!../../../../../../node_modules/css-loader/index.js!../../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-78e225a8\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./billing-form.vue", function() {
      var newContent = require("!!../../../../../../node_modules/css-loader/index.js!../../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-78e225a8\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./billing-form.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b20ad8f4\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/messages/success-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b20ad8f4\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/messages/success-message.vue");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("27955c9a", content, false);
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../../node_modules/css-loader/index.js!../../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b20ad8f4\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./success-message.vue", function() {
+     var newContent = require("!!../../../../../../node_modules/css-loader/index.js!../../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b20ad8f4\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./success-message.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -50689,9 +50922,10 @@ _vue2.default.use(_veeValidate2.default);
  * Add vue components to the project.
  */
 _vue2.default.component('main-page', __webpack_require__("./resources/assets/js/components/main-page.vue"));
+_vue2.default.component('main-shopping-cart', __webpack_require__("./resources/assets/js/components/main-shopping-cart.vue")
 
 //Auth Pages
-_vue2.default.component('registration-form', __webpack_require__("./resources/assets/js/components/auth/registration-form.vue"));
+);_vue2.default.component('registration-form', __webpack_require__("./resources/assets/js/components/auth/registration-form.vue"));
 _vue2.default.component('login-form', __webpack_require__("./resources/assets/js/components/auth/login-form.vue"));
 
 //Shopping Cart Pages
@@ -50706,6 +50940,10 @@ _vue2.default.component('review-stars', __webpack_require__("./resources/assets/
 _vue2.default.component('select-cart-quantity', __webpack_require__("./resources/assets/js/components/functionality/select-cart-quantity.vue"));
 _vue2.default.component('view-message', __webpack_require__("./resources/assets/js/components/functionality/view-message.vue"));
 _vue2.default.component('step-progress-bar', __webpack_require__("./resources/assets/js/components/order/step-progress-bar.vue"));
+
+// Messages
+_vue2.default.component('success-message', __webpack_require__("./resources/assets/js/components/functionality/messages/success-message.vue"));
+_vue2.default.component('error-message', __webpack_require__("./resources/assets/js/components/functionality/messages/error-message.vue"));
 
 //Navbar
 _vue2.default.component('navbar-cart', __webpack_require__("./resources/assets/js/components/navbar/navbar-cart.vue"));
@@ -51090,6 +51328,96 @@ module.exports = Component.exports
 
 /***/ }),
 
+/***/ "./resources/assets/js/components/functionality/messages/error-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-41e7436a\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/messages/error-message.vue")
+}
+var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
+  /* script */
+  __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/messages/error-message.vue"),
+  /* template */
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-41e7436a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/error-message.vue"),
+  /* styles */
+  injectStyle,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/shawnlegge/Projects/ecommerce/resources/assets/js/components/functionality/messages/error-message.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] error-message.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-loader/node_modules/vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-41e7436a", Component.options)
+  } else {
+    hotAPI.reload("data-v-41e7436a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/functionality/messages/success-message.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-b20ad8f4\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/functionality/messages/success-message.vue")
+}
+var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
+  /* script */
+  __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/messages/success-message.vue"),
+  /* template */
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b20ad8f4\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/success-message.vue"),
+  /* styles */
+  injectStyle,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/shawnlegge/Projects/ecommerce/resources/assets/js/components/functionality/messages/success-message.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] success-message.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-loader/node_modules/vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-b20ad8f4", Component.options)
+  } else {
+    hotAPI.reload("data-v-b20ad8f4", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
 /***/ "./resources/assets/js/components/functionality/modal/confirm-modal.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -51373,6 +51701,46 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-337346ea", Component.options)
   } else {
     hotAPI.reload("data-v-337346ea", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/main-shopping-cart.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
+  /* script */
+  __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/main-shopping-cart.vue"),
+  /* template */
+  null,
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/shawnlegge/Projects/ecommerce/resources/assets/js/components/main-shopping-cart.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-loader/node_modules/vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-71cd9e19", Component.options)
+  } else {
+    hotAPI.reload("data-v-71cd9e19", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

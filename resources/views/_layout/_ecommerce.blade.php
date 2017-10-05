@@ -33,26 +33,34 @@
         <div id="app">
             <main-page inline-template>
                 <div>
-                    @include('_includes._ecommerce._navbar')
-                    <view-message v-show="showComponents.showMessage"
-                                  :message="message">
+                    <success-message v-show="showComponents.showMessage"
+                                     :message="message">
 
-                    </view-message>
-                    <div class="container">
-                        <div v-if="showComponents.fullScreen">
-                            @include('_includes._ecommerce._messages')
-                            @yield('content')
+                    </success-message>
+                    <error-message v-show="showComponents.showError"
+                                   :error-message="errorMessage">
+
+                    </error-message>
+                    <main-shopping-cart inline-template
+                                        :show="showComponents">
+                        <div>
+                            @include('_includes._ecommerce._navbar')
+                            <div class="container">
+                                <div v-if="show.fullScreen">
+                                    @include('_includes._ecommerce._messages')
+                                    @yield('content')
+                                </div>
+                                <div class="row" v-else>
+                                    <div class="col-md-3">
+                                        @include('_includes._ecommerce._sidebar')
+                                    </div><!-- /.col -->
+                                    <div class="col-md-9">
+                                        @yield('content')
+                                    </div><!-- /.col -->
+                                </div><!-- /.row -->
+                            </div><!-- /.container -->
                         </div>
-                        <div class="row" v-else>
-                            <div class="col-md-3">
-                                @include('_includes._ecommerce._sidebar')
-                            </div><!-- /.col -->
-                            <div class="col-md-9">
-                                @include('_includes._ecommerce._messages')
-                                @yield('content')
-                            </div><!-- /.col -->
-                        </div><!-- /.row -->
-                    </div><!-- /.container -->
+                    </main-shopping-cart>
                 </div>
             </main-page>
         </div><!-- /#app -->

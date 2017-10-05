@@ -7,8 +7,7 @@
                     @cancel-modal-form="showForm = false">
             <h3 slot="header">Add a New Address</h3>
             <div slot="body">
-                <user-address-form :states="states"
-                                   @form-submit="toggleForm">
+                <user-address-form @form-submit="formSubmit">
 
                 </user-address-form>
             </div>
@@ -20,7 +19,7 @@
 <script>
 
     export default {
-        props: ['states'],
+        props: ['refresh'],
 
         data : function() {
             return {
@@ -36,6 +35,15 @@
              */
             onNewAddress(){
                 this.toggleForm();
+            },
+
+            /**
+             * closes the form and refreshes the addresses on the screen
+             * @return void
+             */
+            formSubmit() {
+                this.refresh();
+                this.showForm = false;
             },
 
             /**
