@@ -79,7 +79,6 @@ Vue.component('tax-table', require('./components/admin/taxes/tax-table.vue'));
 Vue.component('tax-row', require('./components/admin/taxes/tax-row.vue'));
 Vue.component('tax-form', require('./components/admin/taxes/tax-form.vue'));
 Vue.component('delete-tax-button', require('./components/admin/taxes/delete-tax-button.vue'));
-Vue.component('edit-tax-button', require('./components/admin/taxes/edit-tax-button.vue'));
 
 const app = new Vue({
     el: '#app'

@@ -6,14 +6,17 @@
             <button class="btn btn-primary" @click="editTax(tax)">Edit Tax</button>
         </td>
         <td>
+            <delete-tax-button :tax="tax"
+                               :refresh="refreshTaxes">
 
+            </delete-tax-button>
         </td>
     </tr>
 </template>
 
 <script>
     export default {
-        props : ['tax', 'editTax'],
+        props : ['tax', 'editTax', 'refreshTaxes'],
 
         data : function() {
             return {

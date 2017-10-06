@@ -2780,7 +2780,6 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
 
 exports.default = {
     props: ['category'],
@@ -4385,7 +4384,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/taxes/edit-tax-button.vue":
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/taxes/delete-tax-button.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4400,16 +4399,73 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
+    props: ['tax', 'refresh'],
+
     data: function data() {
-        return {};
+        return {
+            showModal: false,
+            post: {
+                _method: 'DELETE'
+            }
+        };
     },
 
-    mounted: function mounted() {},
+    methods: {
+        /**
+         * closes the confirm modal
+         * @return void
+         */
+        close: function close() {
+            this.showModal = false;
+        },
 
 
-    methods: {}
+        /**
+         * performs an ajax request to delete the category
+         * @return void
+         */
+        onDelete: function onDelete() {
+            var _this = this;
+
+            axios.post(window.Laravel.urls.tax_api_url + '/' + this.tax.id, this.post).then(function (response) {
+                return _this.updateMessage(response.data.message);
+            }).catch(function () {
+                return _this.updateError();
+            });
+        },
+
+
+        /**
+         * updates a user error
+         * @param message
+         * @return void
+         */
+        updateMessage: function updateMessage(message) {
+            this.showModal = true;
+            Event.$emit('update-user-message', message);
+            this.refresh();
+        },
+
+
+        /**
+         * updates a user error
+         * @return void
+         */
+        updateError: function updateError() {
+            Event.$emit('update-user-error', 'An error has occurred please try again!');
+            this.showModal = true;
+        }
+    }
 };
 
 /***/ }),
@@ -4609,9 +4665,12 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
 
 exports.default = {
-    props: ['tax', 'editTax'],
+    props: ['tax', 'editTax', 'refreshTaxes'],
 
     data: function data() {
         return {};
@@ -4635,6 +4694,7 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+//
 //
 //
 //
@@ -58515,6 +58575,40 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-47dffb28\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/taxes/delete-tax-button.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('button', {
+    staticClass: "btn btn-danger",
+    on: {
+      "click": function($event) {
+        _vm.showModal = true
+      }
+    }
+  }, [_vm._v("Delete Tax")]), _vm._v(" "), (_vm.showModal) ? _c('confirm-modal', {
+    on: {
+      "cancel": function($event) {
+        _vm.close()
+      },
+      "confirm": _vm.onDelete
+    }
+  }, [_c('h3', {
+    slot: "header"
+  }, [_vm._v("Delete " + _vm._s(_vm.tax.name))]), _vm._v(" "), _c('p', {
+    slot: "body"
+  }, [_vm._v("\n            Are you sure you want to delete this tax?\n        ")])]) : _vm._e()], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-47dffb28", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-4b3128e2\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/orders/ship-order.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -58680,26 +58774,6 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5e414769\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/taxes/edit-tax-button.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _vm._m(0)
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('button', {
-    staticClass: "btn btn-primary"
-  }, [_vm._v("Edit Tax")])])
-}]}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-5e414769", module.exports)
-  }
-}
-
-/***/ }),
-
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-61fe1cb8\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/orders/view-order.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -58785,7 +58859,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       key: tax.id,
       attrs: {
         "tax": tax,
-        "editTax": _vm.openEdit
+        "editTax": _vm.openEdit,
+        "refreshTaxes": _vm.refresh
       }
     })
   })) : _vm._e()])], 1), _vm._v(" "), (_vm.taxes) ? _c('paginate-items', {
@@ -58932,7 +59007,12 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         _vm.editTax(_vm.tax)
       }
     }
-  }, [_vm._v("Edit Tax")])]), _vm._v(" "), _c('td')])
+  }, [_vm._v("Edit Tax")])]), _vm._v(" "), _c('td', [_c('delete-tax-button', {
+    attrs: {
+      "tax": _vm.tax,
+      "refresh": _vm.refreshTaxes
+    }
+  })], 1)])
 },staticRenderFns: []}
 module.exports.render._withStripped = true
 if (false) {
@@ -70725,7 +70805,6 @@ _vue2.default.component('tax-table', __webpack_require__("./resources/assets/js/
 _vue2.default.component('tax-row', __webpack_require__("./resources/assets/js/components/admin/taxes/tax-row.vue"));
 _vue2.default.component('tax-form', __webpack_require__("./resources/assets/js/components/admin/taxes/tax-form.vue"));
 _vue2.default.component('delete-tax-button', __webpack_require__("./resources/assets/js/components/admin/taxes/delete-tax-button.vue"));
-_vue2.default.component('edit-tax-button', __webpack_require__("./resources/assets/js/components/admin/taxes/edit-tax-button.vue"));
 
 var app = new _vue2.default({
   el: '#app'
@@ -71414,11 +71493,12 @@ module.exports = Component.exports
 /***/ "./resources/assets/js/components/admin/taxes/delete-tax-button.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
+var disposed = false
 var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
   /* script */
-  null,
+  __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/taxes/delete-tax-button.vue"),
   /* template */
-  null,
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-47dffb28\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/taxes/delete-tax-button.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -71428,31 +71508,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
 )
 Component.options.__file = "/Users/shawnlegge/Projects/ecommerce/resources/assets/js/components/admin/taxes/delete-tax-button.vue"
 if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-
-module.exports = Component.exports
-
-
-/***/ }),
-
-/***/ "./resources/assets/js/components/admin/taxes/edit-tax-button.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
-  /* script */
-  __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/taxes/edit-tax-button.vue"),
-  /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5e414769\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/taxes/edit-tax-button.vue"),
-  /* styles */
-  null,
-  /* scopeId */
-  null,
-  /* moduleIdentifier (server only) */
-  null
-)
-Component.options.__file = "/Users/shawnlegge/Projects/ecommerce/resources/assets/js/components/admin/taxes/edit-tax-button.vue"
-if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
-if (Component.options.functional) {console.error("[vue-loader] edit-tax-button.vue: functional components are not supported with templates, they should use render functions.")}
+if (Component.options.functional) {console.error("[vue-loader] delete-tax-button.vue: functional components are not supported with templates, they should use render functions.")}
 
 /* hot reload */
 if (false) {(function () {
@@ -71461,9 +71517,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-5e414769", Component.options)
+    hotAPI.createRecord("data-v-47dffb28", Component.options)
   } else {
-    hotAPI.reload("data-v-5e414769", Component.options)
+    hotAPI.reload("data-v-47dffb28", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

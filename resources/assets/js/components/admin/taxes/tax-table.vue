@@ -30,7 +30,8 @@
                 <tax-row v-for="tax in taxes"
                          :key="tax.id"
                          :tax="tax"
-                         :editTax="openEdit">
+                         :editTax="openEdit"
+                         :refreshTaxes="refresh">
 
                 </tax-row>
                 </tbody>
