@@ -23,8 +23,13 @@ class UserController extends AbstractUserAPIController
      */
     public function index()
     {
+        try {
+            $user = UserTransformer::single(Auth::user());
+        } catch (\Exception $exception) {
+            return $this->processingError();
+        }
         return response()->json([
-            'user' => UserTransformer::single(Auth::user())
+            'user' => $user
         ], 200);
     }
 }

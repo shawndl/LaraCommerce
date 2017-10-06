@@ -23,10 +23,11 @@
 
 <style scoped>
     .full-screen-container {
-        position: absolute;
+        max-height: 90%;
+        position: fixed;
         top: 10%;
         left: 10%;
-        overflow: auto;
+        overflow: scroll;
         border: 1px solid #8c8c8c;
         border-radius: 5px;
         background-color: #DDDDDD;

@@ -20,6 +20,38 @@
 
 <script>
     export default {
-        props: ['user']
+        data: function() {
+            return {
+                user : null
+            }
+        },
+
+        mounted() {
+            this.getUser();
+        },
+
+        methods : {
+            /**
+             * sends an ajax request to get the user
+             * @return void
+             */
+            getUser(){
+                axios.get(window.Laravel.urls.users_url)
+                    .then(
+                        (response) => this.user = response.data.user
+                    )
+                    .catch(
+                        () => this.updateError()
+                    );
+            },
+
+            /**
+             * if there is an error with the ajax report it will send an ajax request
+             * @return void
+             */
+            updateError(){
+                Event.$emit('update-user-error', 'An error retrieving your user account information, please try again!');
+            }
+        },
     }
 </script>

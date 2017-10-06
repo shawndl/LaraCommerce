@@ -3,15 +3,16 @@
         <div class="address-header">
             <button class="btn btn-success" @click="onNewAddress">Add an Address</button>
         </div>
-        <form-modal v-if="showForm"
+        <full-screen v-if="showForm"
                     @cancel-modal-form="showForm = false">
             <h3 slot="header">Add a New Address</h3>
             <div slot="body">
-                <user-address-form @form-submit="formSubmit">
+                <user-address-form @form-submit="formSubmit"
+                                   :close="closeForm">
 
                 </user-address-form>
             </div>
-        </form-modal>
+        </full-screen>
     </div>
 
 </template>
@@ -52,6 +53,10 @@
              */
             toggleForm() {
                 this.showForm = !this.showForm;
+            },
+
+            closeForm() {
+                this.showForm = false; 
             }
 
         }

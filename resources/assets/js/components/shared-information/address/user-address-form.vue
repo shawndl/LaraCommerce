@@ -62,7 +62,7 @@
                            id="postal_code"
                            name="postal_code"
                            type="text"
-                           v-validate="'required|regex:^[0-9.\\-]+$'"
+                           v-validate="'required|between:1000, 99999'"
                            v-model="address.postal_code">
                     <span class="help-block"
                           v-show="errors.has('postal_code')">
@@ -72,8 +72,9 @@
             </div><!-- /.col -->
         </div><!-- /.row -->
         <div class="row">
-            <div class="col-sm-2 col-sm-offset-5">
-                <input class="btn btn-primary" type="submit" />
+            <div class="col-sm-12">
+                <button class="btn btn-danger pull-right" type="button" @click="close">Cancel</button>
+                <button class="btn btn-primary pull-left" type="submit">Submit</button>
             </div><!-- /.col -->
         </div><!-- /.row -->
     </form>
@@ -81,7 +82,7 @@
 
 <script>
     export default {
-        props : ['editAddress'],
+        props : ['editAddress', 'close'],
 
         data : function () {
             return {
@@ -174,14 +175,20 @@
             /**
              * Displays a user message
              * @param data
+             * @return void
              */
             updateMessage(data) {
                 Event.$emit('update-user-message', data.message);
                 this.$emit('form-submit');
             },
 
+            /**
+             * Displays a user error
+             * @return void
+             */
             updateError() {
-
+                Event.$emit('update-user-message', data.message);
+                this.close();
             }
         }
     }

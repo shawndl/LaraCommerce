@@ -1,9 +1,9 @@
 <template>
     <div v-if="accountDetails">
         <div class="page-header">
-            <h1>Account Details for {{ accountDetails.user.username }}</h1>
+            <h1>Account Details</h1>
         </div>
-        <user-account-header :user="accountDetails.user">
+        <user-account-header>
 
         </user-account-header>
         <div class="panel panel-primary" v-show="showAddress">
@@ -15,8 +15,7 @@
                 </h4>
             </div><!-- /.panel-heading -->
             <div class="panel-body">
-                <user-address :addresses="accountDetails.addresses"
-                              :isForm="false">
+                <user-address :isForm="false">
 
                 </user-address>
             </div><!-- /.panel-body -->

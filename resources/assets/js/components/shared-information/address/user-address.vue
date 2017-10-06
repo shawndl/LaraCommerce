@@ -1,16 +1,20 @@
 <template>
     <div>
-        <select-user-address v-if="isForm"
-                             :addresses="addresses"
-                             :states="states"
-                             :order_id="order_id"
-                             :refreshAddress="getAddresses">
+        <fade-out-animation v-if="isForm">
+            <select-user-address v-if="addresses"
+                                 :addresses="addresses"
+                                 :order_id="order_id"
+                                 :refreshAddress="getAddresses">
 
-        </select-user-address>
-        <user-account-address v-else
-                              :addresses="addresses">
+            </select-user-address>
+        </fade-out-animation>
+        <fade-out-animation v-else>
+            <user-account-address v-if="addresses"
+                                  :addresses="addresses"
+                                  :refreshAddress="getAddresses">
 
-        </user-account-address>
+            </user-account-address>
+        </fade-out-animation>
     </div>
 </template>
 
@@ -26,16 +30,6 @@
             }
         },
 
-        created() {
-            Event.$on('submit-user-address',
-                (details) => this.onAdd(details)
-            );
-
-            Event.$on('delete-user-address',
-                (address) => this.onDelete(address.id)
-            );
-        },
-
         mounted() {
             this.getAddresses();
         },
@@ -46,6 +40,7 @@
              * @return {void}
              */
             getAddresses() {
+                this.addresses = null;
                 axios.get(window.Laravel.urls.address_url)
                     .then(
                         (response) => this.formatAddresses(response.data.addresses)

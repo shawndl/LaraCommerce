@@ -94,6 +94,10 @@
                 });
             },
 
+            /**
+             * changes ajax request for an update
+             * @return void
+             */
             edit(post) {
                 post._method = 'PATCH';
                 let url = window.Laravel.urls.order_url + '/' + this.order_id;
@@ -102,7 +106,6 @@
 
             /**
              * does an ajax request to the OrderController
-             *
              * @return void
              */
             ajaxRequest(url, post) {
@@ -116,9 +119,21 @@
                     });
             },
 
+            /**
+             * updates the users message
+             * @return void
+             */
             updateMessage(data) {
                 Event.$emit('update-user-message', data.message)
                 Event.$emit('user-pick-address', data);
+            },
+
+            /**
+             * updates the users message
+             * @return void
+             */
+            updateError() {
+                Event.$emit('update-user-error', 'There was an error, please try again');
             }
 
         }

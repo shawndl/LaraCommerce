@@ -46,6 +46,11 @@ Vue.component('review-stars', require('./components/functionality/review-stars.v
 Vue.component('select-cart-quantity', require('./components/functionality/select-cart-quantity.vue'))
 Vue.component('view-message', require('./components/functionality/view-message.vue'));
 Vue.component('step-progress-bar', require('./components/order/step-progress-bar.vue'));
+Vue.component('full-screen', require('./components/functionality/screen/full-screen.vue'));
+
+// Animation
+Vue.component('fade-out-animation', require('./components/functionality/animations/fade-out-animation.vue'));
+Vue.component('slide-out-animation', require('./components/functionality/animations/slide-in-animation.vue'));
 
 // Messages
 Vue.component('success-message', require('./components/functionality/messages/success-message.vue'));

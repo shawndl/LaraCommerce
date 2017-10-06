@@ -39,9 +39,6 @@
             Event.$on('remove-item-cart',
                 (value) => this.removeItem(value)
             );
-            Event.$on('update-user-error',
-                (message) => this.displayMessage(message)
-            );
         },
 
         methods: {

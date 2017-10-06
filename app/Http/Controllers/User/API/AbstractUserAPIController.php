@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\User\API;
 
+use App\Http\Controllers\Traits\APIControllerTrait;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 abstract class AbstractUserAPIController extends Controller
 {
+    use APIControllerTrait;
     /**
      * returns an error message
      *
@@ -21,16 +24,10 @@ abstract class AbstractUserAPIController extends Controller
         ], $code);
     }
 
-    protected function processingError()
-    {
-        return $this->hasError('There was an error processing your request!  Please try again.',
-            422);
-    }
-
     /**
      * returns a view or json depending on the success of the response
      *
-     * @return  Json
+     * @return  JsonResponse
      */
     protected function onSuccess()
     {

@@ -36,6 +36,7 @@
              */
             toggleModal() {
                 this.showConfirm = !this.showConfirm;
+                //TODO: there is an error on the user account deletes but continue to refactor 
             },
 
             /**

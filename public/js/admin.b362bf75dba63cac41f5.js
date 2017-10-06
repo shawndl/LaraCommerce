@@ -7979,7 +7979,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.full-screen-container[data-v-58512a5a] {\n    position: absolute;\n    top: 10%;\n    left: 10%;\n    overflow: auto;\n    border: 1px solid #8c8c8c;\n    border-radius: 5px;\n    background-color: #DDDDDD;\n    margin: 0;\n    padding: 20px;\n    width: 80%;\n    height: auto;\n    z-index: 1000;\n}\n.full-screen-header[data-v-58512a5a]{\n    color: #2A3F54;\n    text-align: center;\n    padding: 5px;\n}\n", ""]);
+exports.push([module.i, "\n.full-screen-container[data-v-58512a5a] {\n    max-height: 90%;\n    position: fixed;\n    top: 10%;\n    left: 10%;\n    overflow: scroll;\n    border: 1px solid #8c8c8c;\n    border-radius: 5px;\n    background-color: #DDDDDD;\n    margin: 0;\n    padding: 20px;\n    width: 80%;\n    height: auto;\n    z-index: 1000;\n}\n.full-screen-header[data-v-58512a5a]{\n    color: #2A3F54;\n    text-align: center;\n    padding: 5px;\n}\n", ""]);
 
 // exports
 

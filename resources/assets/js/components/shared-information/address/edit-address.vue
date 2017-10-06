@@ -3,16 +3,18 @@
         <div @click="toggleForm">
             <span>Edit</span>
         </div>
-        <form-modal v-if="showForm"
-                    @cancel-modal-form="showForm = false">
+        <full-screen v-if="showForm"
+                     @cancel-modal-form="showForm = false">
             <h3 slot="header">Edit this Address</h3>
             <div slot="body">
                 <user-address-form :editAddress="address"
+                                   :close="closeForm"
                                    @form-submit="formSubmit">
 
                 </user-address-form>
             </div>
-        </form-modal>
+
+        </full-screen>
     </div>
 </template>
 
@@ -46,6 +48,14 @@
                 this.refresh();
                 this.showForm = false;
             },
+
+            /**
+             * closes the form
+             * @return void
+             */
+            closeForm() {
+                this.showForm = false;
+            }
         }
 
     }

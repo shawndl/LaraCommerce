@@ -16505,7 +16505,7 @@ ul.notifications {
 .message-container {
   position: fixed;
   top: 50px;
-  z-index: 1000;
+  z-index: 2000;
   width: 100%;
 }
 
@@ -16596,7 +16596,7 @@ ul.notifications {
 }
 
 .modal-mask {
-  position: absolute;
+  position: fixed;
   z-index: 9998;
   top: 0;
   left: 30%;
