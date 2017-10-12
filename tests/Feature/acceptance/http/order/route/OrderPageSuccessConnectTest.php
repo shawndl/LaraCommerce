@@ -51,16 +51,6 @@ class OrderPageSuccessConnectTest extends AbstractHttpTestClass
      *  @group order
      *  @group acceptance
      */
-    public function the_view_must_have_the_users_addresses()
-    {
-        $this->getResponse->assertViewHas('addresses');
-    }
-
-    /**
-     *  @test
-     *  @group order
-     *  @group acceptance
-     */
     public function the_view_must_have_the_stage()
     {
         $this->getResponse->assertViewHas('stage', 'edit-order');

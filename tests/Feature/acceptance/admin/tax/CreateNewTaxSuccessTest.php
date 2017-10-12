@@ -34,6 +34,7 @@ class CreateNewTaxSuccessTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_return_a_status_of_200()
@@ -44,6 +45,7 @@ class CreateNewTaxSuccessTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_return_a_success_message()

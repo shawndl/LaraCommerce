@@ -1,4 +1,12 @@
 const { mix } = require('laravel-mix');
+const webpack = require('webpack');
+
+mix.webpackConfig({
+    plugins: [
+        // Fix for moment.js failed to find local error
+        new webpack.ContextReplacementPlugin(/\.\/locale$/, 'empty-module', false, /js$/)
+    ]
+});
 
 /*
  |--------------------------------------------------------------------------

@@ -1,4 +1,3 @@
-
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -18,9 +17,6 @@ window.Event = new Vue();
 import Vue from 'vue';
 import VeeValidate from 'vee-validate';
 window._ = require('lodash');
-
-import datePicker from 'vue-bootstrap-datetimepicker';
-Vue.use(datePicker);
 
 Vue.use(VeeValidate);
 

@@ -11993,6 +11993,131 @@ ol.progress-track li.progress-todo .icon-wrap .icon-down-arrow {
   display: none;
 }
 
+.product-title {
+  color: darkslategray;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.product-details {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #00aeef;
+}
+
+.price-cut {
+  color: #080808;
+  font-weight: 100;
+  font-size: 1.1em;
+  text-decoration: line-through;
+}
+
+.price-amount {
+  color: #d58512;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.search-form {
+  top: 60px;
+  position: fixed;
+  left: 35%;
+  text-align: center;
+  display: flex;
+}
+
+.search-form input {
+  width: 350px;
+  height: 50px;
+  font-size: 1.5em;
+  border: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: table;
+  transition: opacity .3s ease;
+  cursor: auto;
+  text-align: center;
+  border-radius: 10px 0 0 10px;
+}
+
+.search-form input:focus {
+  background-color: #DDDDDD;
+}
+
+.search-results {
+  background-color: #f5f5f5;
+  padding: 10px;
+  position: fixed;
+  width: 400px;
+  left: 35%;
+  top: 112px;
+  border-radius: 5px;
+}
+
+.search-results ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.search-results ul li {
+  padding: 4px 0 0 4px;
+  margin: 0;
+  border-bottom: 1px solid #DDDDDD;
+}
+
+.search-results ul li a {
+  display: flex;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.search-results ul li:hover {
+  background-color: #8c8c8c;
+}
+
+.search-results ul li p {
+  color: #000000;
+  font-size: 14px;
+  padding: 18px;
+  margin: 0;
+}
+
+.search-results ul li img {
+  height: 50px;
+  width: auto;
+}
+
+.search-button {
+  border: 0;
+  width: 50px;
+  border-radius: 0 5px 5px 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #FFFFFF;
+}
+
+@media screen and (max-width: 763px) {
+  .search-form {
+    left: 10%;
+    width: 80%;
+  }
+
+  .search-form input {
+    width: 100%;
+    background-color: whitesmoke;
+  }
+
+  .search-button {
+    background-color: whitesmoke;
+    color: #000000;
+    cursor: pointer;
+  }
+
+  .search-results {
+    width: 80%;
+    left: 10%;
+  }
+}
+
 .message-container {
   position: fixed;
   top: 50px;

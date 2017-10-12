@@ -33,7 +33,7 @@
 
 <script>
     export default {
-        props: ['current', 'cart', 'addresses', 'user_order'],
+        props: ['current', 'cart', 'user_order'],
 
         data: function() {
             return {

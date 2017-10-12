@@ -93,6 +93,7 @@ class User extends Authenticatable
     {
         foreach ($this->roles as $role)
         {
+
             if ($role->name == $name) return true;
         }
         return false;

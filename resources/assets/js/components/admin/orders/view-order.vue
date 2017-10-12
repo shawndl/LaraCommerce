@@ -12,9 +12,12 @@
                         </order-total-details>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
-                        <ship-order :order="order">
+                        <fade-out-animation v-if="order">
+                            <ship-order :order="order" :refresh="getOrder">
 
-                        </ship-order>
+                            </ship-order>
+                        </fade-out-animation>
+
                     </div><!-- /.col -->
                 </div><!-- /.row -->
             </div><!-- /.panel-body -->
@@ -60,14 +63,22 @@
              * @return void
              */
             getOrder() {
-                let self = this;
+                this.order = null;
                 axios.get(window.Laravel.urls.order_url + '/' + this.order_id)
-                    .then(function (response) {
-                        self.order = response.data.details.order;
-                    })
-                    .catch(function (error) {
-                        console.log(error)
-                    });
+                    .then(
+                        (response) => this.order = response.data.details.order
+                    )
+                    .catch(
+                        () => this.updateError()
+                    );
+            },
+
+            /**
+             * provides an error message to the user if the ajax requests fails
+             * @return void
+             */
+            updateError() {
+                Event.$emit('update-user-error', 'An error please refresh the page and try again!')
             }
         }
     }

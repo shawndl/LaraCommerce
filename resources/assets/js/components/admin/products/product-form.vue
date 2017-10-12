@@ -297,10 +297,14 @@
             beforeSubmit(){
                 let self = this;
                 this.$validator.validateAll().then(() => {
-                    if(self.isEdit){
-                        this.edit();
+                    if (!self.errors.any()) {
+                        if(self.isEdit){
+                            self.edit();
+                        } else {
+                            self.ajaxRequest(window.Laravel.urls.product_url);
+                        }
                     } else {
-                        this.ajaxRequest(window.Laravel.urls.product_url);
+                        console.log(self.errors)
                     }
                 });
             },

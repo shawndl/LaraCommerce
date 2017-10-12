@@ -102,10 +102,12 @@
             beforeSubmit() {
                 let self = this;
                 this.$validator.validateAll().then(() => {
-                    if(self.isEdit){
-                        this.edit();
-                    } else {
-                        this.ajaxRequest(window.Laravel.urls.tax_api_url);
+                    if (!self.errors.any()) {
+                        if(self.isEdit){
+                            this.edit();
+                        } else {
+                            this.ajaxRequest(window.Laravel.urls.tax_api_url);
+                        }
                     }
                 });
             },

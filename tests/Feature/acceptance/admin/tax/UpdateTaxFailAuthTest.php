@@ -38,6 +38,7 @@ class UpdateTaxFailAuthTest extends AbstractHttpAjaxTestClass
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function guests_can_not_submit_this_form()
@@ -49,6 +50,7 @@ class UpdateTaxFailAuthTest extends AbstractHttpAjaxTestClass
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function users_can_not_submit_this_form()

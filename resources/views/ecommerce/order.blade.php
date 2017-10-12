@@ -4,7 +4,6 @@
     @include('_includes._ecommerce._messages')
     <order-page :cart="cart"
                 :stage="'{{ $stage }}'"
-                :addresses="'{{ $addresses }}'"
                 :user_order="'{{ $order }}'">
     </order-page>
 @endsection

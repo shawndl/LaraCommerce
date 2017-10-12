@@ -18,9 +18,11 @@ class EditProductTest extends AbstractDuskAdmin
      */
     public function it_must_be_able_to_create_a_product()
     {
+        $user = $this->addUser(true);
         $this->addProduct();
-        $this->browse(function (Browser $browser) {
-            $browser->visit('admin/products')
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->loginAs($user)
+                ->visit('admin/products')
                 ->assertSee('Products Page')
                 ->pause('2000')
                 ->pressAndWaitFor('Edit Product', ['seconds' => 2])
@@ -28,7 +30,7 @@ class EditProductTest extends AbstractDuskAdmin
                 ->type('title', 'Candy')
                 ->press('Edit')
                 ->pause(2000)
-                ->assertSeeIn('#modal-message', 'You have updated the product!');
+                ->assertSee('You have updated the product!');
             $this->assertDatabaseHas('products', [
                 'title' => 'Candy'
             ]);

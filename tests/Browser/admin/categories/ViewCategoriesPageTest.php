@@ -40,7 +40,7 @@ class ViewCategoriesPageTest extends AbstractDuskAdmin
             $browser->loginAs($user)
                 ->visit('/admin/categories')
                 ->assertSee('Categories Page')
-                ->pause(500)
+                ->pause(800)
                 ->assertSee($category1->name)
                 ->assertSee($category2->name)
                 ->assertSee($category3->name);

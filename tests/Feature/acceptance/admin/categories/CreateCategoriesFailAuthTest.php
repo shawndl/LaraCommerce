@@ -27,6 +27,7 @@ class CreateCategoriesFailAuthTest extends AbstractHttpAjaxTestClass
     protected $postRoute = 'admin/api/categories';
 
     /**
+     * @group admin
      * @group category
      * @group acceptance
      * @test
@@ -38,6 +39,7 @@ class CreateCategoriesFailAuthTest extends AbstractHttpAjaxTestClass
     }
 
     /**
+     * @group admin
      * @group category
      * @group acceptance
      * @test

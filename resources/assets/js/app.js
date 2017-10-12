@@ -60,7 +60,9 @@ Vue.component('error-message', require('./components/functionality/messages/erro
 //Navbar
 Vue.component('navbar-cart', require('./components/navbar/navbar-cart.vue'));
 Vue.component('search-products', require('./components/navbar/search-products.vue'));
+Vue.component('search-products-screen', require('./components/navbar/search-products-screen.vue'));
 Vue.component('categories-navbar', require('./components/navbar/categories-navbar.vue'));
+
 
 //User Account
 Vue.component('user-account', require('./components/account/user-account.vue'));

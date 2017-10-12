@@ -36,12 +36,11 @@ class CreateCategoriesPageTest extends AbstractDuskAdmin
             $browser->loginAs($user)
                 ->visit('/admin/categories')
                 ->assertSee('Categories Page')
-                ->pause(500)
+                ->pause(1000)
                 ->type('category_name', 'food')
                 ->press('Add')
                 ->pause('2000')
                 ->assertSee('You have created a new category!')
-                ->click('#close-icon')
                 ->assertSee('Food');
         });
     }

@@ -41,6 +41,10 @@
                                    :error-message="errorMessage">
 
                     </error-message>
+                    <search-products-screen v-if="showComponents.search"
+                                            :token="'{{ csrf_token() }}'">
+
+                    </search-products-screen>
                     <main-shopping-cart inline-template
                                         :show="showComponents">
                         <div>
@@ -55,6 +59,7 @@
                                         @include('_includes._ecommerce._sidebar')
                                     </div><!-- /.col -->
                                     <div class="col-md-9">
+                                        @include('_includes._ecommerce._messages')
                                         @yield('content')
                                     </div><!-- /.col -->
                                 </div><!-- /.row -->

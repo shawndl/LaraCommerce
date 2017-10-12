@@ -25,7 +25,7 @@ class Product extends Model
      */
     public function path()
     {
-        return $this->image->path;
+        return (isset($this->image)) ? $this->image->path : 'empty';
     }
 
     /**
@@ -35,7 +35,7 @@ class Product extends Model
      */
     public function thumbnail()
     {
-        return $this->image->thumbnail;
+        return (isset($this->image)) ? $this->image->thumbnail : 'empty';
     }
 
     /**
@@ -71,6 +71,17 @@ class Product extends Model
             ->where('finish', '>=', Carbon::now()->format('Y-m-d'))
             ->count();
         return ($current >= 1) ? true : false;
+    }
+
+    /**
+     * returns the sale price
+     *
+     * @return string
+     */
+    public function salePrice()
+    {
+        $discount = 1 - $this->sales()->current()->first()->discount;
+        return number_format($this->price * $discount, 2);
     }
 
     /**

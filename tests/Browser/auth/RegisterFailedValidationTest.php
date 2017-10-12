@@ -37,7 +37,6 @@ class RegisterFailedValidationTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/register')
-                ->type('email', 'jack@gmail.com')
                 ->type('first_name', "<?php echo='attack' ?>")
                 ->press('Register')
                 ->assertPathIs('/register')
@@ -144,7 +143,7 @@ class RegisterFailedValidationTest extends DuskTestCase
             'email' => 'jack@gmail.com'
         ]);
     }
-    
+
     /** @test */
     public function the_password_is_required()
     {

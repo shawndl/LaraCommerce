@@ -25,14 +25,24 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class AdminLinkTest extends AbstractDuskAdmin
 {
-    /** @test */
+    /**
+     * @group navbar
+     * @group admin
+     * @test
+     */
     public function an_admin_must_have_easy_access_to_the_admin_site()
     {
         $this->addUser(true);
         $this->browse(function (Browser $browser) {
             $browser->loginAs(User::first())
                 ->visit('/')
-                ->assertSee('Admin Page');
+                ->assertSee('Admin Page')
+                ->click('#admin-page')
+                ->assertSee('Users Page')
+                ->assertSee('Products Page')
+                ->assertSee('Orders Page')
+                ->assertSee('Categories Page')
+                ->assertSee('Taxes Page');
         });
     }
 }

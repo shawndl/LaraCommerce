@@ -27,6 +27,7 @@ class ViewTaxAPITest extends AbstractHttpAjaxTestClass
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function only_admins_can_receive_results_this_page()
@@ -38,6 +39,7 @@ class ViewTaxAPITest extends AbstractHttpAjaxTestClass
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_return_all_the_categories()

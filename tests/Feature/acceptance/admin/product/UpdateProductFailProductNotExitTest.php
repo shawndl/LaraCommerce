@@ -25,22 +25,9 @@ class UpdateProductFailProductNotExitTest extends AbstractNewProduct
      * @group acceptance
      * @test
      */
-    public function it_must_return_an_error_message()
-    {
-        $this->assertEquals(1, Product::count());
-        $this->postResponse->assertJsonFragment(['error' =>
-            'Sorry there was an error processing your.  Please try again']);
-    }
-
-    /**
-     * @group products
-     * @group admin
-     * @group acceptance
-     * @test
-     */
     public function it_must_return_a_422_code()
     {
-        $this->postResponse->assertStatus(422);
+        $this->postResponse->assertStatus(404);
     }
 
     /**

@@ -45,7 +45,7 @@ class OrdersAPIController extends AbstractAdminController
         }
 
         return response()->json([
-            'The order has been shipped'
+            'message' => 'The order has been shipped'
         ], 200);
     }
 }

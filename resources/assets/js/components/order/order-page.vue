@@ -10,7 +10,6 @@
         </step-progress-bar>
         <div class="order-wrapper">
             <order-details :current="current"
-                           :addresses="addresses"
                            :cart="cart"
                            :user_order="user_order"
                            @address-is-complete="steps.Address.complete = true">
@@ -39,7 +38,7 @@
 <script>
     export default {
         props : [
-            'cart', 'addresses', 'user_order', 'stage'
+            'cart', 'user_order', 'stage'
         ],
 
         data: function() {

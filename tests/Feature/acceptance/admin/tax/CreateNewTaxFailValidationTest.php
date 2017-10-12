@@ -28,6 +28,7 @@ class CreateNewTaxFailValidationTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function validation_errors_must_return_a_status_of_422()
@@ -40,6 +41,7 @@ class CreateNewTaxFailValidationTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_have_a_name()
@@ -52,6 +54,7 @@ class CreateNewTaxFailValidationTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_have_only_letters_and_spaces()
@@ -64,6 +67,7 @@ class CreateNewTaxFailValidationTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_have_a_description()
@@ -76,6 +80,7 @@ class CreateNewTaxFailValidationTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function the_description_must_have_only_basic_characters()
@@ -88,6 +93,7 @@ class CreateNewTaxFailValidationTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_have_a_percent()
@@ -100,6 +106,7 @@ class CreateNewTaxFailValidationTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function the_description_must_have_only_basic_spaces()

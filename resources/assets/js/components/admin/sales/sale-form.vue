@@ -65,8 +65,6 @@
 </template>
 
 <script>
-    import moment from 'moment';
-
     export default {
         props : ['sales', 'onSale', 'product-id', 'cancel', 'refresh'],
 

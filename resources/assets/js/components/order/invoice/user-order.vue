@@ -4,8 +4,7 @@
                              :order="order.cost">
 
         </order-total-details>
-        <user-order-header :address="order.address"
-                           :user="order.user">
+        <user-order-header :order="order">
 
         </user-order-header>
         <h3>Your Order</h3>

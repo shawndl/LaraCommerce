@@ -57,7 +57,7 @@
 
 <script>
     export default {
-        props : ['order'],
+        props : ['order', 'refresh'],
 
         data : function() {
             return {
@@ -165,17 +165,16 @@
              * @return void
              */
             beforeSubmit(){
-                let self = this;
                 this.validateFields();
                 if(this.hasErrors()) {
                     return;
                 }
                 axios.post(window.Laravel.urls.order_url + '/' + this.order.id, this.post)
                     .then(
-                        (response) => console.log(response)
+                        (response) => this.updateMessage(response.data.message)
                     )
                     .catch(
-                        (error) => console.log(error)
+                        () => this.updateError()
                     );
                 this.close();
             },
@@ -185,9 +184,15 @@
              * @return void
              */
             updateMessage(message) {
+                console.log(message);
                 Event.$emit('update-user-message', message);
                 Event.$emit('reset-products');
+                this.refresh();
                 this.close();
+            },
+
+            updateError() {
+                Event.$emit('update-user-message', 'An error occurred, please try again!');
             }
         }
 

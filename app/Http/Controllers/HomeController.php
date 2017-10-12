@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Library\Transformer\ProductsTransformer;
 use App\Product;
 use Illuminate\Http\Request;
 
@@ -22,14 +23,22 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Displays a list of products to the user
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
+        try {
+            $products = $this->products->with(['sales' => function($query){
+                return $query->current();
+            }])->paginate(9);
+        } catch (\Exception $exception) {
+            $exception->getMessage();
+        }
+
         return view('ecommerce.welcome', [
-            'products' => $this->products->paginate(9)
+            'products' => $products
         ]);
     }
 

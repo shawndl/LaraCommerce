@@ -76,9 +76,6 @@ class CreateAddressSuccessTest extends AbstractHttpTestClass
     {
         $this->postResponse->assertJsonStructure([
             'message',
-            'addresses' => [
-                ['id', 'street_address', 'city', 'state', 'state_id', 'postal_code']
-            ]
         ]);
     }
 

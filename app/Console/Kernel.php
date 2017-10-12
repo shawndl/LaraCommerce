@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\CreateEnvFile::class,
-        \App\Console\Commands\CreateAdminInDB::class
+        \App\Console\Commands\CreateAdminInDB::class,
+        \App\Console\Commands\CreateProducts::class
     ];
 
     /**

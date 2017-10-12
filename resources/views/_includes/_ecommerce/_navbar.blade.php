@@ -10,6 +10,9 @@
         </div><!-- /.navbar-header -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
+                <search-products>
+
+                </search-products>
                 <li>
                     <a href="{{ action('HomeController@index') }}">Home</a>
                 </li>
@@ -21,15 +24,14 @@
                 </li>
                 @if($isAdmin)
                     <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">Admin Page
-                            <span class="caret"></span></a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="admin-page">Admin Page<span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ action('Admin\AdminHomeController@index') }}">Home Page</a></li>
                             <li><a href="{{ action('Admin\UsersController@index') }}">Users Page</a></li>
                             <li><a href="{{ action('Admin\ProductsController@index') }}">Products Page</a></li>
                             <li><a href="{{ action('Admin\OrdersController@index') }}">Orders Page</a></li>
                             <li><a href="{{ action('Admin\CategoriesController@index') }}">Categories Page</a></li>
-                            <li><a href="{{ action('Admin\TaxesController@index') }}">Taxes</a></li>
+                            <li><a href="{{ action('Admin\TaxesController@index') }}">Taxes Page</a></li>
                         </ul>
                     </li>
                 @endif
@@ -39,9 +41,6 @@
                 </categories-navbar>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <search-products :token="'{{ csrf_token() }}'">
-
-                </search-products>
                 <navbar-cart :cart="cart"
                              @remove-item="removeItem"
                              @update-quantity="updateCart">

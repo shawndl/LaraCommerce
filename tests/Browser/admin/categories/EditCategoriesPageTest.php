@@ -35,14 +35,13 @@ class EditCategoriesPageTest extends AbstractDuskAdmin
             $browser->loginAs($user)
                 ->visit('/admin/categories')
                 ->assertSee('Categories Page')
-                ->pause(500)
+                ->pause(800)
                 ->press('Edit Category')
                 ->pause('500')
                 ->type('category_name_Phones', 'Chocolate')
                 ->press('Edit')
                 ->pause(2000)
                 ->assertSee('You edited the Chocolate category!')
-                ->click('#close-icon')
                 ->pause(1500)
                 ->assertSee('Chocolate');
         });

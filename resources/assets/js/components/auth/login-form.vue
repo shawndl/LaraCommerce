@@ -1,5 +1,5 @@
 <template>
-    <form :action="post_address" method="post" @submit.prevent="beforeSubmit" >
+    <form :action="post_address" method="post" @submit.prevent="beforeSubmit">
         <input type="hidden" name="_token" :value="csrf_token"/>
         <div class="row top-buffer-20">
             <div :class="{'form-group': true, 'has-error' : errors.has('email')}">
@@ -71,10 +71,13 @@
 
         methods: {
             beforeSubmit(event) {
-                this.$validator.validateAll().then(() => {
-                    event.target.submit();
+                let self = this;
+                this.$validator.validateAll().then(function(){
+                    if (!self.errors.any()) {
+                        event.target.submit();
+                    }
                 });
-            },
+            }
         }
     }
 </script>

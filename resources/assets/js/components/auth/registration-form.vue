@@ -27,8 +27,9 @@
                     <input id="last_name"
                            type="text"
                            class="form-control"
-                           v-validate="'required|alpha_spaces'"
                            name="last_name"
+                           v-validate="'required|alpha_spaces'"
+
                            value="">
                     <span class="text-danger" id="last-name-error" v-show="errors.has('last_name')">
                         {{ errors.first('last_name') }}
@@ -167,10 +168,13 @@
 
         methods: {
             beforeSubmit(event) {
-                this.$validator.validateAll().then(() => {
-                    event.target.submit();
+                let self = this;
+                this.$validator.validateAll().then(function (){
+                    if (!self.errors.any()) {
+                        event.target.submit();
+                    }
                 });
-            },
+            }
         }
     }
 </script>

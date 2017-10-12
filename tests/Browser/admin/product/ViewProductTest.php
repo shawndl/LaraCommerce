@@ -20,8 +20,10 @@ class ViewProductTest extends AbstractDuskAdmin
     {
         $this->addProduct();
         $product = Product::first();
-        $this->browse(function (Browser $browser) use ($product){
-            $browser->visit('admin/products')
+        $user = $this->addUser(true);
+        $this->browse(function (Browser $browser) use ($product, $user){
+            $browser->loginAs($user)
+                ->visit('admin/products')
                 ->assertSee('Products Page')
                 ->pause(2000)
                 ->click('#' . $product->title . '-id')

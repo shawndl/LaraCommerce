@@ -35,13 +35,12 @@ class DeleteCategoriesPageTest extends AbstractDuskAdmin
             $browser->loginAs($user)
                 ->visit('/admin/categories')
                 ->assertSee('Categories Page')
-                ->pause(500)
+                ->pause(800)
                 ->press('Delete Category')
                 ->pause('500')
                 ->press('OK')
                 ->pause(2000)
                 ->assertSee('You deleted a category!')
-                ->click('#close-icon')
                 ->pause(1500)
                 ->assertDontSee('Phones');
         });

@@ -36,6 +36,7 @@ class DeleteCategoriesSuccessTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_return_a_status_of_200()
@@ -47,6 +48,7 @@ class DeleteCategoriesSuccessTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_return_a_success_message()
@@ -59,6 +61,7 @@ class DeleteCategoriesSuccessTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_delete_the_category_from_the_database()

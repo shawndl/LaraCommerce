@@ -1992,8 +1992,11 @@ exports.default = {
 
     methods: {
         beforeSubmit: function beforeSubmit(event) {
+            var self = this;
             this.$validator.validateAll().then(function () {
-                event.target.submit();
+                if (!self.errors.any()) {
+                    event.target.submit();
+                }
             });
         }
     }
@@ -2011,7 +2014,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
-var _veeValidate = __webpack_require__("./node_modules/vee-validate/dist/vee-validate.js");
+var _veeValidate = __webpack_require__("./node_modules/vee-validate/dist/vee-validate.esm.js");
 
 var uniqueEmail = {
     scope: {
@@ -2035,6 +2038,7 @@ var uniqueEmail = {
         }
     }
 }; //
+//
 //
 //
 //
@@ -2172,8 +2176,11 @@ exports.default = {
 
     methods: {
         beforeSubmit: function beforeSubmit(event) {
+            var self = this;
             this.$validator.validateAll().then(function () {
-                event.target.submit();
+                if (!self.errors.any()) {
+                    event.target.submit();
+                }
             });
         }
     }
@@ -2618,7 +2625,8 @@ exports.default = {
                 showSideBar: true,
                 showMessage: false,
                 showError: false,
-                fullScreen: false
+                fullScreen: false,
+                search: false
             }
         };
     },
@@ -2643,6 +2651,9 @@ exports.default = {
         });
         Event.$on('full-screen-window', function () {
             return _this2.showComponents.fullScreen = true;
+        });
+        Event.$on('show-search-screen', function () {
+            return _this2.showComponents.search = !_this2.showComponents.search;
         });
     },
 
@@ -2997,7 +3008,7 @@ exports.default = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/navbar/search-products.vue":
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/navbar/search-products-screen.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3042,16 +3053,12 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
-//
-//
 
 exports.default = {
-    props: ['token'],
+    props: ['token', 'show', 'cart'],
 
     data: function data() {
         return {
-            showSearch: false,
             showResults: false,
             searchURL: '',
             search: '',
@@ -3093,6 +3100,15 @@ exports.default = {
 
 
         /**
+         * closes search results
+         * @return void
+         */
+        close: function close() {
+            Event.$emit('show-search-screen');
+        },
+
+
+        /**
          * performs an ajax request to User\API\SearchController@store
          * returns an array of related products and sets the products property
          * @return void
@@ -3104,6 +3120,39 @@ exports.default = {
             }).catch(function (error) {
                 return console.log(error);
             });
+        }
+    }
+};
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/navbar/search-products.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    methods: {
+        /**
+         * shows the search screen
+         *
+         * @return void
+         */
+        show: function show() {
+            Event.$emit('show-search-screen');
         }
     }
 };
@@ -3390,7 +3439,6 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
 
 exports.default = {
     props: ['order_id', 'need_total'],
@@ -3473,7 +3521,7 @@ Object.defineProperty(exports, "__esModule", {
 //
 
 exports.default = {
-    props: ['current', 'cart', 'addresses', 'user_order'],
+    props: ['current', 'cart', 'user_order'],
 
     data: function data() {
         return {
@@ -3593,10 +3641,9 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
-//
 
 exports.default = {
-    props: ['cart', 'addresses', 'user_order', 'stage'],
+    props: ['cart', 'user_order', 'stage'],
 
     data: function data() {
         return {
@@ -3968,9 +4015,30 @@ Object.defineProperty(exports, "__esModule", {
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 exports.default = {
-    props: ['address', 'user']
+    props: ['order']
 };
 
 /***/ }),
@@ -4460,13 +4528,14 @@ exports.default = {
          * @return {boolean}
          */
         beforeSubmit: function beforeSubmit() {
-            var _this = this;
-
+            var self = this;
             this.$validator.validateAll().then(function () {
-                if (_this.editAddress) {
-                    _this.edit();
-                } else {
-                    _this.ajaxRequest(window.Laravel.urls.address_url);
+                if (!self.errors.any()) {
+                    if (self.editAddress) {
+                        self.edit();
+                    } else {
+                        self.ajaxRequest(window.Laravel.urls.address_url);
+                    }
                 }
             });
         },
@@ -4487,10 +4556,10 @@ exports.default = {
          * @return {boolean}
          */
         ajaxRequest: function ajaxRequest(url) {
-            var _this2 = this;
+            var _this = this;
 
             axios.post(url, this.address).then(function (response) {
-                return _this2.updateMessage(response.data);
+                return _this.updateMessage(response.data);
             }).catch(function (error) {
                 return console.log(error);
             });
@@ -7289,7 +7358,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n.full-screen-container[data-v-58512a5a] {\n    max-height: 90%;\n    position: fixed;\n    top: 10%;\n    left: 10%;\n    overflow: scroll;\n    border: 1px solid #8c8c8c;\n    border-radius: 5px;\n    background-color: #DDDDDD;\n    margin: 0;\n    padding: 20px;\n    width: 80%;\n    height: auto;\n    z-index: 1000;\n}\n.full-screen-header[data-v-58512a5a]{\n    color: #2A3F54;\n    text-align: center;\n    padding: 5px;\n}\n", ""]);
+exports.push([module.i, "\n.full-screen-container[data-v-58512a5a] {\n    position: fixed;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    overflow: scroll;\n    border: 1px solid #8c8c8c;\n    border-radius: 5px;\n    background-color: #DDDDDD;\n    margin: 0;\n    padding: 20px;\n    z-index: 1000;\n}\n.full-screen-header[data-v-58512a5a]{\n    color: #2A3F54;\n    text-align: center;\n    padding: 5px;\n}\n", ""]);
 
 // exports
 
@@ -7350,21 +7419,6 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 // module
 exports.push([module.i, "\n.order-list-item {\n    border-bottom: 1px solid #9BA2AB;\n    display: -webkit-inline-box;\n    display: -ms-inline-flexbox;\n    display: inline-flex;\n    padding: 5px 20px;\n    margin: 5px;\n    cursor: pointer;\n}\n.order-list-item :hover {\n    border: 3px solid;\n    border-radius: 5px;\n}\n.order-list-blocks {\n    margin: 0 10px;\n    width: 200px;\n}\n.order-list-border {\n    border-right: 1px solid #9BA2AB;\n}\n\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-f82ceb9c\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/navbar/search-products.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "\n.search-form {\n    top: 60px;\n    position: fixed;\n    left: 35%;\n    text-align: center;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n}\n.search-form input {\n    width: 350px;\n    height: 50px;\n    font-size: 1.5em;\n    border: 0;\n    background-color: rgba(0, 0, 0, .5);\n    display: table;\n    transition: opacity .3s ease;\n    cursor: auto;\n    text-align: center;\n    border-radius: 10px 0 0 10px;\n}\n.search-form input:focus {\n    background-color: #DDDDDD;\n}\n.search-results {\n    background-color: #f5f5f5;\n    padding: 10px;\n    position: fixed;\n    width: 400px;\n    left: 35%;\n    top: 112px;\n    border-radius: 5px;\n}\n.search-results ul{\n    list-style-type: none;\n    margin: 0;\n    padding: 0;\n}\n.search-results ul li {\n    padding: 4px 0 0 4px;\n    margin: 0;\n    border-bottom: 1px solid #DDDDDD;\n}\n.search-results ul li a{\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    cursor: pointer;\n    text-decoration: none;\n}\n.search-results ul li:hover {\n    background-color: #8c8c8c;\n}\n.search-results ul li p {\n    color: #000000;\n    font-size: 14px;\n    padding: 18px;\n    margin: 0;\n}\n.search-results ul li img {\n    height: 50px;\n    width: auto;\n}\n.search-button{\n    border: 0;\n    width: 50px;\n    border-radius: 0 5px 5px 0;\n    background-color: rgba(0, 0, 0, .5);\n    color: #FFFFFF;\n}\n", ""]);
 
 // exports
 
@@ -34808,19 +34862,5489 @@ return jQuery;
 
 /***/ }),
 
-/***/ "./node_modules/vee-validate/dist/vee-validate.js":
-/***/ (function(module, exports, __webpack_require__) {
+/***/ "./node_modules/vee-validate/dist/vee-validate.esm.js":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "install", function() { return install; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "use", function() { return use; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mapFields", function() { return mapFields; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Validator", function() { return Validator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ErrorBag", function() { return ErrorBag; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Rules", function() { return Rules; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "version", function() { return version; });
 /**
- * vee-validate v2.0.0-rc.5
+ * vee-validate v2.0.0-rc.18
  * (c) 2017 Abdelrahman Awad
  * @license MIT
  */
-(function (global, factory) {
-	 true ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.VeeValidate = factory());
-}(this, (function () { 'use strict';
+var MILLISECONDS_IN_HOUR = 3600000;
+var MILLISECONDS_IN_MINUTE = 60000;
+var DEFAULT_ADDITIONAL_DIGITS = 2;
+
+var patterns = {
+  dateTimeDelimeter: /[T ]/,
+  plainTime: /:/,
+
+  // year tokens
+  YY: /^(\d{2})$/,
+  YYY: [
+    /^([+-]\d{2})$/, // 0 additional digits
+    /^([+-]\d{3})$/, // 1 additional digit
+    /^([+-]\d{4})$/ // 2 additional digits
+  ],
+  YYYY: /^(\d{4})/,
+  YYYYY: [
+    /^([+-]\d{4})/, // 0 additional digits
+    /^([+-]\d{5})/, // 1 additional digit
+    /^([+-]\d{6})/ // 2 additional digits
+  ],
+
+  // date tokens
+  MM: /^-(\d{2})$/,
+  DDD: /^-?(\d{3})$/,
+  MMDD: /^-?(\d{2})-?(\d{2})$/,
+  Www: /^-?W(\d{2})$/,
+  WwwD: /^-?W(\d{2})-?(\d{1})$/,
+
+  HH: /^(\d{2}([.,]\d*)?)$/,
+  HHMM: /^(\d{2}):?(\d{2}([.,]\d*)?)$/,
+  HHMMSS: /^(\d{2}):?(\d{2}):?(\d{2}([.,]\d*)?)$/,
+
+  // timezone tokens
+  timezone: /([Z+-].*)$/,
+  timezoneZ: /^(Z)$/,
+  timezoneHH: /^([+-])(\d{2})$/,
+  timezoneHHMM: /^([+-])(\d{2}):?(\d{2})$/
+};
+
+/**
+ * @name toDate
+ * @category Common Helpers
+ * @summary Convert the given argument to an instance of Date.
+ *
+ * @description
+ * Convert the given argument to an instance of Date.
+ *
+ * If the argument is an instance of Date, the function returns its clone.
+ *
+ * If the argument is a number, it is treated as a timestamp.
+ *
+ * If an argument is a string, the function tries to parse it.
+ * Function accepts complete ISO 8601 formats as well as partial implementations.
+ * ISO 8601: http://en.wikipedia.org/wiki/ISO_8601
+ *
+ * If all above fails, the function passes the given argument to Date constructor.
+ *
+ * **Note**: *all* Date arguments passed to any *date-fns* function is processed by `toDate`.
+ * All *date-fns* functions will throw `RangeError` if `options.additionalDigits` is not 0, 1, 2 or undefined.
+ *
+ * @param {Date|String|Number} argument - the value to convert
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - the additional number of digits in the extended year format
+ * @returns {Date} the parsed date in the local time zone
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ *
+ * @example
+ * // Convert string '2014-02-11T11:30:30' to date:
+ * var result = toDate('2014-02-11T11:30:30')
+ * //=> Tue Feb 11 2014 11:30:30
+ *
+ * @example
+ * // Convert string '+02014101' to date,
+ * // if the additional number of digits in the extended year format is 1:
+ * var result = toDate('+02014101', {additionalDigits: 1})
+ * //=> Fri Apr 11 2014 00:00:00
+ */
+function toDate (argument, dirtyOptions) {
+  var options = dirtyOptions || {};
+
+  var additionalDigits = options.additionalDigits === undefined ? DEFAULT_ADDITIONAL_DIGITS : Number(options.additionalDigits);
+  if (additionalDigits !== 2 && additionalDigits !== 1 && additionalDigits !== 0) {
+    throw new RangeError('additionalDigits must be 0, 1 or 2')
+  }
+
+  // Clone the date
+  if (argument instanceof Date) {
+    // Prevent the date to lose the milliseconds when passed to new Date() in IE10
+    return new Date(argument.getTime())
+  } else if (typeof argument !== 'string') {
+    return new Date(argument)
+  }
+
+  var dateStrings = splitDateString(argument);
+
+  var parseYearResult = parseYear(dateStrings.date, additionalDigits);
+  var year = parseYearResult.year;
+  var restDateString = parseYearResult.restDateString;
+
+  var date = parseDate$1(restDateString, year);
+
+  if (date) {
+    var timestamp = date.getTime();
+    var time = 0;
+    var offset;
+
+    if (dateStrings.time) {
+      time = parseTime(dateStrings.time);
+    }
+
+    if (dateStrings.timezone) {
+      offset = parseTimezone(dateStrings.timezone);
+    } else {
+      // get offset accurate to hour in timezones that change offset
+      offset = new Date(timestamp + time).getTimezoneOffset();
+      offset = new Date(timestamp + time + offset * MILLISECONDS_IN_MINUTE).getTimezoneOffset();
+    }
+
+    return new Date(timestamp + time + offset * MILLISECONDS_IN_MINUTE)
+  } else {
+    return new Date(argument)
+  }
+}
+
+function splitDateString (dateString) {
+  var dateStrings = {};
+  var array = dateString.split(patterns.dateTimeDelimeter);
+  var timeString;
+
+  if (patterns.plainTime.test(array[0])) {
+    dateStrings.date = null;
+    timeString = array[0];
+  } else {
+    dateStrings.date = array[0];
+    timeString = array[1];
+  }
+
+  if (timeString) {
+    var token = patterns.timezone.exec(timeString);
+    if (token) {
+      dateStrings.time = timeString.replace(token[1], '');
+      dateStrings.timezone = token[1];
+    } else {
+      dateStrings.time = timeString;
+    }
+  }
+
+  return dateStrings
+}
+
+function parseYear (dateString, additionalDigits) {
+  var patternYYY = patterns.YYY[additionalDigits];
+  var patternYYYYY = patterns.YYYYY[additionalDigits];
+
+  var token;
+
+  // YYYY or ±YYYYY
+  token = patterns.YYYY.exec(dateString) || patternYYYYY.exec(dateString);
+  if (token) {
+    var yearString = token[1];
+    return {
+      year: parseInt(yearString, 10),
+      restDateString: dateString.slice(yearString.length)
+    }
+  }
+
+  // YY or ±YYY
+  token = patterns.YY.exec(dateString) || patternYYY.exec(dateString);
+  if (token) {
+    var centuryString = token[1];
+    return {
+      year: parseInt(centuryString, 10) * 100,
+      restDateString: dateString.slice(centuryString.length)
+    }
+  }
+
+  // Invalid ISO-formatted year
+  return {
+    year: null
+  }
+}
+
+function parseDate$1 (dateString, year) {
+  // Invalid ISO-formatted year
+  if (year === null) {
+    return null
+  }
+
+  var token;
+  var date;
+  var month;
+  var week;
+
+  // YYYY
+  if (dateString.length === 0) {
+    date = new Date(0);
+    date.setUTCFullYear(year);
+    return date
+  }
+
+  // YYYY-MM
+  token = patterns.MM.exec(dateString);
+  if (token) {
+    date = new Date(0);
+    month = parseInt(token[1], 10) - 1;
+    date.setUTCFullYear(year, month);
+    return date
+  }
+
+  // YYYY-DDD or YYYYDDD
+  token = patterns.DDD.exec(dateString);
+  if (token) {
+    date = new Date(0);
+    var dayOfYear = parseInt(token[1], 10);
+    date.setUTCFullYear(year, 0, dayOfYear);
+    return date
+  }
+
+  // YYYY-MM-DD or YYYYMMDD
+  token = patterns.MMDD.exec(dateString);
+  if (token) {
+    date = new Date(0);
+    month = parseInt(token[1], 10) - 1;
+    var day = parseInt(token[2], 10);
+    date.setUTCFullYear(year, month, day);
+    return date
+  }
+
+  // YYYY-Www or YYYYWww
+  token = patterns.Www.exec(dateString);
+  if (token) {
+    week = parseInt(token[1], 10) - 1;
+    return dayOfISOYear(year, week)
+  }
+
+  // YYYY-Www-D or YYYYWwwD
+  token = patterns.WwwD.exec(dateString);
+  if (token) {
+    week = parseInt(token[1], 10) - 1;
+    var dayOfWeek = parseInt(token[2], 10) - 1;
+    return dayOfISOYear(year, week, dayOfWeek)
+  }
+
+  // Invalid ISO-formatted date
+  return null
+}
+
+function parseTime (timeString) {
+  var token;
+  var hours;
+  var minutes;
+
+  // hh
+  token = patterns.HH.exec(timeString);
+  if (token) {
+    hours = parseFloat(token[1].replace(',', '.'));
+    return (hours % 24) * MILLISECONDS_IN_HOUR
+  }
+
+  // hh:mm or hhmm
+  token = patterns.HHMM.exec(timeString);
+  if (token) {
+    hours = parseInt(token[1], 10);
+    minutes = parseFloat(token[2].replace(',', '.'));
+    return (hours % 24) * MILLISECONDS_IN_HOUR +
+      minutes * MILLISECONDS_IN_MINUTE
+  }
+
+  // hh:mm:ss or hhmmss
+  token = patterns.HHMMSS.exec(timeString);
+  if (token) {
+    hours = parseInt(token[1], 10);
+    minutes = parseInt(token[2], 10);
+    var seconds = parseFloat(token[3].replace(',', '.'));
+    return (hours % 24) * MILLISECONDS_IN_HOUR +
+      minutes * MILLISECONDS_IN_MINUTE +
+      seconds * 1000
+  }
+
+  // Invalid ISO-formatted time
+  return null
+}
+
+function parseTimezone (timezoneString) {
+  var token;
+  var absoluteOffset;
+
+  // Z
+  token = patterns.timezoneZ.exec(timezoneString);
+  if (token) {
+    return 0
+  }
+
+  // ±hh
+  token = patterns.timezoneHH.exec(timezoneString);
+  if (token) {
+    absoluteOffset = parseInt(token[2], 10) * 60;
+    return (token[1] === '+') ? -absoluteOffset : absoluteOffset
+  }
+
+  // ±hh:mm or ±hhmm
+  token = patterns.timezoneHHMM.exec(timezoneString);
+  if (token) {
+    absoluteOffset = parseInt(token[2], 10) * 60 + parseInt(token[3], 10);
+    return (token[1] === '+') ? -absoluteOffset : absoluteOffset
+  }
+
+  return 0
+}
+
+function dayOfISOYear (isoYear, week, day) {
+  week = week || 0;
+  day = day || 0;
+  var date = new Date(0);
+  date.setUTCFullYear(isoYear, 0, 4);
+  var fourthOfJanuaryDay = date.getUTCDay() || 7;
+  var diff = week * 7 + day + 1 - fourthOfJanuaryDay;
+  date.setUTCDate(date.getUTCDate() + diff);
+  return date
+}
+
+/**
+ * @name addMilliseconds
+ * @category Millisecond Helpers
+ * @summary Add the specified number of milliseconds to the given date.
+ *
+ * @description
+ * Add the specified number of milliseconds to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of milliseconds to be added
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - passed to `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * @returns {Date} the new date with the milliseconds added
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ *
+ * @example
+ * // Add 750 milliseconds to 10 July 2014 12:45:30.000:
+ * var result = addMilliseconds(new Date(2014, 6, 10, 12, 45, 30, 0), 750)
+ * //=> Thu Jul 10 2014 12:45:30.750
+ */
+function addMilliseconds (dirtyDate, dirtyAmount, dirtyOptions) {
+  var timestamp = toDate(dirtyDate, dirtyOptions).getTime();
+  var amount = Number(dirtyAmount);
+  return new Date(timestamp + amount)
+}
+
+function cloneObject (dirtyObject) {
+  dirtyObject = dirtyObject || {};
+  var object = {};
+
+  for (var property in dirtyObject) {
+    if (dirtyObject.hasOwnProperty(property)) {
+      object[property] = dirtyObject[property];
+    }
+  }
+
+  return object
+}
+
+var MILLISECONDS_IN_MINUTE$2 = 60000;
+
+/**
+ * @name addMinutes
+ * @category Minute Helpers
+ * @summary Add the specified number of minutes to the given date.
+ *
+ * @description
+ * Add the specified number of minutes to the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of minutes to be added
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - passed to `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * @returns {Date} the new date with the minutes added
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ *
+ * @example
+ * // Add 30 minutes to 10 July 2014 12:00:00:
+ * var result = addMinutes(new Date(2014, 6, 10, 12, 0), 30)
+ * //=> Thu Jul 10 2014 12:30:00
+ */
+function addMinutes (dirtyDate, dirtyAmount, dirtyOptions) {
+  var amount = Number(dirtyAmount);
+  return addMilliseconds(dirtyDate, amount * MILLISECONDS_IN_MINUTE$2, dirtyOptions)
+}
+
+/**
+ * @name isValid
+ * @category Common Helpers
+ * @summary Is the given date valid?
+ *
+ * @description
+ * Returns false if argument is Invalid Date and true otherwise.
+ * Argument is converted to Date using `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * Invalid Date is a Date, whose time value is NaN.
+ *
+ * Time value of Date: http://es5.github.io/#x15.9.1.1
+ *
+ * @param {Date|String|Number} date - the date to check
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - passed to `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * @returns {Boolean} the date is valid
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ *
+ * @example
+ * // For the valid date:
+ * var result = isValid(new Date(2014, 1, 31))
+ * //=> true
+ *
+ * @example
+ * // For the value, convertable into a date:
+ * var result = isValid('2014-02-31')
+ * //=> true
+ *
+ * @example
+ * // For the invalid date:
+ * var result = isValid(new Date(''))
+ * //=> false
+ */
+function isValid (dirtyDate, dirtyOptions) {
+  var date = toDate(dirtyDate, dirtyOptions);
+  return !isNaN(date)
+}
+
+var formatDistanceLocale = {
+  lessThanXSeconds: {
+    one: 'less than a second',
+    other: 'less than {{count}} seconds'
+  },
+
+  xSeconds: {
+    one: '1 second',
+    other: '{{count}} seconds'
+  },
+
+  halfAMinute: 'half a minute',
+
+  lessThanXMinutes: {
+    one: 'less than a minute',
+    other: 'less than {{count}} minutes'
+  },
+
+  xMinutes: {
+    one: '1 minute',
+    other: '{{count}} minutes'
+  },
+
+  aboutXHours: {
+    one: 'about 1 hour',
+    other: 'about {{count}} hours'
+  },
+
+  xHours: {
+    one: '1 hour',
+    other: '{{count}} hours'
+  },
+
+  xDays: {
+    one: '1 day',
+    other: '{{count}} days'
+  },
+
+  aboutXMonths: {
+    one: 'about 1 month',
+    other: 'about {{count}} months'
+  },
+
+  xMonths: {
+    one: '1 month',
+    other: '{{count}} months'
+  },
+
+  aboutXYears: {
+    one: 'about 1 year',
+    other: 'about {{count}} years'
+  },
+
+  xYears: {
+    one: '1 year',
+    other: '{{count}} years'
+  },
+
+  overXYears: {
+    one: 'over 1 year',
+    other: 'over {{count}} years'
+  },
+
+  almostXYears: {
+    one: 'almost 1 year',
+    other: 'almost {{count}} years'
+  }
+};
+
+function formatDistance (token, count, options) {
+  options = options || {};
+
+  var result;
+  if (typeof formatDistanceLocale[token] === 'string') {
+    result = formatDistanceLocale[token];
+  } else if (count === 1) {
+    result = formatDistanceLocale[token].one;
+  } else {
+    result = formatDistanceLocale[token].other.replace('{{count}}', count);
+  }
+
+  if (options.addSuffix) {
+    if (options.comparison > 0) {
+      return 'in ' + result
+    } else {
+      return result + ' ago'
+    }
+  }
+
+  return result
+}
+
+var tokensToBeShortedPattern = /MMMM|MM|DD|dddd/g;
+
+function buildShortLongFormat (format) {
+  return format.replace(tokensToBeShortedPattern, function (token) {
+    return token.slice(1)
+  })
+}
+
+/**
+ * @name buildFormatLongFn
+ * @category Locale Helpers
+ * @summary Build `formatLong` property for locale used by `format`, `formatRelative` and `parse` functions.
+ *
+ * @description
+ * Build `formatLong` property for locale used by `format`, `formatRelative` and `parse` functions.
+ * Returns a function which takes one of the following tokens as the argument:
+ * `'LTS'`, `'LT'`, `'L'`, `'LL'`, `'LLL'`, `'l'`, `'ll'`, `'lll'`, `'llll'`
+ * and returns a long format string written as `format` token strings.
+ * See [format]{@link https://date-fns.org/docs/format}
+ *
+ * `'l'`, `'ll'`, `'lll'` and `'llll'` formats are built automatically
+ * by shortening some of the tokens from corresponding unshortened formats
+ * (e.g., if `LL` is `'MMMM DD YYYY'` then `ll` will be `MMM D YYYY`)
+ *
+ * @param {Object} obj - the object with long formats written as `format` token strings
+ * @param {String} obj.LT - time format: hours and minutes
+ * @param {String} obj.LTS - time format: hours, minutes and seconds
+ * @param {String} obj.L - short date format: numeric day, month and year
+ * @param {String} [obj.l] - short date format: numeric day, month and year (shortened)
+ * @param {String} obj.LL - long date format: day, month in words, and year
+ * @param {String} [obj.ll] - long date format: day, month in words, and year (shortened)
+ * @param {String} obj.LLL - long date and time format
+ * @param {String} [obj.lll] - long date and time format (shortened)
+ * @param {String} obj.LLLL - long date, time and weekday format
+ * @param {String} [obj.llll] - long date, time and weekday format (shortened)
+ * @returns {Function} `formatLong` property of the locale
+ *
+ * @example
+ * // For `en-US` locale:
+ * locale.formatLong = buildFormatLongFn({
+ *   LT: 'h:mm aa',
+ *   LTS: 'h:mm:ss aa',
+ *   L: 'MM/DD/YYYY',
+ *   LL: 'MMMM D YYYY',
+ *   LLL: 'MMMM D YYYY h:mm aa',
+ *   LLLL: 'dddd, MMMM D YYYY h:mm aa'
+ * })
+ */
+function buildFormatLongFn (obj) {
+  var formatLongLocale = {
+    LTS: obj.LTS,
+    LT: obj.LT,
+    L: obj.L,
+    LL: obj.LL,
+    LLL: obj.LLL,
+    LLLL: obj.LLLL,
+    l: obj.l || buildShortLongFormat(obj.L),
+    ll: obj.ll || buildShortLongFormat(obj.LL),
+    lll: obj.lll || buildShortLongFormat(obj.LLL),
+    llll: obj.llll || buildShortLongFormat(obj.LLLL)
+  };
+
+  return function (token) {
+    return formatLongLocale[token]
+  }
+}
+
+var formatLong = buildFormatLongFn({
+  LT: 'h:mm aa',
+  LTS: 'h:mm:ss aa',
+  L: 'MM/DD/YYYY',
+  LL: 'MMMM D YYYY',
+  LLL: 'MMMM D YYYY h:mm aa',
+  LLLL: 'dddd, MMMM D YYYY h:mm aa'
+});
+
+var formatRelativeLocale = {
+  lastWeek: '[last] dddd [at] LT',
+  yesterday: '[yesterday at] LT',
+  today: '[today at] LT',
+  tomorrow: '[tomorrow at] LT',
+  nextWeek: 'dddd [at] LT',
+  other: 'L'
+};
+
+function formatRelative (token, date, baseDate, options) {
+  return formatRelativeLocale[token]
+}
+
+/**
+ * @name buildLocalizeFn
+ * @category Locale Helpers
+ * @summary Build `localize.weekday`, `localize.month` and `localize.timeOfDay` properties for the locale.
+ *
+ * @description
+ * Build `localize.weekday`, `localize.month` and `localize.timeOfDay` properties for the locale
+ * used by `format` function.
+ * If no `type` is supplied to the options of the resulting function, `defaultType` will be used (see example).
+ *
+ * `localize.weekday` function takes the weekday index as argument (0 - Sunday).
+ * `localize.month` takes the month index (0 - January).
+ * `localize.timeOfDay` takes the hours. Use `indexCallback` to convert them to an array index (see example).
+ *
+ * @param {Object} values - the object with arrays of values
+ * @param {String} defaultType - the default type for the localize function
+ * @param {Function} [indexCallback] - the callback which takes the resulting function argument
+ *   and converts it into value array index
+ * @returns {Function} the resulting function
+ *
+ * @example
+ * var timeOfDayValues = {
+ *   uppercase: ['AM', 'PM'],
+ *   lowercase: ['am', 'pm'],
+ *   long: ['a.m.', 'p.m.']
+ * }
+ * locale.localize.timeOfDay = buildLocalizeFn(timeOfDayValues, 'long', function (hours) {
+ *   // 0 is a.m. array index, 1 is p.m. array index
+ *   return (hours / 12) >= 1 ? 1 : 0
+ * })
+ * locale.localize.timeOfDay(16, {type: 'uppercase'}) //=> 'PM'
+ * locale.localize.timeOfDay(5) //=> 'a.m.'
+ */
+function buildLocalizeFn (values, defaultType, indexCallback) {
+  return function (dirtyIndex, dirtyOptions) {
+    var options = dirtyOptions || {};
+    var type = options.type ? String(options.type) : defaultType;
+    var valuesArray = values[type] || values[defaultType];
+    var index = indexCallback ? indexCallback(Number(dirtyIndex)) : Number(dirtyIndex);
+    return valuesArray[index]
+  }
+}
+
+/**
+ * @name buildLocalizeArrayFn
+ * @category Locale Helpers
+ * @summary Build `localize.weekdays`, `localize.months` and `localize.timesOfDay` properties for the locale.
+ *
+ * @description
+ * Build `localize.weekdays`, `localize.months` and `localize.timesOfDay` properties for the locale.
+ * If no `type` is supplied to the options of the resulting function, `defaultType` will be used (see example).
+ *
+ * @param {Object} values - the object with arrays of values
+ * @param {String} defaultType - the default type for the localize function
+ * @returns {Function} the resulting function
+ *
+ * @example
+ * var weekdayValues = {
+ *   narrow: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+ *   short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+ *   long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+ * }
+ * locale.localize.weekdays = buildLocalizeArrayFn(weekdayValues, 'long')
+ * locale.localize.weekdays({type: 'narrow'}) //=> ['Su', 'Mo', ...]
+ * locale.localize.weekdays() //=> ['Sunday', 'Monday', ...]
+ */
+function buildLocalizeArrayFn (values, defaultType) {
+  return function (dirtyOptions) {
+    var options = dirtyOptions || {};
+    var type = options.type ? String(options.type) : defaultType;
+    return values[type] || values[defaultType]
+  }
+}
+
+// Note: in English, the names of days of the week and months are capitalized.
+// If you are making a new locale based on this one, check if the same is true for the language you're working on.
+// Generally, formatted dates should look like they are in the middle of a sentence,
+// e.g. in Spanish language the weekdays and months should be in the lowercase.
+var weekdayValues = {
+  narrow: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+  short: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+  long: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+};
+
+var monthValues = {
+  short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  long: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+};
+
+// `timeOfDay` is used to designate which part of the day it is, when used with 12-hour clock.
+// Use the system which is used the most commonly in the locale.
+// For example, if the country doesn't use a.m./p.m., you can use `night`/`morning`/`afternoon`/`evening`:
+//
+//   var timeOfDayValues = {
+//     any: ['in the night', 'in the morning', 'in the afternoon', 'in the evening']
+//   }
+//
+// And later:
+//
+//   var localize = {
+//     // The callback takes the hours as the argument and returns the array index
+//     timeOfDay: buildLocalizeFn(timeOfDayValues, 'any', function (hours) {
+//       if (hours >= 17) {
+//         return 3
+//       } else if (hours >= 12) {
+//         return 2
+//       } else if (hours >= 4) {
+//         return 1
+//       } else {
+//         return 0
+//       }
+//     }),
+//     timesOfDay: buildLocalizeArrayFn(timeOfDayValues, 'any')
+//   }
+var timeOfDayValues = {
+  uppercase: ['AM', 'PM'],
+  lowercase: ['am', 'pm'],
+  long: ['a.m.', 'p.m.']
+};
+
+function ordinalNumber (dirtyNumber, dirtyOptions) {
+  var number = Number(dirtyNumber);
+
+  // If ordinal numbers depend on context, for example,
+  // if they are different for different grammatical genders,
+  // use `options.unit`:
+  //
+  //   var options = dirtyOptions || {}
+  //   var unit = String(options.unit)
+  //
+  // where `unit` can be 'month', 'quarter', 'week', 'isoWeek', 'dayOfYear',
+  // 'dayOfMonth' or 'dayOfWeek'
+
+  var rem100 = number % 100;
+  if (rem100 > 20 || rem100 < 10) {
+    switch (rem100 % 10) {
+      case 1:
+        return number + 'st'
+      case 2:
+        return number + 'nd'
+      case 3:
+        return number + 'rd'
+    }
+  }
+  return number + 'th'
+}
+
+var localize = {
+  ordinalNumber: ordinalNumber,
+  weekday: buildLocalizeFn(weekdayValues, 'long'),
+  weekdays: buildLocalizeArrayFn(weekdayValues, 'long'),
+  month: buildLocalizeFn(monthValues, 'long'),
+  months: buildLocalizeArrayFn(monthValues, 'long'),
+  timeOfDay: buildLocalizeFn(timeOfDayValues, 'long', function (hours) {
+    return (hours / 12) >= 1 ? 1 : 0
+  }),
+  timesOfDay: buildLocalizeArrayFn(timeOfDayValues, 'long')
+};
+
+/**
+ * @name buildMatchFn
+ * @category Locale Helpers
+ * @summary Build `match.weekdays`, `match.months` and `match.timesOfDay` properties for the locale.
+ *
+ * @description
+ * Build `match.weekdays`, `match.months` and `match.timesOfDay` properties for the locale used by `parse` function.
+ * If no `type` is supplied to the options of the resulting function, `defaultType` will be used (see example).
+ * The result of the match function will be passed into corresponding parser function
+ * (`match.weekday`, `match.month` or `match.timeOfDay` respectively. See `buildParseFn`).
+ *
+ * @param {Object} values - the object with RegExps
+ * @param {String} defaultType - the default type for the match function
+ * @returns {Function} the resulting function
+ *
+ * @example
+ * var matchWeekdaysPatterns = {
+ *   narrow: /^(su|mo|tu|we|th|fr|sa)/i,
+ *   short: /^(sun|mon|tue|wed|thu|fri|sat)/i,
+ *   long: /^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)/i
+ * }
+ * locale.match.weekdays = buildMatchFn(matchWeekdaysPatterns, 'long')
+ * locale.match.weekdays('Sunday', {type: 'narrow'}) //=> ['Su', 'Su', ...]
+ * locale.match.weekdays('Sunday') //=> ['Sunday', 'Sunday', ...]
+ */
+function buildMatchFn (patterns, defaultType) {
+  return function (dirtyString, dirtyOptions) {
+    var options = dirtyOptions || {};
+    var type = options.type ? String(options.type) : defaultType;
+    var pattern = patterns[type] || patterns[defaultType];
+    var string = String(dirtyString);
+    return string.match(pattern)
+  }
+}
+
+/**
+ * @name buildParseFn
+ * @category Locale Helpers
+ * @summary Build `match.weekday`, `match.month` and `match.timeOfDay` properties for the locale.
+ *
+ * @description
+ * Build `match.weekday`, `match.month` and `match.timeOfDay` properties for the locale used by `parse` function.
+ * The argument of the resulting function is the result of the corresponding match function
+ * (`match.weekdays`, `match.months` or `match.timesOfDay` respectively. See `buildMatchFn`).
+ *
+ * @param {Object} values - the object with arrays of RegExps
+ * @param {String} defaultType - the default type for the parser function
+ * @returns {Function} the resulting function
+ *
+ * @example
+ * var parseWeekdayPatterns = {
+ *   any: [/^su/i, /^m/i, /^tu/i, /^w/i, /^th/i, /^f/i, /^sa/i]
+ * }
+ * locale.match.weekday = buildParseFn(matchWeekdaysPatterns, 'long')
+ * var matchResult = locale.match.weekdays('Friday')
+ * locale.match.weekday(matchResult) //=> 5
+ */
+function buildParseFn (patterns, defaultType) {
+  return function (matchResult, dirtyOptions) {
+    var options = dirtyOptions || {};
+    var type = options.type ? String(options.type) : defaultType;
+    var patternsArray = patterns[type] || patterns[defaultType];
+    var string = matchResult[1];
+
+    return patternsArray.findIndex(function (pattern) {
+      return pattern.test(string)
+    })
+  }
+}
+
+/**
+ * @name buildMatchPatternFn
+ * @category Locale Helpers
+ * @summary Build match function from a single RegExp.
+ *
+ * @description
+ * Build match function from a single RegExp.
+ * Usually used for building `match.ordinalNumbers` property of the locale.
+ *
+ * @param {Object} pattern - the RegExp
+ * @returns {Function} the resulting function
+ *
+ * @example
+ * locale.match.ordinalNumbers = buildMatchPatternFn(/^(\d+)(th|st|nd|rd)?/i)
+ * locale.match.ordinalNumbers('3rd') //=> ['3rd', '3', 'rd', ...]
+ */
+function buildMatchPatternFn (pattern) {
+  return function (dirtyString) {
+    var string = String(dirtyString);
+    return string.match(pattern)
+  }
+}
+
+/**
+ * @name parseDecimal
+ * @category Locale Helpers
+ * @summary Parses the match result into decimal number.
+ *
+ * @description
+ * Parses the match result into decimal number.
+ * Uses the string matched with the first set of parentheses of match RegExp.
+ *
+ * @param {Array} matchResult - the object returned by matching function
+ * @returns {Number} the parsed value
+ *
+ * @example
+ * locale.match = {
+ *   ordinalNumbers: (dirtyString) {
+ *     return String(dirtyString).match(/^(\d+)(th|st|nd|rd)?/i)
+ *   },
+ *   ordinalNumber: parseDecimal
+ * }
+ */
+function parseDecimal (matchResult) {
+  return parseInt(matchResult[1], 10)
+}
+
+var matchOrdinalNumbersPattern = /^(\d+)(th|st|nd|rd)?/i;
+
+var matchWeekdaysPatterns = {
+  narrow: /^(su|mo|tu|we|th|fr|sa)/i,
+  short: /^(sun|mon|tue|wed|thu|fri|sat)/i,
+  long: /^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)/i
+};
+
+var parseWeekdayPatterns = {
+  any: [/^su/i, /^m/i, /^tu/i, /^w/i, /^th/i, /^f/i, /^sa/i]
+};
+
+var matchMonthsPatterns = {
+  short: /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i,
+  long: /^(january|february|march|april|may|june|july|august|september|october|november|december)/i
+};
+
+var parseMonthPatterns = {
+  any: [/^ja/i, /^f/i, /^mar/i, /^ap/i, /^may/i, /^jun/i, /^jul/i, /^au/i, /^s/i, /^o/i, /^n/i, /^d/i]
+};
+
+// `timeOfDay` is used to designate which part of the day it is, when used with 12-hour clock.
+// Use the system which is used the most commonly in the locale.
+// For example, if the country doesn't use a.m./p.m., you can use `night`/`morning`/`afternoon`/`evening`:
+//
+//   var matchTimesOfDayPatterns = {
+//     long: /^((in the)? (night|morning|afternoon|evening?))/i
+//   }
+//
+//   var parseTimeOfDayPatterns = {
+//     any: [/(night|morning)/i, /(afternoon|evening)/i]
+//   }
+var matchTimesOfDayPatterns = {
+  short: /^(am|pm)/i,
+  long: /^([ap]\.?\s?m\.?)/i
+};
+
+var parseTimeOfDayPatterns = {
+  any: [/^a/i, /^p/i]
+};
+
+var match = {
+  ordinalNumbers: buildMatchPatternFn(matchOrdinalNumbersPattern),
+  ordinalNumber: parseDecimal,
+  weekdays: buildMatchFn(matchWeekdaysPatterns, 'long'),
+  weekday: buildParseFn(parseWeekdayPatterns, 'any'),
+  months: buildMatchFn(matchMonthsPatterns, 'long'),
+  month: buildParseFn(parseMonthPatterns, 'any'),
+  timesOfDay: buildMatchFn(matchTimesOfDayPatterns, 'long'),
+  timeOfDay: buildParseFn(parseTimeOfDayPatterns, 'any')
+};
+
+/**
+ * @type {Locale}
+ * @category Locales
+ * @summary English locale (United States).
+ * @language English
+ * @iso-639-2 eng
+ */
+var locale = {
+  formatDistance: formatDistance,
+  formatLong: formatLong,
+  formatRelative: formatRelative,
+  localize: localize,
+  match: match,
+  options: {
+    weekStartsOn: 0 /* Sunday */,
+    firstWeekContainsDate: 1
+  }
+};
+
+var MILLISECONDS_IN_DAY$1 = 86400000;
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function getUTCDayOfYear (dirtyDate, dirtyOptions) {
+  var date = toDate(dirtyDate, dirtyOptions);
+  var timestamp = date.getTime();
+  date.setUTCMonth(0, 1);
+  date.setUTCHours(0, 0, 0, 0);
+  var startOfYearTimestamp = date.getTime();
+  var difference = timestamp - startOfYearTimestamp;
+  return Math.floor(difference / MILLISECONDS_IN_DAY$1) + 1
+}
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function startOfUTCISOWeek (dirtyDate, dirtyOptions) {
+  var weekStartsOn = 1;
+
+  var date = toDate(dirtyDate, dirtyOptions);
+  var day = date.getUTCDay();
+  var diff = (day < weekStartsOn ? 7 : 0) + day - weekStartsOn;
+
+  date.setUTCDate(date.getUTCDate() - diff);
+  date.setUTCHours(0, 0, 0, 0);
+  return date
+}
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function getUTCISOWeekYear (dirtyDate, dirtyOptions) {
+  var date = toDate(dirtyDate, dirtyOptions);
+  var year = date.getUTCFullYear();
+
+  var fourthOfJanuaryOfNextYear = new Date(0);
+  fourthOfJanuaryOfNextYear.setUTCFullYear(year + 1, 0, 4);
+  fourthOfJanuaryOfNextYear.setUTCHours(0, 0, 0, 0);
+  var startOfNextYear = startOfUTCISOWeek(fourthOfJanuaryOfNextYear, dirtyOptions);
+
+  var fourthOfJanuaryOfThisYear = new Date(0);
+  fourthOfJanuaryOfThisYear.setUTCFullYear(year, 0, 4);
+  fourthOfJanuaryOfThisYear.setUTCHours(0, 0, 0, 0);
+  var startOfThisYear = startOfUTCISOWeek(fourthOfJanuaryOfThisYear, dirtyOptions);
+
+  if (date.getTime() >= startOfNextYear.getTime()) {
+    return year + 1
+  } else if (date.getTime() >= startOfThisYear.getTime()) {
+    return year
+  } else {
+    return year - 1
+  }
+}
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function startOfUTCISOWeekYear (dirtyDate, dirtyOptions) {
+  var year = getUTCISOWeekYear(dirtyDate, dirtyOptions);
+  var fourthOfJanuary = new Date(0);
+  fourthOfJanuary.setUTCFullYear(year, 0, 4);
+  fourthOfJanuary.setUTCHours(0, 0, 0, 0);
+  var date = startOfUTCISOWeek(fourthOfJanuary, dirtyOptions);
+  return date
+}
+
+var MILLISECONDS_IN_WEEK$2 = 604800000;
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function getUTCISOWeek (dirtyDate, dirtyOptions) {
+  var date = toDate(dirtyDate, dirtyOptions);
+  var diff = startOfUTCISOWeek(date, dirtyOptions).getTime() - startOfUTCISOWeekYear(date, dirtyOptions).getTime();
+
+  // Round the number of days to the nearest integer
+  // because the number of milliseconds in a week is not constant
+  // (e.g. it's different in the week of the daylight saving time clock shift)
+  return Math.round(diff / MILLISECONDS_IN_WEEK$2) + 1
+}
+
+var formatters = {
+  // Month: 1, 2, ..., 12
+  'M': function (date) {
+    return date.getUTCMonth() + 1
+  },
+
+  // Month: 1st, 2nd, ..., 12th
+  'Mo': function (date, options) {
+    var month = date.getUTCMonth() + 1;
+    return options.locale.localize.ordinalNumber(month, {unit: 'month'})
+  },
+
+  // Month: 01, 02, ..., 12
+  'MM': function (date) {
+    return addLeadingZeros(date.getUTCMonth() + 1, 2)
+  },
+
+  // Month: Jan, Feb, ..., Dec
+  'MMM': function (date, options) {
+    return options.locale.localize.month(date.getUTCMonth(), {type: 'short'})
+  },
+
+  // Month: January, February, ..., December
+  'MMMM': function (date, options) {
+    return options.locale.localize.month(date.getUTCMonth(), {type: 'long'})
+  },
+
+  // Quarter: 1, 2, 3, 4
+  'Q': function (date) {
+    return Math.ceil((date.getUTCMonth() + 1) / 3)
+  },
+
+  // Quarter: 1st, 2nd, 3rd, 4th
+  'Qo': function (date, options) {
+    var quarter = Math.ceil((date.getUTCMonth() + 1) / 3);
+    return options.locale.localize.ordinalNumber(quarter, {unit: 'quarter'})
+  },
+
+  // Day of month: 1, 2, ..., 31
+  'D': function (date) {
+    return date.getUTCDate()
+  },
+
+  // Day of month: 1st, 2nd, ..., 31st
+  'Do': function (date, options) {
+    return options.locale.localize.ordinalNumber(date.getUTCDate(), {unit: 'dayOfMonth'})
+  },
+
+  // Day of month: 01, 02, ..., 31
+  'DD': function (date) {
+    return addLeadingZeros(date.getUTCDate(), 2)
+  },
+
+  // Day of year: 1, 2, ..., 366
+  'DDD': function (date) {
+    return getUTCDayOfYear(date)
+  },
+
+  // Day of year: 1st, 2nd, ..., 366th
+  'DDDo': function (date, options) {
+    return options.locale.localize.ordinalNumber(getUTCDayOfYear(date), {unit: 'dayOfYear'})
+  },
+
+  // Day of year: 001, 002, ..., 366
+  'DDDD': function (date) {
+    return addLeadingZeros(getUTCDayOfYear(date), 3)
+  },
+
+  // Day of week: Su, Mo, ..., Sa
+  'dd': function (date, options) {
+    return options.locale.localize.weekday(date.getUTCDay(), {type: 'narrow'})
+  },
+
+  // Day of week: Sun, Mon, ..., Sat
+  'ddd': function (date, options) {
+    return options.locale.localize.weekday(date.getUTCDay(), {type: 'short'})
+  },
+
+  // Day of week: Sunday, Monday, ..., Saturday
+  'dddd': function (date, options) {
+    return options.locale.localize.weekday(date.getUTCDay(), {type: 'long'})
+  },
+
+  // Day of week: 0, 1, ..., 6
+  'd': function (date) {
+    return date.getUTCDay()
+  },
+
+  // Day of week: 0th, 1st, 2nd, ..., 6th
+  'do': function (date, options) {
+    return options.locale.localize.ordinalNumber(date.getUTCDay(), {unit: 'dayOfWeek'})
+  },
+
+  // Day of ISO week: 1, 2, ..., 7
+  'E': function (date) {
+    return date.getUTCDay() || 7
+  },
+
+  // ISO week: 1, 2, ..., 53
+  'W': function (date) {
+    return getUTCISOWeek(date)
+  },
+
+  // ISO week: 1st, 2nd, ..., 53th
+  'Wo': function (date, options) {
+    return options.locale.localize.ordinalNumber(getUTCISOWeek(date), {unit: 'isoWeek'})
+  },
+
+  // ISO week: 01, 02, ..., 53
+  'WW': function (date) {
+    return addLeadingZeros(getUTCISOWeek(date), 2)
+  },
+
+  // Year: 00, 01, ..., 99
+  'YY': function (date) {
+    return addLeadingZeros(date.getUTCFullYear(), 4).substr(2)
+  },
+
+  // Year: 1900, 1901, ..., 2099
+  'YYYY': function (date) {
+    return addLeadingZeros(date.getUTCFullYear(), 4)
+  },
+
+  // ISO week-numbering year: 00, 01, ..., 99
+  'GG': function (date) {
+    return String(getUTCISOWeekYear(date)).substr(2)
+  },
+
+  // ISO week-numbering year: 1900, 1901, ..., 2099
+  'GGGG': function (date) {
+    return getUTCISOWeekYear(date)
+  },
+
+  // Hour: 0, 1, ... 23
+  'H': function (date) {
+    return date.getUTCHours()
+  },
+
+  // Hour: 00, 01, ..., 23
+  'HH': function (date) {
+    return addLeadingZeros(date.getUTCHours(), 2)
+  },
+
+  // Hour: 1, 2, ..., 12
+  'h': function (date) {
+    var hours = date.getUTCHours();
+    if (hours === 0) {
+      return 12
+    } else if (hours > 12) {
+      return hours % 12
+    } else {
+      return hours
+    }
+  },
+
+  // Hour: 01, 02, ..., 12
+  'hh': function (date) {
+    return addLeadingZeros(formatters['h'](date), 2)
+  },
+
+  // Minute: 0, 1, ..., 59
+  'm': function (date) {
+    return date.getUTCMinutes()
+  },
+
+  // Minute: 00, 01, ..., 59
+  'mm': function (date) {
+    return addLeadingZeros(date.getUTCMinutes(), 2)
+  },
+
+  // Second: 0, 1, ..., 59
+  's': function (date) {
+    return date.getUTCSeconds()
+  },
+
+  // Second: 00, 01, ..., 59
+  'ss': function (date) {
+    return addLeadingZeros(date.getUTCSeconds(), 2)
+  },
+
+  // 1/10 of second: 0, 1, ..., 9
+  'S': function (date) {
+    return Math.floor(date.getUTCMilliseconds() / 100)
+  },
+
+  // 1/100 of second: 00, 01, ..., 99
+  'SS': function (date) {
+    return addLeadingZeros(Math.floor(date.getUTCMilliseconds() / 10), 2)
+  },
+
+  // Millisecond: 000, 001, ..., 999
+  'SSS': function (date) {
+    return addLeadingZeros(date.getUTCMilliseconds(), 3)
+  },
+
+  // Timezone: -01:00, +00:00, ... +12:00
+  'Z': function (date, options) {
+    var originalDate = options._originalDate || date;
+    return formatTimezone(originalDate.getTimezoneOffset(), ':')
+  },
+
+  // Timezone: -0100, +0000, ... +1200
+  'ZZ': function (date, options) {
+    var originalDate = options._originalDate || date;
+    return formatTimezone(originalDate.getTimezoneOffset())
+  },
+
+  // Seconds timestamp: 512969520
+  'X': function (date, options) {
+    var originalDate = options._originalDate || date;
+    return Math.floor(originalDate.getTime() / 1000)
+  },
+
+  // Milliseconds timestamp: 512969520900
+  'x': function (date, options) {
+    var originalDate = options._originalDate || date;
+    return originalDate.getTime()
+  },
+
+  // AM, PM
+  'A': function (date, options) {
+    return options.locale.localize.timeOfDay(date.getUTCHours(), {type: 'uppercase'})
+  },
+
+  // am, pm
+  'a': function (date, options) {
+    return options.locale.localize.timeOfDay(date.getUTCHours(), {type: 'lowercase'})
+  },
+
+  // a.m., p.m.
+  'aa': function (date, options) {
+    return options.locale.localize.timeOfDay(date.getUTCHours(), {type: 'long'})
+  }
+};
+
+function formatTimezone (offset, delimeter) {
+  delimeter = delimeter || '';
+  var sign = offset > 0 ? '-' : '+';
+  var absOffset = Math.abs(offset);
+  var hours = Math.floor(absOffset / 60);
+  var minutes = absOffset % 60;
+  return sign + addLeadingZeros(hours, 2) + delimeter + addLeadingZeros(minutes, 2)
+}
+
+function addLeadingZeros (number, targetLength) {
+  var output = Math.abs(number).toString();
+  while (output.length < targetLength) {
+    output = '0' + output;
+  }
+  return output
+}
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function addUTCMinutes (dirtyDate, dirtyAmount, dirtyOptions) {
+  var date = toDate(dirtyDate, dirtyOptions);
+  var amount = Number(dirtyAmount);
+  date.setUTCMinutes(date.getUTCMinutes() + amount);
+  return date
+}
+
+var longFormattingTokensRegExp = /(\[[^[]*])|(\\)?(LTS|LT|LLLL|LLL|LL|L|llll|lll|ll|l)/g;
+var defaultFormattingTokensRegExp = /(\[[^[]*])|(\\)?(x|ss|s|mm|m|hh|h|do|dddd|ddd|dd|d|aa|a|ZZ|Z|YYYY|YY|X|Wo|WW|W|SSS|SS|S|Qo|Q|Mo|MMMM|MMM|MM|M|HH|H|GGGG|GG|E|Do|DDDo|DDDD|DDD|DD|D|A|.)/g;
+
+/**
+ * @name format
+ * @category Common Helpers
+ * @summary Format the date.
+ *
+ * @description
+ * Return the formatted date string in the given format.
+ *
+ * Accepted tokens:
+ * | Unit                    | Token | Result examples                  |
+ * |-------------------------|-------|----------------------------------|
+ * | Month                   | M     | 1, 2, ..., 12                    |
+ * |                         | Mo    | 1st, 2nd, ..., 12th              |
+ * |                         | MM    | 01, 02, ..., 12                  |
+ * |                         | MMM   | Jan, Feb, ..., Dec               |
+ * |                         | MMMM  | January, February, ..., December |
+ * | Quarter                 | Q     | 1, 2, 3, 4                       |
+ * |                         | Qo    | 1st, 2nd, 3rd, 4th               |
+ * | Day of month            | D     | 1, 2, ..., 31                    |
+ * |                         | Do    | 1st, 2nd, ..., 31st              |
+ * |                         | DD    | 01, 02, ..., 31                  |
+ * | Day of year             | DDD   | 1, 2, ..., 366                   |
+ * |                         | DDDo  | 1st, 2nd, ..., 366th             |
+ * |                         | DDDD  | 001, 002, ..., 366               |
+ * | Day of week             | d     | 0, 1, ..., 6                     |
+ * |                         | do    | 0th, 1st, ..., 6th               |
+ * |                         | dd    | Su, Mo, ..., Sa                  |
+ * |                         | ddd   | Sun, Mon, ..., Sat               |
+ * |                         | dddd  | Sunday, Monday, ..., Saturday    |
+ * | Day of ISO week         | E     | 1, 2, ..., 7                     |
+ * | ISO week                | W     | 1, 2, ..., 53                    |
+ * |                         | Wo    | 1st, 2nd, ..., 53rd              |
+ * |                         | WW    | 01, 02, ..., 53                  |
+ * | Year                    | YY    | 00, 01, ..., 99                  |
+ * |                         | YYYY  | 1900, 1901, ..., 2099            |
+ * | ISO week-numbering year | GG    | 00, 01, ..., 99                  |
+ * |                         | GGGG  | 1900, 1901, ..., 2099            |
+ * | AM/PM                   | A     | AM, PM                           |
+ * |                         | a     | am, pm                           |
+ * |                         | aa    | a.m., p.m.                       |
+ * | Hour                    | H     | 0, 1, ... 23                     |
+ * |                         | HH    | 00, 01, ... 23                   |
+ * |                         | h     | 1, 2, ..., 12                    |
+ * |                         | hh    | 01, 02, ..., 12                  |
+ * | Minute                  | m     | 0, 1, ..., 59                    |
+ * |                         | mm    | 00, 01, ..., 59                  |
+ * | Second                  | s     | 0, 1, ..., 59                    |
+ * |                         | ss    | 00, 01, ..., 59                  |
+ * | 1/10 of second          | S     | 0, 1, ..., 9                     |
+ * | 1/100 of second         | SS    | 00, 01, ..., 99                  |
+ * | Millisecond             | SSS   | 000, 001, ..., 999               |
+ * | Timezone                | Z     | -01:00, +00:00, ... +12:00       |
+ * |                         | ZZ    | -0100, +0000, ..., +1200         |
+ * | Seconds timestamp       | X     | 512969520                        |
+ * | Milliseconds timestamp  | x     | 512969520900                     |
+ * | Long format             | LT    | 05:30 a.m.                       |
+ * |                         | LTS   | 05:30:15 a.m.                    |
+ * |                         | L     | 07/02/1995                       |
+ * |                         | l     | 7/2/1995                         |
+ * |                         | LL    | July 2 1995                      |
+ * |                         | ll    | Jul 2 1995                       |
+ * |                         | LLL   | July 2 1995 05:30 a.m.           |
+ * |                         | lll   | Jul 2 1995 05:30 a.m.            |
+ * |                         | LLLL  | Sunday, July 2 1995 05:30 a.m.   |
+ * |                         | llll  | Sun, Jul 2 1995 05:30 a.m.       |
+ *
+ * The characters wrapped in square brackets are escaped.
+ *
+ * The result may vary by locale.
+ *
+ * @param {Date|String|Number} date - the original date
+ * @param {String} format - the string of tokens
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - passed to `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * @param {Locale} [options.locale=defaultLocale] - the locale object. See [Locale]{@link https://date-fns.org/docs/Locale}
+ * @returns {String} the formatted date string
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ * @throws {RangeError} `options.locale` must contain `localize` property
+ * @throws {RangeError} `options.locale` must contain `formatLong` property
+ *
+ * @example
+ * // Represent 11 February 2014 in middle-endian format:
+ * var result = format(
+ *   new Date(2014, 1, 11),
+ *   'MM/DD/YYYY'
+ * )
+ * //=> '02/11/2014'
+ *
+ * @example
+ * // Represent 2 July 2014 in Esperanto:
+ * import { eoLocale } from 'date-fns/locale/eo'
+ * var result = format(
+ *   new Date(2014, 6, 2),
+ *   'Do [de] MMMM YYYY',
+ *   {locale: eoLocale}
+ * )
+ * //=> '2-a de julio 2014'
+ */
+function format (dirtyDate, dirtyFormatStr, dirtyOptions) {
+  var formatStr = String(dirtyFormatStr);
+  var options = dirtyOptions || {};
+
+  var locale$$1 = options.locale || locale;
+
+  if (!locale$$1.localize) {
+    throw new RangeError('locale must contain localize property')
+  }
+
+  if (!locale$$1.formatLong) {
+    throw new RangeError('locale must contain formatLong property')
+  }
+
+  var localeFormatters = locale$$1.formatters || {};
+  var formattingTokensRegExp = locale$$1.formattingTokensRegExp || defaultFormattingTokensRegExp;
+  var formatLong = locale$$1.formatLong;
+
+  var originalDate = toDate(dirtyDate, options);
+
+  if (!isValid(originalDate, options)) {
+    return 'Invalid Date'
+  }
+
+  // Convert the date in system timezone to the same date in UTC+00:00 timezone.
+  // This ensures that when UTC functions will be implemented, locales will be compatible with them.
+  // See an issue about UTC functions: https://github.com/date-fns/date-fns/issues/376
+  var timezoneOffset = originalDate.getTimezoneOffset();
+  var utcDate = addUTCMinutes(originalDate, -timezoneOffset, options);
+
+  var formatterOptions = cloneObject(options);
+  formatterOptions.locale = locale$$1;
+  formatterOptions.formatters = formatters;
+
+  // When UTC functions will be implemented, options._originalDate will likely be a part of public API.
+  // Right now, please don't use it in locales. If you have to use an original date,
+  // please restore it from `date`, adding a timezone offset to it.
+  formatterOptions._originalDate = originalDate;
+
+  var result = formatStr
+    .replace(longFormattingTokensRegExp, function (substring) {
+      if (substring[0] === '[') {
+        return substring
+      }
+
+      if (substring[0] === '\\') {
+        return cleanEscapedString(substring)
+      }
+
+      return formatLong(substring)
+    })
+    .replace(formattingTokensRegExp, function (substring) {
+      var formatter = localeFormatters[substring] || formatters[substring];
+
+      if (formatter) {
+        return formatter(utcDate, formatterOptions)
+      } else {
+        return cleanEscapedString(substring)
+      }
+    });
+
+  return result
+}
+
+function cleanEscapedString (input) {
+  if (input.match(/\[[\s\S]/)) {
+    return input.replace(/^\[|]$/g, '')
+  }
+  return input.replace(/\\/g, '')
+}
+
+/**
+ * @name subMinutes
+ * @category Minute Helpers
+ * @summary Subtract the specified number of minutes from the given date.
+ *
+ * @description
+ * Subtract the specified number of minutes from the given date.
+ *
+ * @param {Date|String|Number} date - the date to be changed
+ * @param {Number} amount - the amount of minutes to be subtracted
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - passed to `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * @returns {Date} the new date with the mintues subtracted
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ *
+ * @example
+ * // Subtract 30 minutes from 10 July 2014 12:00:00:
+ * var result = subMinutes(new Date(2014, 6, 10, 12, 0), 30)
+ * //=> Thu Jul 10 2014 11:30:00
+ */
+function subMinutes (dirtyDate, dirtyAmount, dirtyOptions) {
+  var amount = Number(dirtyAmount);
+  return addMinutes(dirtyDate, -amount, dirtyOptions)
+}
+
+/**
+ * @name isAfter
+ * @category Common Helpers
+ * @summary Is the first date after the second one?
+ *
+ * @description
+ * Is the first date after the second one?
+ *
+ * @param {Date|String|Number} date - the date that should be after the other one to return true
+ * @param {Date|String|Number} dateToCompare - the date to compare with
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - passed to `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * @returns {Boolean} the first date is after the second date
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ *
+ * @example
+ * // Is 10 July 1989 after 11 February 1987?
+ * var result = isAfter(new Date(1989, 6, 10), new Date(1987, 1, 11))
+ * //=> true
+ */
+function isAfter (dirtyDate, dirtyDateToCompare, dirtyOptions) {
+  var date = toDate(dirtyDate, dirtyOptions);
+  var dateToCompare = toDate(dirtyDateToCompare, dirtyOptions);
+  return date.getTime() > dateToCompare.getTime()
+}
+
+/**
+ * @name isBefore
+ * @category Common Helpers
+ * @summary Is the first date before the second one?
+ *
+ * @description
+ * Is the first date before the second one?
+ *
+ * @param {Date|String|Number} date - the date that should be before the other one to return true
+ * @param {Date|String|Number} dateToCompare - the date to compare with
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - passed to `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * @returns {Boolean} the first date is before the second date
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ *
+ * @example
+ * // Is 10 July 1989 before 11 February 1987?
+ * var result = isBefore(new Date(1989, 6, 10), new Date(1987, 1, 11))
+ * //=> false
+ */
+function isBefore (dirtyDate, dirtyDateToCompare, dirtyOptions) {
+  var date = toDate(dirtyDate, dirtyOptions);
+  var dateToCompare = toDate(dirtyDateToCompare, dirtyOptions);
+  return date.getTime() < dateToCompare.getTime()
+}
+
+/**
+ * @name isEqual
+ * @category Common Helpers
+ * @summary Are the given dates equal?
+ *
+ * @description
+ * Are the given dates equal?
+ *
+ * @param {Date|String|Number} dateLeft - the first date to compare
+ * @param {Date|String|Number} dateRight - the second date to compare
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - passed to `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * @returns {Boolean} the dates are equal
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ *
+ * @example
+ * // Are 2 July 2014 06:30:45.000 and 2 July 2014 06:30:45.500 equal?
+ * var result = isEqual(
+ *   new Date(2014, 6, 2, 6, 30, 45, 0)
+ *   new Date(2014, 6, 2, 6, 30, 45, 500)
+ * )
+ * //=> false
+ */
+function isEqual$1 (dirtyLeftDate, dirtyRightDate, dirtyOptions) {
+  var dateLeft = toDate(dirtyLeftDate, dirtyOptions);
+  var dateRight = toDate(dirtyRightDate, dirtyOptions);
+  return dateLeft.getTime() === dateRight.getTime()
+}
+
+var patterns$1 = {
+  'M': /^(1[0-2]|0?\d)/, // 0 to 12
+  'D': /^(3[0-1]|[0-2]?\d)/, // 0 to 31
+  'DDD': /^(36[0-6]|3[0-5]\d|[0-2]?\d?\d)/, // 0 to 366
+  'W': /^(5[0-3]|[0-4]?\d)/, // 0 to 53
+  'YYYY': /^(\d{1,4})/, // 0 to 9999
+  'H': /^(2[0-3]|[0-1]?\d)/, // 0 to 23
+  'm': /^([0-5]?\d)/, // 0 to 59
+  'Z': /^([+-])(\d{2}):(\d{2})/,
+  'ZZ': /^([+-])(\d{2})(\d{2})/,
+  singleDigit: /^(\d)/,
+  twoDigits: /^(\d{2})/,
+  threeDigits: /^(\d{3})/,
+  fourDigits: /^(\d{4})/,
+  anyDigits: /^(\d+)/
+};
+
+function parseDecimal$1 (matchResult) {
+  return parseInt(matchResult[1], 10)
+}
+
+var parsers = {
+  // Year: 00, 01, ..., 99
+  'YY': {
+    unit: 'twoDigitYear',
+    match: patterns$1.twoDigits,
+    parse: function (matchResult) {
+      return parseDecimal$1(matchResult)
+    }
+  },
+
+  // Year: 1900, 1901, ..., 2099
+  'YYYY': {
+    unit: 'year',
+    match: patterns$1.YYYY,
+    parse: parseDecimal$1
+  },
+
+  // ISO week-numbering year: 00, 01, ..., 99
+  'GG': {
+    unit: 'isoYear',
+    match: patterns$1.twoDigits,
+    parse: function (matchResult) {
+      return parseDecimal$1(matchResult) + 1900
+    }
+  },
+
+  // ISO week-numbering year: 1900, 1901, ..., 2099
+  'GGGG': {
+    unit: 'isoYear',
+    match: patterns$1.YYYY,
+    parse: parseDecimal$1
+  },
+
+  // Quarter: 1, 2, 3, 4
+  'Q': {
+    unit: 'quarter',
+    match: patterns$1.singleDigit,
+    parse: parseDecimal$1
+  },
+
+  // Ordinal quarter
+  'Qo': {
+    unit: 'quarter',
+    match: function (string, options) {
+      return options.locale.match.ordinalNumbers(string, {unit: 'quarter'})
+    },
+    parse: function (matchResult, options) {
+      return options.locale.match.ordinalNumber(matchResult, {unit: 'quarter'})
+    }
+  },
+
+  // Month: 1, 2, ..., 12
+  'M': {
+    unit: 'month',
+    match: patterns$1.M,
+    parse: function (matchResult) {
+      return parseDecimal$1(matchResult) - 1
+    }
+  },
+
+  // Ordinal month
+  'Mo': {
+    unit: 'month',
+    match: function (string, options) {
+      return options.locale.match.ordinalNumbers(string, {unit: 'month'})
+    },
+    parse: function (matchResult, options) {
+      return options.locale.match.ordinalNumber(matchResult, {unit: 'month'}) - 1
+    }
+  },
+
+  // Month: 01, 02, ..., 12
+  'MM': {
+    unit: 'month',
+    match: patterns$1.twoDigits,
+    parse: function (matchResult) {
+      return parseDecimal$1(matchResult) - 1
+    }
+  },
+
+  // Month: Jan, Feb, ..., Dec
+  'MMM': {
+    unit: 'month',
+    match: function (string, options) {
+      return options.locale.match.months(string, {type: 'short'})
+    },
+    parse: function (matchResult, options) {
+      return options.locale.match.month(matchResult, {type: 'short'})
+    }
+  },
+
+  // Month: January, February, ..., December
+  'MMMM': {
+    unit: 'month',
+    match: function (string, options) {
+      return options.locale.match.months(string, {type: 'long'}) ||
+        options.locale.match.months(string, {type: 'short'})
+    },
+    parse: function (matchResult, options) {
+      var parseResult = options.locale.match.month(matchResult, {type: 'long'});
+
+      if (parseResult == null) {
+        parseResult = options.locale.match.month(matchResult, {type: 'short'});
+      }
+
+      return parseResult
+    }
+  },
+
+  // ISO week: 1, 2, ..., 53
+  'W': {
+    unit: 'isoWeek',
+    match: patterns$1.W,
+    parse: parseDecimal$1
+  },
+
+  // Ordinal ISO week
+  'Wo': {
+    unit: 'isoWeek',
+    match: function (string, options) {
+      return options.locale.match.ordinalNumbers(string, {unit: 'isoWeek'})
+    },
+    parse: function (matchResult, options) {
+      return options.locale.match.ordinalNumber(matchResult, {unit: 'isoWeek'})
+    }
+  },
+
+  // ISO week: 01, 02, ..., 53
+  'WW': {
+    unit: 'isoWeek',
+    match: patterns$1.twoDigits,
+    parse: parseDecimal$1
+  },
+
+  // Day of week: 0, 1, ..., 6
+  'd': {
+    unit: 'dayOfWeek',
+    match: patterns$1.singleDigit,
+    parse: parseDecimal$1
+  },
+
+  // Ordinal day of week
+  'do': {
+    unit: 'dayOfWeek',
+    match: function (string, options) {
+      return options.locale.match.ordinalNumbers(string, {unit: 'dayOfWeek'})
+    },
+    parse: function (matchResult, options) {
+      return options.locale.match.ordinalNumber(matchResult, {unit: 'dayOfWeek'})
+    }
+  },
+
+  // Day of week: Su, Mo, ..., Sa
+  'dd': {
+    unit: 'dayOfWeek',
+    match: function (string, options) {
+      return options.locale.match.weekdays(string, {type: 'narrow'})
+    },
+    parse: function (matchResult, options) {
+      return options.locale.match.weekday(matchResult, {type: 'narrow'})
+    }
+  },
+
+  // Day of week: Sun, Mon, ..., Sat
+  'ddd': {
+    unit: 'dayOfWeek',
+    match: function (string, options) {
+      return options.locale.match.weekdays(string, {type: 'short'}) ||
+        options.locale.match.weekdays(string, {type: 'narrow'})
+    },
+    parse: function (matchResult, options) {
+      var parseResult = options.locale.match.weekday(matchResult, {type: 'short'});
+
+      if (parseResult == null) {
+        parseResult = options.locale.match.weekday(matchResult, {type: 'narrow'});
+      }
+
+      return parseResult
+    }
+  },
+
+  // Day of week: Sunday, Monday, ..., Saturday
+  'dddd': {
+    unit: 'dayOfWeek',
+    match: function (string, options) {
+      return options.locale.match.weekdays(string, {type: 'long'}) ||
+        options.locale.match.weekdays(string, {type: 'short'}) ||
+        options.locale.match.weekdays(string, {type: 'narrow'})
+    },
+    parse: function (matchResult, options) {
+      var parseResult = options.locale.match.weekday(matchResult, {type: 'long'});
+
+      if (parseResult == null) {
+        parseResult = options.locale.match.weekday(matchResult, {type: 'short'});
+
+        if (parseResult == null) {
+          parseResult = options.locale.match.weekday(matchResult, {type: 'narrow'});
+        }
+      }
+
+      return parseResult
+    }
+  },
+
+  // Day of ISO week: 1, 2, ..., 7
+  'E': {
+    unit: 'dayOfISOWeek',
+    match: patterns$1.singleDigit,
+    parse: function (matchResult) {
+      return parseDecimal$1(matchResult)
+    }
+  },
+
+  // Day of month: 1, 2, ..., 31
+  'D': {
+    unit: 'dayOfMonth',
+    match: patterns$1.D,
+    parse: parseDecimal$1
+  },
+
+  // Ordinal day of month
+  'Do': {
+    unit: 'dayOfMonth',
+    match: function (string, options) {
+      return options.locale.match.ordinalNumbers(string, {unit: 'dayOfMonth'})
+    },
+    parse: function (matchResult, options) {
+      return options.locale.match.ordinalNumber(matchResult, {unit: 'dayOfMonth'})
+    }
+  },
+
+  // Day of month: 01, 02, ..., 31
+  'DD': {
+    unit: 'dayOfMonth',
+    match: patterns$1.twoDigits,
+    parse: parseDecimal$1
+  },
+
+  // Day of year: 1, 2, ..., 366
+  'DDD': {
+    unit: 'dayOfYear',
+    match: patterns$1.DDD,
+    parse: parseDecimal$1
+  },
+
+  // Ordinal day of year
+  'DDDo': {
+    unit: 'dayOfYear',
+    match: function (string, options) {
+      return options.locale.match.ordinalNumbers(string, {unit: 'dayOfYear'})
+    },
+    parse: function (matchResult, options) {
+      return options.locale.match.ordinalNumber(matchResult, {unit: 'dayOfYear'})
+    }
+  },
+
+  // Day of year: 001, 002, ..., 366
+  'DDDD': {
+    unit: 'dayOfYear',
+    match: patterns$1.threeDigits,
+    parse: parseDecimal$1
+  },
+
+  // AM, PM
+  'A': {
+    unit: 'timeOfDay',
+    match: function (string, options) {
+      return options.locale.match.timesOfDay(string, {type: 'short'})
+    },
+    parse: function (matchResult, options) {
+      return options.locale.match.timeOfDay(matchResult, {type: 'short'})
+    }
+  },
+
+  // a.m., p.m.
+  'aa': {
+    unit: 'timeOfDay',
+    match: function (string, options) {
+      return options.locale.match.timesOfDay(string, {type: 'long'}) ||
+        options.locale.match.timesOfDay(string, {type: 'short'})
+    },
+    parse: function (matchResult, options) {
+      var parseResult = options.locale.match.timeOfDay(matchResult, {type: 'long'});
+
+      if (parseResult == null) {
+        parseResult = options.locale.match.timeOfDay(matchResult, {type: 'short'});
+      }
+
+      return parseResult
+    }
+  },
+
+  // Hour: 0, 1, ... 23
+  'H': {
+    unit: 'hours',
+    match: patterns$1.H,
+    parse: parseDecimal$1
+  },
+
+  // Hour: 00, 01, ..., 23
+  'HH': {
+    unit: 'hours',
+    match: patterns$1.twoDigits,
+    parse: parseDecimal$1
+  },
+
+  // Hour: 1, 2, ..., 12
+  'h': {
+    unit: 'timeOfDayHours',
+    match: patterns$1.M,
+    parse: parseDecimal$1
+  },
+
+  // Hour: 01, 02, ..., 12
+  'hh': {
+    unit: 'timeOfDayHours',
+    match: patterns$1.twoDigits,
+    parse: parseDecimal$1
+  },
+
+  // Minute: 0, 1, ..., 59
+  'm': {
+    unit: 'minutes',
+    match: patterns$1.m,
+    parse: parseDecimal$1
+  },
+
+  // Minute: 00, 01, ..., 59
+  'mm': {
+    unit: 'minutes',
+    match: patterns$1.twoDigits,
+    parse: parseDecimal$1
+  },
+
+  // Second: 0, 1, ..., 59
+  's': {
+    unit: 'seconds',
+    match: patterns$1.m,
+    parse: parseDecimal$1
+  },
+
+  // Second: 00, 01, ..., 59
+  'ss': {
+    unit: 'seconds',
+    match: patterns$1.twoDigits,
+    parse: parseDecimal$1
+  },
+
+  // 1/10 of second: 0, 1, ..., 9
+  'S': {
+    unit: 'milliseconds',
+    match: patterns$1.singleDigit,
+    parse: function (matchResult) {
+      return parseDecimal$1(matchResult) * 100
+    }
+  },
+
+  // 1/100 of second: 00, 01, ..., 99
+  'SS': {
+    unit: 'milliseconds',
+    match: patterns$1.twoDigits,
+    parse: function (matchResult) {
+      return parseDecimal$1(matchResult) * 10
+    }
+  },
+
+  // Millisecond: 000, 001, ..., 999
+  'SSS': {
+    unit: 'milliseconds',
+    match: patterns$1.threeDigits,
+    parse: parseDecimal$1
+  },
+
+  // Timezone: -01:00, +00:00, ... +12:00
+  'Z': {
+    unit: 'timezone',
+    match: patterns$1.Z,
+    parse: function (matchResult) {
+      var sign = matchResult[1];
+      var hours = parseInt(matchResult[2], 10);
+      var minutes = parseInt(matchResult[3], 10);
+      var absoluteOffset = hours * 60 + minutes;
+      return (sign === '+') ? absoluteOffset : -absoluteOffset
+    }
+  },
+
+  // Timezone: -0100, +0000, ... +1200
+  'ZZ': {
+    unit: 'timezone',
+    match: patterns$1.ZZ,
+    parse: function (matchResult) {
+      var sign = matchResult[1];
+      var hours = parseInt(matchResult[2], 10);
+      var minutes = parseInt(matchResult[3], 10);
+      var absoluteOffset = hours * 60 + minutes;
+      return (sign === '+') ? absoluteOffset : -absoluteOffset
+    }
+  },
+
+  // Seconds timestamp: 512969520
+  'X': {
+    unit: 'timestamp',
+    match: patterns$1.anyDigits,
+    parse: function (matchResult) {
+      return parseDecimal$1(matchResult) * 1000
+    }
+  },
+
+  // Milliseconds timestamp: 512969520900
+  'x': {
+    unit: 'timestamp',
+    match: patterns$1.anyDigits,
+    parse: parseDecimal$1
+  }
+};
+
+parsers['a'] = parsers['A'];
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function setUTCDay (dirtyDate, dirtyDay, dirtyOptions) {
+  var options = dirtyOptions || {};
+  var locale = options.locale;
+  var localeWeekStartsOn = locale && locale.options && locale.options.weekStartsOn;
+  var defaultWeekStartsOn = localeWeekStartsOn === undefined ? 0 : Number(localeWeekStartsOn);
+  var weekStartsOn = options.weekStartsOn === undefined ? defaultWeekStartsOn : Number(options.weekStartsOn);
+
+  // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
+  if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
+    throw new RangeError('weekStartsOn must be between 0 and 6 inclusively')
+  }
+
+  var date = toDate(dirtyDate, dirtyOptions);
+  var day = Number(dirtyDay);
+
+  var currentDay = date.getUTCDay();
+
+  var remainder = day % 7;
+  var dayIndex = (remainder + 7) % 7;
+
+  var diff = (dayIndex < weekStartsOn ? 7 : 0) + day - currentDay;
+
+  date.setUTCDate(date.getUTCDate() + diff);
+  return date
+}
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function setUTCISODay (dirtyDate, dirtyDay, dirtyOptions) {
+  var day = Number(dirtyDay);
+
+  if (day % 7 === 0) {
+    day = day - 7;
+  }
+
+  var weekStartsOn = 1;
+  var date = toDate(dirtyDate, dirtyOptions);
+  var currentDay = date.getUTCDay();
+
+  var remainder = day % 7;
+  var dayIndex = (remainder + 7) % 7;
+
+  var diff = (dayIndex < weekStartsOn ? 7 : 0) + day - currentDay;
+
+  date.setUTCDate(date.getUTCDate() + diff);
+  return date
+}
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function setUTCISOWeek (dirtyDate, dirtyISOWeek, dirtyOptions) {
+  var date = toDate(dirtyDate, dirtyOptions);
+  var isoWeek = Number(dirtyISOWeek);
+  var diff = getUTCISOWeek(date, dirtyOptions) - isoWeek;
+  date.setUTCDate(date.getUTCDate() - diff * 7);
+  return date
+}
+
+var MILLISECONDS_IN_DAY$3 = 86400000;
+
+// This function will be a part of public API when UTC function will be implemented.
+// See issue: https://github.com/date-fns/date-fns/issues/376
+function setUTCISOWeekYear (dirtyDate, dirtyISOYear, dirtyOptions) {
+  var date = toDate(dirtyDate, dirtyOptions);
+  var isoYear = Number(dirtyISOYear);
+  var dateStartOfYear = startOfUTCISOWeekYear(date, dirtyOptions);
+  var diff = Math.floor((date.getTime() - dateStartOfYear.getTime()) / MILLISECONDS_IN_DAY$3);
+  var fourthOfJanuary = new Date(0);
+  fourthOfJanuary.setUTCFullYear(isoYear, 0, 4);
+  fourthOfJanuary.setUTCHours(0, 0, 0, 0);
+  date = startOfUTCISOWeekYear(fourthOfJanuary, dirtyOptions);
+  date.setUTCDate(date.getUTCDate() + diff);
+  return date
+}
+
+var MILLISECONDS_IN_MINUTE$7 = 60000;
+
+function setTimeOfDay (hours, timeOfDay) {
+  var isAM = timeOfDay === 0;
+
+  if (isAM) {
+    if (hours === 12) {
+      return 0
+    }
+  } else {
+    if (hours !== 12) {
+      return 12 + hours
+    }
+  }
+
+  return hours
+}
+
+var units = {
+  twoDigitYear: {
+    priority: 10,
+    set: function (dateValues, value) {
+      var century = Math.floor(dateValues.date.getUTCFullYear() / 100);
+      var year = century * 100 + value;
+      dateValues.date.setUTCFullYear(year, 0, 1);
+      dateValues.date.setUTCHours(0, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  year: {
+    priority: 10,
+    set: function (dateValues, value) {
+      dateValues.date.setUTCFullYear(value, 0, 1);
+      dateValues.date.setUTCHours(0, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  isoYear: {
+    priority: 10,
+    set: function (dateValues, value, options) {
+      dateValues.date = startOfUTCISOWeekYear(setUTCISOWeekYear(dateValues.date, value, options), options);
+      return dateValues
+    }
+  },
+
+  quarter: {
+    priority: 20,
+    set: function (dateValues, value) {
+      dateValues.date.setUTCMonth((value - 1) * 3, 1);
+      dateValues.date.setUTCHours(0, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  month: {
+    priority: 30,
+    set: function (dateValues, value) {
+      dateValues.date.setUTCMonth(value, 1);
+      dateValues.date.setUTCHours(0, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  isoWeek: {
+    priority: 40,
+    set: function (dateValues, value, options) {
+      dateValues.date = startOfUTCISOWeek(setUTCISOWeek(dateValues.date, value, options), options);
+      return dateValues
+    }
+  },
+
+  dayOfWeek: {
+    priority: 50,
+    set: function (dateValues, value, options) {
+      dateValues.date = setUTCDay(dateValues.date, value, options);
+      dateValues.date.setUTCHours(0, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  dayOfISOWeek: {
+    priority: 50,
+    set: function (dateValues, value, options) {
+      dateValues.date = setUTCISODay(dateValues.date, value, options);
+      dateValues.date.setUTCHours(0, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  dayOfMonth: {
+    priority: 50,
+    set: function (dateValues, value) {
+      dateValues.date.setUTCDate(value);
+      dateValues.date.setUTCHours(0, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  dayOfYear: {
+    priority: 50,
+    set: function (dateValues, value) {
+      dateValues.date.setUTCMonth(0, value);
+      dateValues.date.setUTCHours(0, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  timeOfDay: {
+    priority: 60,
+    set: function (dateValues, value, options) {
+      dateValues.timeOfDay = value;
+      return dateValues
+    }
+  },
+
+  hours: {
+    priority: 70,
+    set: function (dateValues, value, options) {
+      dateValues.date.setUTCHours(value, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  timeOfDayHours: {
+    priority: 70,
+    set: function (dateValues, value, options) {
+      var timeOfDay = dateValues.timeOfDay;
+      if (timeOfDay != null) {
+        value = setTimeOfDay(value, timeOfDay);
+      }
+      dateValues.date.setUTCHours(value, 0, 0, 0);
+      return dateValues
+    }
+  },
+
+  minutes: {
+    priority: 80,
+    set: function (dateValues, value) {
+      dateValues.date.setUTCMinutes(value, 0, 0);
+      return dateValues
+    }
+  },
+
+  seconds: {
+    priority: 90,
+    set: function (dateValues, value) {
+      dateValues.date.setUTCSeconds(value, 0);
+      return dateValues
+    }
+  },
+
+  milliseconds: {
+    priority: 100,
+    set: function (dateValues, value) {
+      dateValues.date.setUTCMilliseconds(value);
+      return dateValues
+    }
+  },
+
+  timezone: {
+    priority: 110,
+    set: function (dateValues, value) {
+      dateValues.date = new Date(dateValues.date.getTime() - value * MILLISECONDS_IN_MINUTE$7);
+      return dateValues
+    }
+  },
+
+  timestamp: {
+    priority: 120,
+    set: function (dateValues, value) {
+      dateValues.date = new Date(value);
+      return dateValues
+    }
+  }
+};
+
+var TIMEZONE_UNIT_PRIORITY = 110;
+var MILLISECONDS_IN_MINUTE$6 = 60000;
+
+var longFormattingTokensRegExp$1 = /(\[[^[]*])|(\\)?(LTS|LT|LLLL|LLL|LL|L|llll|lll|ll|l)/g;
+var defaultParsingTokensRegExp = /(\[[^[]*])|(\\)?(x|ss|s|mm|m|hh|h|do|dddd|ddd|dd|d|aa|a|ZZ|Z|YYYY|YY|X|Wo|WW|W|SSS|SS|S|Qo|Q|Mo|MMMM|MMM|MM|M|HH|H|GGGG|GG|E|Do|DDDo|DDDD|DDD|DD|D|A|.)/g;
+
+/**
+ * @name parse
+ * @category Common Helpers
+ * @summary Parse the date.
+ *
+ * @description
+ * Return the date parsed from string using the given format.
+ *
+ * Accepted format tokens:
+ * | Unit                    | Priority | Token | Input examples                   |
+ * |-------------------------|----------|-------|----------------------------------|
+ * | Year                    | 10       | YY    | 00, 01, ..., 99                  |
+ * |                         |          | YYYY  | 1900, 1901, ..., 2099            |
+ * | ISO week-numbering year | 10       | GG    | 00, 01, ..., 99                  |
+ * |                         |          | GGGG  | 1900, 1901, ..., 2099            |
+ * | Quarter                 | 20       | Q     | 1, 2, 3, 4                       |
+ * |                         |          | Qo    | 1st, 2nd, 3rd, 4th               |
+ * | Month                   | 30       | M     | 1, 2, ..., 12                    |
+ * |                         |          | Mo    | 1st, 2nd, ..., 12th              |
+ * |                         |          | MM    | 01, 02, ..., 12                  |
+ * |                         |          | MMM   | Jan, Feb, ..., Dec               |
+ * |                         |          | MMMM  | January, February, ..., December |
+ * | ISO week                | 40       | W     | 1, 2, ..., 53                    |
+ * |                         |          | Wo    | 1st, 2nd, ..., 53rd              |
+ * |                         |          | WW    | 01, 02, ..., 53                  |
+ * | Day of week             | 50       | d     | 0, 1, ..., 6                     |
+ * |                         |          | do    | 0th, 1st, ..., 6th               |
+ * |                         |          | dd    | Su, Mo, ..., Sa                  |
+ * |                         |          | ddd   | Sun, Mon, ..., Sat               |
+ * |                         |          | dddd  | Sunday, Monday, ..., Saturday    |
+ * | Day of ISO week         | 50       | E     | 1, 2, ..., 7                     |
+ * | Day of month            | 50       | D     | 1, 2, ..., 31                    |
+ * |                         |          | Do    | 1st, 2nd, ..., 31st              |
+ * |                         |          | DD    | 01, 02, ..., 31                  |
+ * | Day of year             | 50       | DDD   | 1, 2, ..., 366                   |
+ * |                         |          | DDDo  | 1st, 2nd, ..., 366th             |
+ * |                         |          | DDDD  | 001, 002, ..., 366               |
+ * | Time of day             | 60       | A     | AM, PM                           |
+ * |                         |          | a     | am, pm                           |
+ * |                         |          | aa    | a.m., p.m.                       |
+ * | Hour                    | 70       | H     | 0, 1, ... 23                     |
+ * |                         |          | HH    | 00, 01, ... 23                   |
+ * | Time of day hour        | 70       | h     | 1, 2, ..., 12                    |
+ * |                         |          | hh    | 01, 02, ..., 12                  |
+ * | Minute                  | 80       | m     | 0, 1, ..., 59                    |
+ * |                         |          | mm    | 00, 01, ..., 59                  |
+ * | Second                  | 90       | s     | 0, 1, ..., 59                    |
+ * |                         |          | ss    | 00, 01, ..., 59                  |
+ * | 1/10 of second          | 100      | S     | 0, 1, ..., 9                     |
+ * | 1/100 of second         | 100      | SS    | 00, 01, ..., 99                  |
+ * | Millisecond             | 100      | SSS   | 000, 001, ..., 999               |
+ * | Timezone                | 110      | Z     | -01:00, +00:00, ... +12:00       |
+ * |                         |          | ZZ    | -0100, +0000, ..., +1200         |
+ * | Seconds timestamp       | 120      | X     | 512969520                        |
+ * | Milliseconds timestamp  | 120      | x     | 512969520900                     |
+ *
+ * Values will be assigned to the date in the ascending order of its unit's priority.
+ * Units of an equal priority overwrite each other in the order of appearance.
+ *
+ * If no values of higher priority are parsed (e.g. when parsing string 'January 1st' without a year),
+ * the values will be taken from 3rd argument `baseDate` which works as a context of parsing.
+ *
+ * `baseDate` must be passed for correct work of the function.
+ * If you're not sure which `baseDate` to supply, create a new instance of Date:
+ * `parse('02/11/2014', 'MM/DD/YYYY', new Date())`
+ * In this case parsing will be done in the context of the current date.
+ * If `baseDate` is `Invalid Date` or a value not convertible to valid `Date`,
+ * then `Invalid Date` will be returned.
+ *
+ * Also, `parse` unfolds long formats like those in [format]{@link https://date-fns.org/docs/format}:
+ * | Token | Input examples                 |
+ * |-------|--------------------------------|
+ * | LT    | 05:30 a.m.                     |
+ * | LTS   | 05:30:15 a.m.                  |
+ * | L     | 07/02/1995                     |
+ * | l     | 7/2/1995                       |
+ * | LL    | July 2 1995                    |
+ * | ll    | Jul 2 1995                     |
+ * | LLL   | July 2 1995 05:30 a.m.         |
+ * | lll   | Jul 2 1995 05:30 a.m.          |
+ * | LLLL  | Sunday, July 2 1995 05:30 a.m. |
+ * | llll  | Sun, Jul 2 1995 05:30 a.m.     |
+ *
+ * The characters wrapped in square brackets in the format string are escaped.
+ *
+ * The result may vary by locale.
+ *
+ * If `formatString` matches with `dateString` but does not provides tokens, `baseDate` will be returned.
+ *
+ * If parsing failed, `Invalid Date` will be returned.
+ * Invalid Date is a Date, whose time value is NaN.
+ * Time value of Date: http://es5.github.io/#x15.9.1.1
+ *
+ * @param {String} dateString - the string to parse
+ * @param {String} formatString - the string of tokens
+ * @param {Date|String|Number} baseDate - the date to took the missing higher priority values from
+ * @param {Options} [options] - the object with options. See [Options]{@link https://date-fns.org/docs/Options}
+ * @param {0|1|2} [options.additionalDigits=2] - passed to `toDate`. See [toDate]{@link https://date-fns.org/docs/toDate}
+ * @param {Locale} [options.locale=defaultLocale] - the locale object. See [Locale]{@link https://date-fns.org/docs/Locale}
+ * @param {0|1|2|3|4|5|6} [options.weekStartsOn=0] - the index of the first day of the week (0 - Sunday)
+ * @returns {Date} the parsed date
+ * @throws {RangeError} `options.additionalDigits` must be 0, 1 or 2
+ * @throws {RangeError} `options.weekStartsOn` must be between 0 and 6
+ * @throws {RangeError} `options.locale` must contain `match` property
+ * @throws {RangeError} `options.locale` must contain `formatLong` property
+ *
+ * @example
+ * // Parse 11 February 2014 from middle-endian format:
+ * var result = parse(
+ *   '02/11/2014',
+ *   'MM/DD/YYYY',
+ *   new Date()
+ * )
+ * //=> Tue Feb 11 2014 00:00:00
+ *
+ * @example
+ * // Parse 28th of February in English locale in the context of 2010 year:
+ * import eoLocale from 'date-fns/locale/eo'
+ * var result = parse(
+ *   '28-a de februaro',
+ *   'Do [de] MMMM',
+ *   new Date(2010, 0, 1)
+ *   {locale: eoLocale}
+ * )
+ * //=> Sun Feb 28 2010 00:00:00
+ */
+function parse (dirtyDateString, dirtyFormatString, dirtyBaseDate, dirtyOptions) {
+  var dateString = String(dirtyDateString);
+  var options = dirtyOptions || {};
+
+  var weekStartsOn = options.weekStartsOn === undefined ? 0 : Number(options.weekStartsOn);
+
+  // Test if weekStartsOn is between 0 and 6 _and_ is not NaN
+  if (!(weekStartsOn >= 0 && weekStartsOn <= 6)) {
+    throw new RangeError('weekStartsOn must be between 0 and 6 inclusively')
+  }
+
+  var locale$$1 = options.locale || locale;
+  var localeParsers = locale$$1.parsers || {};
+  var localeUnits = locale$$1.units || {};
+
+  if (!locale$$1.match) {
+    throw new RangeError('locale must contain match property')
+  }
+
+  if (!locale$$1.formatLong) {
+    throw new RangeError('locale must contain formatLong property')
+  }
+
+  var formatString = String(dirtyFormatString)
+    .replace(longFormattingTokensRegExp$1, function (substring) {
+      if (substring[0] === '[') {
+        return substring
+      }
+
+      if (substring[0] === '\\') {
+        return cleanEscapedString$1(substring)
+      }
+
+      return locale$$1.formatLong(substring)
+    });
+
+  if (formatString === '') {
+    if (dateString === '') {
+      return toDate(dirtyBaseDate, options)
+    } else {
+      return new Date(NaN)
+    }
+  }
+
+  var subFnOptions = cloneObject(options);
+  subFnOptions.locale = locale$$1;
+
+  var tokens = formatString.match(locale$$1.parsingTokensRegExp || defaultParsingTokensRegExp);
+  var tokensLength = tokens.length;
+
+  // If timezone isn't specified, it will be set to the system timezone
+  var setters = [{
+    priority: TIMEZONE_UNIT_PRIORITY,
+    set: dateToSystemTimezone,
+    index: 0
+  }];
+
+  var i;
+  for (i = 0; i < tokensLength; i++) {
+    var token = tokens[i];
+    var parser = localeParsers[token] || parsers[token];
+    if (parser) {
+      var matchResult;
+
+      if (parser.match instanceof RegExp) {
+        matchResult = parser.match.exec(dateString);
+      } else {
+        matchResult = parser.match(dateString, subFnOptions);
+      }
+
+      if (!matchResult) {
+        return new Date(NaN)
+      }
+
+      var unitName = parser.unit;
+      var unit = localeUnits[unitName] || units[unitName];
+
+      setters.push({
+        priority: unit.priority,
+        set: unit.set,
+        value: parser.parse(matchResult, subFnOptions),
+        index: setters.length
+      });
+
+      var substring = matchResult[0];
+      dateString = dateString.slice(substring.length);
+    } else {
+      var head = tokens[i].match(/^\[.*]$/) ? tokens[i].replace(/^\[|]$/g, '') : tokens[i];
+      if (dateString.indexOf(head) === 0) {
+        dateString = dateString.slice(head.length);
+      } else {
+        return new Date(NaN)
+      }
+    }
+  }
+
+  var uniquePrioritySetters = setters
+    .map(function (setter) {
+      return setter.priority
+    })
+    .sort(function (a, b) {
+      return a - b
+    })
+    .filter(function (priority, index, array) {
+      return array.indexOf(priority) === index
+    })
+    .map(function (priority) {
+      return setters
+        .filter(function (setter) {
+          return setter.priority === priority
+        })
+        .reverse()
+    })
+    .map(function (setterArray) {
+      return setterArray[0]
+    });
+
+  var date = toDate(dirtyBaseDate, options);
+
+  if (isNaN(date)) {
+    return new Date(NaN)
+  }
+
+  // Convert the date in system timezone to the same date in UTC+00:00 timezone.
+  // This ensures that when UTC functions will be implemented, locales will be compatible with them.
+  // See an issue about UTC functions: https://github.com/date-fns/date-fns/issues/37
+  var utcDate = subMinutes(date, date.getTimezoneOffset());
+
+  var dateValues = {date: utcDate};
+
+  var settersLength = uniquePrioritySetters.length;
+  for (i = 0; i < settersLength; i++) {
+    var setter = uniquePrioritySetters[i];
+    dateValues = setter.set(dateValues, setter.value, subFnOptions);
+  }
+
+  return dateValues.date
+}
+
+function dateToSystemTimezone (dateValues) {
+  var date = dateValues.date;
+  var time = date.getTime();
+
+  // Get the system timezone offset at (moment of time - offset)
+  var offset = date.getTimezoneOffset();
+
+  // Get the system timezone offset at the exact moment of time
+  offset = new Date(time + offset * MILLISECONDS_IN_MINUTE$6).getTimezoneOffset();
+
+  // Convert date in timezone "UTC+00:00" to the system timezone
+  dateValues.date = new Date(time + offset * MILLISECONDS_IN_MINUTE$6);
+
+  return dateValues
+}
+
+function cleanEscapedString$1 (input) {
+  if (input.match(/\[[\s\S]/)) {
+    return input.replace(/^\[|]$/g, '')
+  }
+  return input.replace(/\\/g, '')
+}
+
+// This file is generated automatically by `scripts/build/indices.js`. Please, don't change it.
+
+/**
+ * Gets the data attribute. the name must be kebab-case.
+ */
+var getDataAttribute = function (el, name) { return el.getAttribute(("data-vv-" + name)); };
+
+/**
+ * Checks if the value is either null or undefined.
+ * @param {*} value
+ */
+var isNullOrUndefined = function (value) {
+  return value === null || value === undefined;
+};
+
+/**
+ * Sets the data attribute.
+ * @param {*} el
+ * @param {String} name
+ * @param {String} value
+ */
+var setDataAttribute = function (el, name, value) { return el.setAttribute(("data-vv-" + name), value); };
+
+/**
+ * Custom parse behavior on top of date-fns parse function.
+ * @param {String} date
+ * @param {String} format
+ * @return {Date|null}
+ */
+var parseDate = function (date, format$$1) {
+  var parsed = parse(date, format$$1, new Date());
+
+  // if date is not valid or the formatted output after parsing does not match
+  // the string value passed in (avoids overflows)
+  if (!isValid(parsed) || format(parsed, format$$1) !== date) {
+    return null;
+  }
+
+  return parsed;
+};
+
+var createProxy = function (target, handler) {
+  if (typeof Proxy === 'undefined') {
+    return target;
+  }
+
+  return new Proxy(target, handler);
+};
+
+var createFlags = function () { return ({
+  untouched: true,
+  touched: false,
+  dirty: false,
+  pristine: true,
+  valid: null,
+  invalid: null,
+  validated: false,
+  pending: false,
+  required: false
+}); };
+
+/**
+ * Shallow object comparison.
+ *
+ * @param {*} lhs
+ * @param {*} rhs
+ * @return {Boolean}
+ */
+var isEqual = function (lhs, rhs) {
+  if (lhs instanceof RegExp && rhs instanceof RegExp) {
+    return isEqual(lhs.source, rhs.source) && isEqual(lhs.flags, rhs.flags);
+  }
+
+  if (Array.isArray(lhs) && Array.isArray(rhs)) {
+    if (lhs.length !== rhs.length) { return false; }
+
+    for (var i = 0; i < lhs.length; i++) {
+      if (!isEqual(lhs[i], rhs[i])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // if both are objects, compare each key recursively.
+  if (isObject(lhs) && isObject(rhs)) {
+    return Object.keys(lhs).every(function (key) {
+      return isEqual(lhs[key], rhs[key]);
+    }) && Object.keys(rhs).every(function (key) {
+      return isEqual(lhs[key], rhs[key]);
+    });
+  }
+
+  return lhs === rhs;
+};
+
+/**
+ * Determines the input field scope.
+ */
+var getScope = function (el) {
+  var scope = getDataAttribute(el, 'scope');
+  if (isNullOrUndefined(scope) && el.form) {
+    scope = getDataAttribute(el.form, 'scope');
+  }
+
+  return !isNullOrUndefined(scope) ? scope : null;
+};
+
+/**
+ * Gets the value in an object safely.
+ * @param {String} propPath
+ * @param {Object} target
+ * @param {*} def
+ */
+var getPath = function (propPath, target, def) {
+  if ( def === void 0 ) def = undefined;
+
+  if (!propPath || !target) { return def; }
+  var value = target;
+  propPath.split('.').every(function (prop) {
+    if (! Object.prototype.hasOwnProperty.call(value, prop) && value[prop] === undefined) {
+      value = def;
+
+      return false;
+    }
+
+    value = value[prop];
+
+    return true;
+  });
+
+  return value;
+};
+
+/**
+ * Checks if path exists within an object.
+ *
+ * @param {String} path
+ * @param {Object} target
+ */
+var hasPath = function (path, target) {
+  var obj = target;
+  return path.split('.').every(function (prop) {
+    if (! Object.prototype.hasOwnProperty.call(obj, prop)) {
+      return false;
+    }
+
+    obj = obj[prop];
+
+    return true;
+  });
+};
+
+/**
+ * @param {String} rule
+ */
+var parseRule = function (rule) {
+  var params = [];
+  var name = rule.split(':')[0];
+
+  if (~rule.indexOf(':')) {
+    params = rule.split(':').slice(1).join(':').split(',');
+  }
+
+  return { name: name, params: params };
+};
+
+/**
+ * Normalizes the given rules expression.
+ *
+ * @param {Object|String} rules
+ */
+var normalizeRules = function (rules) {
+  // if falsy value return an empty object.
+  if (!rules) {
+    return {};
+  }
+
+  var validations = {};
+  if (isObject(rules)) {
+    Object.keys(rules).forEach(function (rule) {
+      var params = [];
+      if (rules[rule] === true) {
+        params = [];
+      } else if (Array.isArray(rules[rule])) {
+        params = rules[rule];
+      } else {
+        params = [rules[rule]];
+      }
+
+      if (rules[rule] !== false) {
+        validations[rule] = params;
+      }
+    });
+
+    return validations;
+  }
+
+  if (typeof rules !== 'string') {
+    warn('rules must be either a string or an object.');
+    return {};
+  }
+
+  rules.split('|').forEach(function (rule) {
+    var parsedRule = parseRule(rule);
+    if (! parsedRule.name) {
+      return;
+    }
+
+    validations[parsedRule.name] = parsedRule.params;
+  });
+
+  return validations;
+};
+
+/**
+ * Debounces a function.
+ */
+var debounce = function (fn, wait, immediate) {
+  if ( wait === void 0 ) wait = 0;
+  if ( immediate === void 0 ) immediate = false;
+
+  if (wait === 0) {
+    return fn;
+  }
+
+  var timeout;
+
+  return function () {
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
+
+    var later = function () {
+      timeout = null;
+      if (!immediate) { fn.apply(void 0, args); }
+    };
+    /* istanbul ignore next */
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    /* istanbul ignore next */
+    if (callNow) { fn.apply(void 0, args); }
+  };
+};
+
+/**
+ * Emits a warning to the console.
+ */
+var warn = function (message) {
+  console.warn(("[vee-validate] " + message)); // eslint-disable-line
+};
+
+/**
+ * Creates a branded error object.
+ * @param {String} message
+ */
+var createError = function (message) { return new Error(("[vee-validate] " + message)); };
+
+/**
+ * Checks if the value is an object.
+ */
+var isObject = function (object) { return object !== null && object && typeof object === 'object' && ! Array.isArray(object); };
+
+/**
+ * Checks if a function is callable.
+ */
+var isCallable = function (func) { return typeof func === 'function'; };
+
+/**
+ * Check if element has the css class on it.
+ */
+var hasClass = function (el, className) {
+  if (el.classList) {
+    return el.classList.contains(className);
+  }
+
+  return !!el.className.match(new RegExp(("(\\s|^)" + className + "(\\s|$)")));
+};
+
+/**
+ * Adds the provided css className to the element.
+ */
+var addClass = function (el, className) {
+  if (el.classList) {
+    el.classList.add(className);
+    return;
+  }
+
+  if (!hasClass(el, className)) {
+    el.className += " " + className;
+  }
+};
+
+/**
+ * Remove the provided css className from the element.
+ */
+var removeClass = function (el, className) {
+  if (el.classList) {
+    el.classList.remove(className);
+    return;
+  }
+
+  if (hasClass(el, className)) {
+    var reg = new RegExp(("(\\s|^)" + className + "(\\s|$)"));
+    el.className = el.className.replace(reg, ' ');
+  }
+};
+
+/**
+ * Adds or removes a class name on the input depending on the status flag.
+ */
+var toggleClass = function (el, className, status) {
+  if (!el || !className) { return; }
+
+  if (status) {
+    return addClass(el, className);
+  }
+
+  removeClass(el, className);
+};
+
+/**
+ * Converts an array-like object to array.
+ * Simple polyfill for Array.from
+ */
+var toArray = function (arrayLike) {
+  if (isCallable(Array.from)) {
+    return Array.from(arrayLike);
+  }
+
+  var array = [];
+  var length = arrayLike.length;
+  for (var i = 0; i < length; i++) {
+    array.push(arrayLike[i]);
+  }
+
+  return array;
+};
+
+/**
+ * Assign polyfill from the mdn.
+ * @param {Object} target
+ * @return {Object}
+ */
+var assign = function (target) {
+  var others = [], len = arguments.length - 1;
+  while ( len-- > 0 ) others[ len ] = arguments[ len + 1 ];
+
+  /* istanbul ignore else */
+  if (isCallable(Object.assign)) {
+    return Object.assign.apply(Object, [ target ].concat( others ));
+  }
+
+  /* istanbul ignore next */
+  if (target == null) {
+    throw new TypeError('Cannot convert undefined or null to object');
+  }
+
+  /* istanbul ignore next */
+  var to = Object(target);
+  /* istanbul ignore next */
+  others.forEach(function (arg) {
+    // Skip over if undefined or null
+    if (arg != null) {
+      Object.keys(arg).forEach(function (key) {
+        to[key] = arg[key];
+      });
+    }
+  });
+  /* istanbul ignore next */
+  return to;
+};
+
+/**
+ * Generates a unique id.
+ * @return {String}
+ */
+var uniqId = function () { return ("_" + (Math.random().toString(36).substr(2, 9))); };
+
+/**
+ * polyfills array.find
+ * @param {Array} array
+ * @param {Function} predicate
+ */
+var find = function (array, predicate) {
+  if (isObject(array)) {
+    array = toArray(array);
+  }
+  if (array.find) {
+    return array.find(predicate);
+  }
+  var result;
+  array.some(function (item) {
+    if (predicate(item)) {
+      result = item;
+      return true;
+    }
+
+    return false;
+  });
+
+  return result;
+};
+
+var getInputEventName = function (el) {
+  if (el && (el.tagName === 'SELECT' || ~['radio', 'checkbox', 'file'].indexOf(el.type))) {
+    return 'change';
+  }
+
+  return 'input';
+};
+
+var ErrorBag = function ErrorBag () {
+  this.items = [];
+};
+
+/**
+   * Adds an error to the internal array.
+   *
+   * @param {Object} error The error object.
+   */
+ErrorBag.prototype.add = function add (error) {
+  // handle old signature.
+  if (arguments.length > 1) {
+    error = {
+      field: arguments[0],
+      msg: arguments[1],
+      rule: arguments[2],
+      scope: !isNullOrUndefined(arguments[3]) ? arguments[3] : null
+    };
+  }
+
+  error.scope = !isNullOrUndefined(error.scope) ? error.scope : null;
+  this.items.push(error);
+};
+
+/**
+ * Updates a field error with the new field scope.
+ *
+ * @param {String} id
+ * @param {Object} error
+ */
+ErrorBag.prototype.update = function update (id, error) {
+  var item = find(this.items, function (i) { return i.id === id; });
+  if (!item) {
+    return;
+  }
+
+  var idx = this.items.indexOf(item);
+  this.items.splice(idx, 1);
+  item.scope = error.scope;
+  this.items.push(item);
+};
+
+/**
+   * Gets all error messages from the internal array.
+   *
+   * @param {String} scope The Scope name, optional.
+   * @return {Array} errors Array of all error messages.
+   */
+ErrorBag.prototype.all = function all (scope) {
+  if (isNullOrUndefined(scope)) {
+    return this.items.map(function (e) { return e.msg; });
+  }
+
+  return this.items.filter(function (e) { return e.scope === scope; }).map(function (e) { return e.msg; });
+};
+
+/**
+   * Checks if there are any errors in the internal array.
+   * @param {String} scope The Scope name, optional.
+   * @return {boolean} result True if there was at least one error, false otherwise.
+   */
+ErrorBag.prototype.any = function any (scope) {
+  if (isNullOrUndefined(scope)) {
+    return !! this.items.length;
+  }
+
+  return !! this.items.filter(function (e) { return e.scope === scope; }).length;
+};
+
+/**
+   * Removes all items from the internal array.
+   *
+   * @param {String} scope The Scope name, optional.
+   */
+ErrorBag.prototype.clear = function clear (scope) {
+    var this$1 = this;
+
+  if (isNullOrUndefined(scope)) {
+    scope = null;
+  }
+
+  var removeCondition = function (e) { return e.scope === scope; };
+
+  for (var i = 0; i < this.items.length; ++i) {
+    if (removeCondition(this$1.items[i])) {
+      this$1.items.splice(i, 1);
+      --i;
+    }
+  }
+};
+
+/**
+   * Collects errors into groups or for a specific field.
+   *
+   * @param{string} field The field name.
+   * @param{string} scope The scope name.
+   * @param {Boolean} map If it should map the errors to strings instead of objects.
+   * @return {Array} errors The errors for the specified field.
+   */
+ErrorBag.prototype.collect = function collect (field, scope, map) {
+    if ( map === void 0 ) map = true;
+
+  if (! field) {
+    var collection = {};
+    this.items.forEach(function (e) {
+      if (! collection[e.field]) {
+        collection[e.field] = [];
+      }
+
+      collection[e.field].push(map ? e.msg : e);
+    });
+
+    return collection;
+  }
+
+  field = !isNullOrUndefined(field) ? String(field) : field;
+  if (isNullOrUndefined(scope)) {
+    return this.items.filter(function (e) { return e.field === field; }).map(function (e) { return (map ? e.msg : e); });
+  }
+
+  return this.items.filter(function (e) { return e.field === field && e.scope === scope; })
+    .map(function (e) { return (map ? e.msg : e); });
+};
+/**
+   * Gets the internal array length.
+   *
+   * @return {Number} length The internal array length.
+   */
+ErrorBag.prototype.count = function count () {
+  return this.items.length;
+};
+
+/**
+ * Finds and fetches the first error message for the specified field id.
+ *
+ * @param {String} id
+ */
+ErrorBag.prototype.firstById = function firstById (id) {
+  var error = find(this.items, function (i) { return i.id === id; });
+
+  return error ? error.msg : null;
+};
+
+/**
+   * Gets the first error message for a specific field.
+   *
+   * @param{String} field The field name.
+   * @return {String|null} message The error message.
+   */
+ErrorBag.prototype.first = function first (field, scope) {
+    var this$1 = this;
+    if ( scope === void 0 ) scope = null;
+
+  field = !isNullOrUndefined(field) ? String(field) : field;
+  var selector = this._selector(field);
+  var scoped = this._scope(field);
+
+  if (scoped) {
+    var result = this.first(scoped.name, scoped.scope);
+    // if such result exist, return it. otherwise it could be a field.
+    // with dot in its name.
+    if (result) {
+      return result;
+    }
+  }
+
+  if (selector) {
+    return this.firstByRule(selector.name, selector.rule, scope);
+  }
+
+  for (var i = 0; i < this.items.length; ++i) {
+    if (this$1.items[i].field === field && (this$1.items[i].scope === scope)) {
+      return this$1.items[i].msg;
+    }
+  }
+
+  return null;
+};
+
+/**
+   * Returns the first error rule for the specified field
+   *
+   * @param {string} field The specified field.
+   * @return {string|null} First error rule on the specified field if one is found, otherwise null
+   */
+ErrorBag.prototype.firstRule = function firstRule (field, scope) {
+  var errors = this.collect(field, scope, false);
+
+  return (errors.length && errors[0].rule) || null;
+};
+
+/**
+   * Checks if the internal array has at least one error for the specified field.
+   *
+   * @param{string} field The specified field.
+   * @return {Boolean} result True if at least one error is found, false otherwise.
+   */
+ErrorBag.prototype.has = function has (field, scope) {
+    if ( scope === void 0 ) scope = null;
+
+  return !! this.first(field, scope);
+};
+
+/**
+   * Gets the first error message for a specific field and a rule.
+   * @param {String} name The name of the field.
+   * @param {String} rule The name of the rule.
+   * @param {String} scope The name of the scope (optional).
+   */
+ErrorBag.prototype.firstByRule = function firstByRule (name, rule, scope) {
+  var error = this.collect(name, scope, false).filter(function (e) { return e.rule === rule; })[0];
+
+  return (error && error.msg) || null;
+};
+/**
+   * Gets the first error message for a specific field that not match the rule.
+   * @param {String} name The name of the field.
+   * @param {String} rule The name of the rule.
+   * @param {String} scope The name of the scope (optional).
+   */
+ErrorBag.prototype.firstNot = function firstNot (name, rule, scope) {
+    if ( rule === void 0 ) rule = 'required';
+
+  var error = this.collect(name, scope, false).filter(function (e) { return e.rule !== rule; })[0];
+
+  return (error && error.msg) || null;
+};
+
+/**
+ * Removes errors by matching against the id.
+ * @param {String} id
+ */
+ErrorBag.prototype.removeById = function removeById (id) {
+    var this$1 = this;
+
+  for (var i = 0; i < this.items.length; ++i) {
+    if (this$1.items[i].id === id) {
+      this$1.items.splice(i, 1);
+      --i;
+    }
+  }
+};
+
+/**
+   * Removes all error messages associated with a specific field.
+   *
+   * @param{String} field The field which messages are to be removed.
+   * @param {String} scope The Scope name, optional.
+   * @param {String} id The field id, optional.
+   */
+ErrorBag.prototype.remove = function remove (field, scope, id) {
+    var this$1 = this;
+
+  field = !isNullOrUndefined(field) ? String(field) : field;
+  var removeCondition = function (e) {
+    if (e.id && id) {
+      return e.id === id;
+    }
+
+    if (!isNullOrUndefined(scope)) {
+      return e.field === field && e.scope === scope;
+    }
+
+    return e.field === field && e.scope === null;
+  };
+
+  for (var i = 0; i < this.items.length; ++i) {
+    if (removeCondition(this$1.items[i])) {
+      this$1.items.splice(i, 1);
+      --i;
+    }
+  }
+};
+
+/**
+   * Get the field attributes if there's a rule selector.
+   *
+   * @param{String} field The specified field.
+   * @return {Object|null}
+   */
+ErrorBag.prototype._selector = function _selector (field) {
+  if (field.indexOf(':') > -1) {
+    var ref = field.split(':');
+      var name = ref[0];
+      var rule = ref[1];
+
+    return { name: name, rule: rule };
+  }
+
+  return null;
+};
+
+/**
+   * Get the field scope if specified using dot notation.
+   *
+   * @param {String} field the specifie field.
+   * @return {Object|null}
+   */
+ErrorBag.prototype._scope = function _scope (field) {
+  if (field.indexOf('.') > -1) {
+    var ref = field.split('.');
+      var scope = ref[0];
+      var name = ref.slice(1);
+
+    return { name: name.join('.'), scope: scope };
+  }
+
+  return null;
+};
+
+var Dictionary = function Dictionary (dictionary) {
+  if ( dictionary === void 0 ) dictionary = {};
+
+  this.container = {};
+  this.merge(dictionary);
+};
+
+Dictionary.prototype.hasLocale = function hasLocale (locale) {
+  return !! this.container[locale];
+};
+
+Dictionary.prototype.setDateFormat = function setDateFormat (locale, format) {
+  if (!this.container[locale]) {
+    this.container[locale] = {};
+  }
+
+  this.container[locale].dateFormat = format;
+};
+
+Dictionary.prototype.getDateFormat = function getDateFormat (locale) {
+  if (!this.container[locale]) {
+    return undefined;
+  }
+
+  return this.container[locale].dateFormat;
+};
+
+Dictionary.prototype.getMessage = function getMessage (locale, key, fallback) {
+  if (! this.hasMessage(locale, key)) {
+    return fallback || this._getDefaultMessage(locale);
+  }
+
+  return this.container[locale].messages[key];
+};
+
+/**
+ * Gets a specific message for field. fallsback to the rule message.
+ *
+ * @param {String} locale
+ * @param {String} field
+ * @param {String} key
+ */
+Dictionary.prototype.getFieldMessage = function getFieldMessage (locale, field, key) {
+  if (! this.hasLocale(locale)) {
+    return this.getMessage(locale, key);
+  }
+
+  var dict = this.container[locale].custom && this.container[locale].custom[field];
+  if (! dict || ! dict[key]) {
+    return this.getMessage(locale, key);
+  }
+
+  return dict[key];
+};
+
+Dictionary.prototype._getDefaultMessage = function _getDefaultMessage (locale) {
+  if (this.hasMessage(locale, '_default')) {
+    return this.container[locale].messages._default;
+  }
+
+  return this.container.en.messages._default;
+};
+
+Dictionary.prototype.getAttribute = function getAttribute (locale, key, fallback) {
+    if ( fallback === void 0 ) fallback = '';
+
+  if (! this.hasAttribute(locale, key)) {
+    return fallback;
+  }
+
+  return this.container[locale].attributes[key];
+};
+
+Dictionary.prototype.hasMessage = function hasMessage (locale, key) {
+  return !! (
+    this.hasLocale(locale) &&
+          this.container[locale].messages &&
+          this.container[locale].messages[key]
+  );
+};
+
+Dictionary.prototype.hasAttribute = function hasAttribute (locale, key) {
+  return !! (
+    this.hasLocale(locale) &&
+          this.container[locale].attributes &&
+          this.container[locale].attributes[key]
+  );
+};
+
+Dictionary.prototype.merge = function merge (dictionary) {
+  this._merge(this.container, dictionary);
+};
+
+Dictionary.prototype.setMessage = function setMessage (locale, key, message) {
+  if (! this.hasLocale(locale)) {
+    this.container[locale] = {
+      messages: {},
+      attributes: {}
+    };
+  }
+
+  this.container[locale].messages[key] = message;
+};
+
+Dictionary.prototype.setAttribute = function setAttribute (locale, key, attribute) {
+  if (! this.hasLocale(locale)) {
+    this.container[locale] = {
+      messages: {},
+      attributes: {}
+    };
+  }
+
+  this.container[locale].attributes[key] = attribute;
+};
+
+Dictionary.prototype._merge = function _merge (target, source) {
+    var this$1 = this;
+
+  if (! (isObject(target) && isObject(source))) {
+    return target;
+  }
+
+  Object.keys(source).forEach(function (key) {
+    if (isObject(source[key])) {
+      if (! target[key]) {
+        assign(target, ( obj = {}, obj[key] = {}, obj ));
+          var obj;
+      }
+
+      this$1._merge(target[key], source[key]);
+      return;
+    }
+
+    assign(target, ( obj$1 = {}, obj$1[key] = source[key], obj$1 ));
+      var obj$1;
+  });
+
+  return target;
+};
+
+/**
+ * Formates file size.
+ *
+ * @param {Number|String} size
+ */
+var formatFileSize = function (size) {
+  var units = ['Byte', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  var threshold = 1024;
+  size = Number(size) * threshold;
+  var i = size === 0 ? 0 : Math.floor(Math.log(size) / Math.log(threshold));
+  return (((size / Math.pow(threshold, i)).toFixed(2) * 1) + " " + (units[i]));
+};
+
+/**
+ * Checks if vee-validate is defined globally.
+ */
+var isDefinedGlobally = function () {
+  return typeof VeeValidate !== 'undefined';
+};
+
+var messages = {
+  _default: function (field) { return ("The " + field + " value is not valid."); },
+  after: function (field, ref) {
+    var target = ref[0];
+    var inclusion = ref[1];
+
+    return ("The " + field + " must be after " + (inclusion ? 'or equal to ' : '') + target + ".");
+},
+  alpha_dash: function (field) { return ("The " + field + " field may contain alpha-numeric characters as well as dashes and underscores."); },
+  alpha_num: function (field) { return ("The " + field + " field may only contain alpha-numeric characters."); },
+  alpha_spaces: function (field) { return ("The " + field + " field may only contain alphabetic characters as well as spaces."); },
+  alpha: function (field) { return ("The " + field + " field may only contain alphabetic characters."); },
+  before: function (field, ref) {
+    var target = ref[0];
+    var inclusion = ref[1];
+
+    return ("The " + field + " must be before " + (inclusion ? 'or equal to ' : '') + target + ".");
+},
+  between: function (field, ref) {
+    var min = ref[0];
+    var max = ref[1];
+
+    return ("The " + field + " field must be between " + min + " and " + max + ".");
+},
+  confirmed: function (field) { return ("The " + field + " confirmation does not match."); },
+  credit_card: function (field) { return ("The " + field + " field is invalid."); },
+  date_between: function (field, ref) {
+    var min = ref[0];
+    var max = ref[1];
+
+    return ("The " + field + " must be between " + min + " and " + max + ".");
+},
+  date_format: function (field, ref) {
+    var format = ref[0];
+
+    return ("The " + field + " must be in the format " + format + ".");
+},
+  decimal: function (field, ref) {
+    if ( ref === void 0 ) ref = ['*'];
+    var decimals = ref[0];
+
+    return ("The " + field + " field must be numeric and may contain " + (!decimals || decimals === '*' ? '' : decimals) + " decimal points.");
+},
+  digits: function (field, ref) {
+    var length = ref[0];
+
+    return ("The " + field + " field must be numeric and exactly contain " + length + " digits.");
+},
+  dimensions: function (field, ref) {
+    var width = ref[0];
+    var height = ref[1];
+
+    return ("The " + field + " field must be " + width + " pixels by " + height + " pixels.");
+},
+  email: function (field) { return ("The " + field + " field must be a valid email."); },
+  ext: function (field) { return ("The " + field + " field must be a valid file."); },
+  image: function (field) { return ("The " + field + " field must be an image."); },
+  in: function (field) { return ("The " + field + " field must be a valid value."); },
+  integer: function (field) { return ("The " + field + " field must be an integer."); },
+  ip: function (field) { return ("The " + field + " field must be a valid ip address."); },
+  length: function (field, ref) {
+    var length = ref[0];
+    var max = ref[1];
+
+    if (max) {
+      return ("The " + field + " length be between " + length + " and " + max + ".");
+    }
+
+    return ("The " + field + " length must be " + length + ".");
+  },
+  max: function (field, ref) {
+    var length = ref[0];
+
+    return ("The " + field + " field may not be greater than " + length + " characters.");
+},
+  max_value: function (field, ref) {
+    var max = ref[0];
+
+    return ("The " + field + " field must be " + max + " or less.");
+},
+  mimes: function (field) { return ("The " + field + " field must have a valid file type."); },
+  min: function (field, ref) {
+    var length = ref[0];
+
+    return ("The " + field + " field must be at least " + length + " characters.");
+},
+  min_value: function (field, ref) {
+    var min = ref[0];
+
+    return ("The " + field + " field must be " + min + " or more.");
+},
+  not_in: function (field) { return ("The " + field + " field must be a valid value."); },
+  numeric: function (field) { return ("The " + field + " field may only contain numeric characters."); },
+  regex: function (field) { return ("The " + field + " field format is invalid."); },
+  required: function (field) { return ("The " + field + " field is required."); },
+  size: function (field, ref) {
+    var size = ref[0];
+
+    return ("The " + field + " size must be less than " + (formatFileSize(size)) + ".");
+},
+  url: function (field) { return ("The " + field + " field is not a valid URL."); }
+};
+
+var locale$1 = {
+  name: 'en',
+  messages: messages,
+  attributes: {}
+};
+
+if (isDefinedGlobally()) {
+  // eslint-disable-next-line
+  VeeValidate.Validator.addLocale(locale$1);
+}
+
+/**
+ * Generates the options required to construct a field.
+ */
+var Generator = function Generator () {};
+
+Generator.generate = function generate (el, binding, vnode, options) {
+    if ( options === void 0 ) options = {};
+
+  var model = Generator.resolveModel(binding, vnode);
+
+  return {
+    name: Generator.resolveName(el, vnode),
+    el: el,
+    listen: !binding.modifiers.disable,
+    scope: Generator.resolveScope(el, binding, vnode),
+    vm: Generator.makeVM(vnode.context),
+    expression: binding.value,
+    component: vnode.child,
+    classes: options.classes,
+    classNames: options.classNames,
+    getter: Generator.resolveGetter(el, vnode, model),
+    events: Generator.resolveEvents(el, vnode) || options.events,
+    model: model,
+    delay: Generator.resolveDelay(el, vnode, options),
+    rules: Generator.resolveRules(el, binding),
+    initial: !!binding.modifiers.initial,
+    alias: Generator.resolveAlias(el, vnode),
+    validity: options.validity,
+    aria: options.aria,
+    initialValue: Generator.resolveInitialValue(vnode)
+  };
+};
+
+/**
+ *
+ * @param {*} el
+ * @param {*} binding
+ */
+Generator.resolveRules = function resolveRules (el, binding) {
+  if (!binding || !binding.expression) {
+    return getDataAttribute(el, 'rules');
+  }
+
+  if (typeof binding.value === 'string') {
+    return binding.value;
+  }
+
+  if (~['string', 'object'].indexOf(typeof binding.value.rules)) {
+    return binding.value.rules;
+  }
+
+  return binding.value;
+};
+
+/**
+ * @param {*} vnode
+ */
+Generator.resolveInitialValue = function resolveInitialValue (vnode) {
+  var model = vnode.data.model || find(vnode.data.directives, function (d) { return d.name === 'model'; });
+
+  return model && model.value;
+};
+
+/**
+ * Creates a non-circular partial VM instance from a Vue instance.
+ * @param {*} vm
+ */
+Generator.makeVM = function makeVM (vm) {
+  return {
+    get $el () {
+      return vm.$el;
+    },
+    get $refs () {
+      return vm.$refs;
+    },
+    $watch: vm.$watch ? vm.$watch.bind(vm) : function () {},
+    $validator: vm.$validator ? {
+      errors: vm.$validator.errors,
+      validate: vm.$validator.validate.bind(vm.$validator),
+      update: vm.$validator.update.bind(vm.$validator)
+    } : null
+  };
+};
+
+/**
+ * Resolves the delay value.
+ * @param {*} el
+ * @param {*} vnode
+ * @param {Object} options
+ */
+Generator.resolveDelay = function resolveDelay (el, vnode, options) {
+    if ( options === void 0 ) options = {};
+
+  return getDataAttribute(el, 'delay') || (vnode.child && vnode.child.$attrs && vnode.child.$attrs['data-vv-delay']) || options.delay;
+};
+
+/**
+ * Resolves the alias for the field.
+ * @param {*} el
+ * @param {*} vnode
+ * @return {Function} alias getter
+ */
+Generator.resolveAlias = function resolveAlias (el, vnode) {
+  return function () { return getDataAttribute(el, 'as') || (vnode.child && vnode.child.$attrs && vnode.child.$attrs['data-vv-as']) || el.title || null; };
+};
+
+/**
+ * Resolves the events to validate in response to.
+ * @param {*} el
+ * @param {*} vnode
+ */
+Generator.resolveEvents = function resolveEvents (el, vnode) {
+  if (vnode.child) {
+    return getDataAttribute(el, 'validate-on') || (vnode.child.$attrs && vnode.child.$attrs['data-vv-validate-on']);
+  }
+
+  return getDataAttribute(el, 'validate-on');
+};
+
+/**
+ * Resolves the scope for the field.
+ * @param {*} el
+ * @param {*} binding
+ */
+Generator.resolveScope = function resolveScope (el, binding, vnode) {
+    if ( vnode === void 0 ) vnode = {};
+
+  var scope = null;
+  if (isObject(binding.value)) {
+    scope = binding.value.scope;
+  }
+
+  if (vnode.child && isNullOrUndefined(scope)) {
+    scope = vnode.child.$attrs && vnode.child.$attrs['data-vv-scope'];
+  }
+
+  return !isNullOrUndefined(scope) ? scope : getScope(el);
+};
+
+/**
+ * Checks if the node directives contains a v-model or a specified arg.
+ * Args take priority over models.
+ *
+ * @return {Object}
+ */
+Generator.resolveModel = function resolveModel (binding, vnode) {
+  if (binding.arg) {
+    return binding.arg;
+  }
+
+  if (isObject(binding.value) && binding.value.arg) {
+    return binding.value.arg;
+  }
+
+  var model = vnode.data.model || find(vnode.data.directives, function (d) { return d.name === 'model'; });
+  if (!model) {
+    return null;
+  }
+
+  var watchable = /^[a-z_]+[0-9]*(\w*\.[a-z_]\w*)*$/i.test(model.expression) && hasPath(model.expression, vnode.context);
+
+  if (!watchable) {
+    return null;
+  }
+
+  return model.expression;
+};
+
+/**
+   * Resolves the field name to trigger validations.
+   * @return {String} The field name.
+   */
+Generator.resolveName = function resolveName (el, vnode) {
+  if (vnode.child) {
+    return getDataAttribute(el, 'name') || (vnode.child.$attrs && (vnode.child.$attrs['data-vv-name'] || vnode.child.$attrs['name'])) || vnode.child.name;
+  }
+
+  return getDataAttribute(el, 'name') || el.name;
+};
+
+/**
+ * Returns a value getter input type.
+ */
+Generator.resolveGetter = function resolveGetter (el, vnode, model) {
+  if (model) {
+    return function () {
+      return getPath(model, vnode.context);
+    };
+  }
+
+  if (vnode.child) {
+    return function () {
+      var path = getDataAttribute(el, 'value-path') || (vnode.child.$attrs && vnode.child.$attrs['data-vv-value-path']);
+      if (path) {
+        return getPath(path, vnode.child);
+      }
+      return vnode.child.value;
+    };
+  }
+
+  switch (el.type) {
+  case 'checkbox': return function () {
+    var els = document.querySelectorAll(("input[name=\"" + (el.name) + "\"]"));
+
+    els = toArray(els).filter(function (el) { return el.checked; });
+    if (!els.length) { return undefined; }
+
+    return els.map(function (checkbox) { return checkbox.value; });
+  };
+  case 'radio': return function () {
+    var els = document.querySelectorAll(("input[name=\"" + (el.name) + "\"]"));
+    var elm = find(els, function (el) { return el.checked; });
+
+    return elm && elm.value;
+  };
+  case 'file': return function (context) {
+    return toArray(el.files);
+  };
+  case 'select-multiple': return function () {
+    return toArray(el.options).filter(function (opt) { return opt.selected; }).map(function (opt) { return opt.value; });
+  };
+  default: return function () {
+    return el && el.value;
+  };
+  }
+};
+
+var DEFAULT_OPTIONS = {
+  targetOf: null,
+  initial: false,
+  scope: null,
+  listen: true,
+  name: null,
+  active: true,
+  required: false,
+  rules: {},
+  vm: null,
+  classes: false,
+  validity: true,
+  aria: true,
+  events: 'input|blur',
+  delay: 0,
+  classNames: {
+    touched: 'touched', // the control has been blurred
+    untouched: 'untouched', // the control hasn't been blurred
+    valid: 'valid', // model is valid
+    invalid: 'invalid', // model is invalid
+    pristine: 'pristine', // control has not been interacted with
+    dirty: 'dirty' // control has been interacted with
+  }
+};
+
+var Field = function Field (el, options) {
+  if ( options === void 0 ) options = {};
+
+  this.id = uniqId();
+  this.el = el;
+  this.updated = false;
+  this.dependencies = [];
+  this.watchers = [];
+  this.events = [];
+  this.rules = {};
+  if (!this.isHeadless && !options.targetOf) {
+    setDataAttribute(this.el, 'id', this.id); // cache field id if it is independent and has a root element.
+  }
+  options = assign({}, DEFAULT_OPTIONS, options);
+  this.validity = options.validity;
+  this.aria = options.aria;
+  this.flags = createFlags();
+  this.vm = options.vm;
+  this.component = options.component;
+  this.update(options);
+  this.updated = false;
+};
+
+var prototypeAccessors$1 = { isVue: {},validator: {},isRequired: {},isDisabled: {},isHeadless: {},displayName: {},value: {},rejectsFalse: {} };
+
+prototypeAccessors$1.isVue.get = function () {
+  return !!this.component;
+};
+
+prototypeAccessors$1.validator.get = function () {
+  if (!this.vm || !this.vm.$validator) {
+    warn('No validator instance detected.');
+    return { validate: function () {} };
+  }
+
+  return this.vm.$validator;
+};
+
+prototypeAccessors$1.isRequired.get = function () {
+  return !!this.rules.required;
+};
+
+prototypeAccessors$1.isDisabled.get = function () {
+  return (this.isVue && this.component.disabled) || (this.el && this.el.disabled);
+};
+
+prototypeAccessors$1.isHeadless.get = function () {
+  return !this.el;
+};
+
+/**
+ * Gets the display name (user-friendly name).
+ * @return {String}
+ */
+prototypeAccessors$1.displayName.get = function () {
+  return isCallable(this.alias) ? this.alias() : this.alias;
+};
+
+/**
+ * Gets the input value.
+ * @return {*}
+ */
+prototypeAccessors$1.value.get = function () {
+  if (!isCallable(this.getter)) {
+    return undefined;
+  }
+
+  return this.getter();
+};
+
+/**
+ * If the field rejects false as a valid value for the required rule.
+ */
+prototypeAccessors$1.rejectsFalse.get = function () {
+  if (this.isVue || this.isHeadless) {
+    return false;
+  }
+
+  return this.el.type === 'checkbox';
+};
+
+/**
+ * Determines if the instance matches the options provided.
+ * @param {Object} options The matching options.
+ */
+Field.prototype.matches = function matches (options) {
+  if (options.id) {
+    return this.id === options.id;
+  }
+
+  if (options.name === undefined && options.scope === undefined) {
+    return true;
+  }
+
+  if (options.scope === undefined) {
+    return this.name === options.name;
+  }
+
+  if (options.name === undefined) {
+    return this.scope === options.scope;
+  }
+
+  return options.name === this.name && options.scope === this.scope;
+};
+
+/**
+ *
+ * @param {Object} options
+ */
+Field.prototype.update = function update (options) {
+  this.targetOf = options.targetOf || null;
+  this.initial = options.initial || this.initial || false;
+
+  // update errors scope if the field scope was changed.
+  if (this.updated && !isNullOrUndefined(options.scope) && options.scope !== this.scope && isCallable(this.validator.update)) {
+    this.validator.update(this.id, { scope: options.scope });
+  }
+  this.scope = !isNullOrUndefined(options.scope) ? options.scope
+    : !isNullOrUndefined(this.scope) ? this.scope : null;
+  this.name = (!isNullOrUndefined(options.name) ? String(options.name) : options.name) || this.name || null;
+  this.rules = options.rules !== undefined ? normalizeRules(options.rules) : this.rules;
+  this.model = options.model || this.model;
+  this.listen = options.listen !== undefined ? options.listen : this.listen;
+  this.classes = options.classes || this.classes || false;
+  this.classNames = options.classNames || this.classNames || DEFAULT_OPTIONS.classNames;
+  this.alias = options.alias || this.alias;
+  this.getter = isCallable(options.getter) ? options.getter : this.getter;
+  this.delay = options.delay || this.delay || 0;
+  this.events = typeof options.events === 'string' && options.events.length ? options.events.split('|') : this.events;
+  this.updateDependencies();
+  this.addActionListeners();
+
+  // update required flag flags
+  if (options.rules !== undefined) {
+    this.flags.required = this.isRequired;
+  }
+
+  // validate if it was validated before and field was updated and there was a rules mutation.
+  if (this.flags.validated && options.rules !== undefined && this.updated) {
+    this.validator.validate(("#" + (this.id)));
+  }
+
+  this.updated = true;
+
+  // no need to continue.
+  if (this.isHeadless) {
+    return;
+  }
+
+  this.updateClasses();
+  this.addValueListeners();
+  this.updateAriaAttrs();
+};
+
+/**
+ * Resets field flags and errors.
+ */
+Field.prototype.reset = function reset () {
+    var this$1 = this;
+
+  var def = createFlags();
+  Object.keys(this.flags).forEach(function (flag) {
+    this$1.flags[flag] = def[flag];
+  });
+
+  this.addActionListeners();
+  this.updateClasses();
+  if (this.validator.errors && isCallable(this.validator.errors.removeById)) {
+    this.validator.errors.removeById(this.id);
+  }
+};
+
+/**
+ * Sets the flags and their negated counterparts, and updates the classes and re-adds action listeners.
+ * @param {Object} flags
+ */
+Field.prototype.setFlags = function setFlags (flags) {
+    var this$1 = this;
+
+  var negated = {
+    pristine: 'dirty',
+    dirty: 'pristine',
+    valid: 'invalid',
+    invalid: 'valid',
+    touched: 'untouched',
+    untouched: 'touched'
+  };
+
+  Object.keys(flags).forEach(function (flag) {
+    this$1.flags[flag] = flags[flag];
+    // if it has a negation and was not specified, set it as well.
+    if (negated[flag] && flags[negated[flag]] === undefined) {
+      this$1.flags[negated[flag]] = !flags[flag];
+    }
+  });
+
+  if (
+    flags.untouched !== undefined ||
+    flags.touched !== undefined ||
+    flags.dirty !== undefined ||
+    flags.pristine !== undefined
+  ) {
+    this.addActionListeners();
+  }
+  this.updateClasses();
+  this.updateAriaAttrs();
+  this.updateCustomValidity();
+};
+
+/**
+ * Determines if the field requires references to target fields.
+*/
+Field.prototype.updateDependencies = function updateDependencies () {
+    var this$1 = this;
+
+  // reset dependencies.
+  this.dependencies.forEach(function (d) { return d.field.destroy(); });
+  this.dependencies = [];
+
+  // we get the selectors for each field.
+  var fields = Object.keys(this.rules).reduce(function (prev, r) {
+    if (r === 'confirmed') {
+      prev.push({ selector: this$1.rules[r][0] || ((this$1.name) + "_confirmation"), name: r });
+    } else if (/after|before/.test(r)) {
+      prev.push({ selector: this$1.rules[r][0], name: r });
+    }
+
+    return prev;
+  }, []);
+
+  if (!fields.length || !this.vm || !this.vm.$el) { return; }
+
+  // must be contained within the same component, so we use the vm root element constrain our dom search.
+  fields.forEach(function (ref) {
+      var selector = ref.selector;
+      var name = ref.name;
+
+    var el = null;
+    // vue ref selector.
+    if (selector[0] === '$') {
+      el = this$1.vm.$refs[selector.slice(1)];
+    } else {
+      try {
+        // try query selector
+        el = this$1.vm.$el.querySelector(selector);
+      } catch (err) {
+        el = null;
+      }
+    }
+
+    if (!el) {
+      el = this$1.vm.$el.querySelector(("input[name=\"" + selector + "\"]"));
+    }
+
+    if (!el) {
+      return;
+    }
+
+    var options = {
+      vm: this$1.vm,
+      classes: this$1.classes,
+      classNames: this$1.classNames,
+      delay: this$1.delay,
+      scope: this$1.scope,
+      events: this$1.events.join('|'),
+      initial: this$1.initial,
+      targetOf: this$1.id
+    };
+
+    // probably a component.
+    if (isCallable(el.$watch)) {
+      options.component = el;
+      options.el = el.$el;
+      options.alias = Generator.resolveAlias(el.$el, { child: el });
+      options.getter = Generator.resolveGetter(el.$el, { child: el });
+    } else {
+      options.el = el;
+      options.alias = Generator.resolveAlias(el, {});
+      options.getter = Generator.resolveGetter(el, {});
+    }
+
+    this$1.dependencies.push({ name: name, field: new Field(options.el, options) });
+  });
+};
+
+/**
+ * Removes listeners.
+ * @param {RegExp} tag
+ */
+Field.prototype.unwatch = function unwatch (tag) {
+    if ( tag === void 0 ) tag = null;
+
+  if (!tag) {
+    this.watchers.forEach(function (w) { return w.unwatch(); });
+    this.watchers = [];
+    return;
+  }
+  this.watchers.filter(function (w) { return tag.test(w.tag); }).forEach(function (w) { return w.unwatch(); });
+  this.watchers = this.watchers.filter(function (w) { return !tag.test(w.tag); });
+};
+
+/**
+ * Updates the element classes depending on each field flag status.
+ */
+Field.prototype.updateClasses = function updateClasses () {
+  if (!this.classes) { return; }
+
+  toggleClass(this.el, this.classNames.dirty, this.flags.dirty);
+  toggleClass(this.el, this.classNames.pristine, this.flags.pristine);
+  toggleClass(this.el, this.classNames.valid, !!this.flags.valid);
+  toggleClass(this.el, this.classNames.invalid, !!this.flags.invalid);
+  toggleClass(this.el, this.classNames.touched, this.flags.touched);
+  toggleClass(this.el, this.classNames.untouched, this.flags.untouched);
+};
+
+/**
+ * Adds the listeners required for automatic classes and some flags.
+ */
+Field.prototype.addActionListeners = function addActionListeners () {
+    var this$1 = this;
+
+  // remove previous listeners.
+  this.unwatch(/class/);
+
+  var onBlur = function () {
+    this$1.flags.touched = true;
+    this$1.flags.untouched = false;
+    if (this$1.classes) {
+      toggleClass(this$1.el, this$1.classNames.touched, true);
+      toggleClass(this$1.el, this$1.classNames.untouched, false);
+    }
+
+    // only needed once.
+    this$1.unwatch(/^class_blur$/);
+  };
+
+  var inputEvent = getInputEventName(this.el);
+  var onInput = function () {
+    this$1.flags.dirty = true;
+    this$1.flags.pristine = false;
+    if (this$1.classes) {
+      toggleClass(this$1.el, this$1.classNames.pristine, false);
+      toggleClass(this$1.el, this$1.classNames.dirty, true);
+    }
+
+    // only needed once.
+    this$1.unwatch(/^class_input$/);
+  };
+
+  if (this.isVue && isCallable(this.component.$once)) {
+    this.component.$once('input', onInput);
+    this.component.$once('blur', onBlur);
+    this.watchers.push({
+      tag: 'class_input',
+      unwatch: function () {
+        this$1.component.$off('input', onInput);
+      }
+    });
+    this.watchers.push({
+      tag: 'class_blur',
+      unwatch: function () {
+        this$1.component.$off('blur', onBlur);
+      }
+    });
+    return;
+  }
+
+  if (this.isHeadless) { return; }
+
+  this.el.addEventListener(inputEvent, onInput);
+  // Checkboxes and radio buttons on Mac don't emit blur naturally, so we listen on click instead.
+  var blurEvent = ['radio', 'checkbox'].indexOf(this.el.type) === -1 ? 'blur' : 'click';
+  this.el.addEventListener(blurEvent, onBlur);
+  this.watchers.push({
+    tag: 'class_input',
+    unwatch: function () {
+      this$1.el.removeEventListener(inputEvent, onInput);
+    }
+  });
+
+  this.watchers.push({
+    tag: 'class_blur',
+    unwatch: function () {
+      this$1.el.removeEventListener(blurEvent, onBlur);
+    }
+  });
+};
+
+/**
+ * Adds the listeners required for validation.
+ */
+Field.prototype.addValueListeners = function addValueListeners () {
+    var this$1 = this;
+
+  this.unwatch(/^input_.+/);
+  if (!this.listen) { return; }
+
+  var fn = this.targetOf ? function () {
+    this$1.validator.validate(("#" + (this$1.targetOf)));
+  } : function () {
+      var args = [], len = arguments.length;
+      while ( len-- ) args[ len ] = arguments[ len ];
+
+    // if its a DOM event, resolve the value, otherwise use the first parameter as the value.
+    if (args.length === 0 || (isCallable(Event) && args[0] instanceof Event) || args[0].srcElement) {
+      args[0] = this$1.value;
+    }
+    this$1.validator.validate(("#" + (this$1.id)), args[0]);
+  };
+
+  var validate = debounce(fn, this.delay);
+  var inputEvent = getInputEventName(this.el);
+  // replace input event with suitable one.
+  var events = this.events.map(function (e) {
+    return e === 'input' ? inputEvent : e;
+  });
+
+  // if there is a watchable model and an on input validation is requested.
+  if (this.model && events.indexOf(inputEvent) !== -1) {
+    var unwatch = this.vm.$watch(this.model, validate);
+    this.watchers.push({
+      tag: 'input_model',
+      unwatch: unwatch
+    });
+    // filter out input event as it is already handled by the watcher API.
+    events = events.filter(function (e) { return e !== inputEvent; });
+  }
+
+  // Add events.
+  events.forEach(function (e) {
+    if (this$1.isVue) {
+      this$1.component.$on(e, validate);
+      this$1.watchers.push({
+        tag: 'input_vue',
+        unwatch: function () {
+          this$1.component.$off(e, validate);
+        }
+      });
+      return;
+    }
+
+    if (~['radio', 'checkbox'].indexOf(this$1.el.type)) {
+      var els = document.querySelectorAll(("input[name=\"" + (this$1.el.name) + "\"]"));
+      toArray(els).forEach(function (el) {
+        el.addEventListener(e, validate);
+        this$1.watchers.push({
+          tag: 'input_native',
+          unwatch: function () {
+            el.removeEventListener(e, validate);
+          }
+        });
+      });
+
+      return;
+    }
+
+    this$1.el.addEventListener(e, validate);
+    this$1.watchers.push({
+      tag: 'input_native',
+      unwatch: function () {
+        this$1.el.removeEventListener(e, validate);
+      }
+    });
+  });
+};
+
+/**
+ * Updates aria attributes on the element.
+ */
+Field.prototype.updateAriaAttrs = function updateAriaAttrs () {
+  if (!this.aria || this.isHeadless || !isCallable(this.el.setAttribute)) { return; }
+
+  this.el.setAttribute('aria-required', this.isRequired ? 'true' : 'false');
+  this.el.setAttribute('aria-invalid', this.flags.invalid ? 'true' : 'false');
+};
+
+/**
+ * Updates the custom validity for the field.
+ */
+Field.prototype.updateCustomValidity = function updateCustomValidity () {
+  if (!this.validity || this.isHeadless || !isCallable(this.el.setCustomValidity)) { return; }
+
+  this.el.setCustomValidity(this.flags.valid ? '' : (this.validator.errors.firstById(this.id) || ''));
+};
+
+/**
+ * Removes all listeners.
+ */
+Field.prototype.destroy = function destroy () {
+  this.watchers.forEach(function (w) { return w.unwatch(); });
+  this.watchers = [];
+  this.dependencies.forEach(function (d) { return d.field.destroy(); });
+  this.dependencies = [];
+};
+
+Object.defineProperties( Field.prototype, prototypeAccessors$1 );
+
+var FieldBag = function FieldBag () {
+  this.items = [];
+};
+
+var prototypeAccessors$2 = { length: {} };
+
+/**
+ * @return {Number} The current collection length.
+ */
+prototypeAccessors$2.length.get = function () {
+  return this.items.length;
+};
+
+/**
+ * Finds the first field that matches the provided matcher object.
+ * @param {Object} matcher
+ * @return {Field|undefined} The first matching item.
+ */
+FieldBag.prototype.find = function find$1 (matcher) {
+  return find(this.items, function (item) { return item.matches(matcher); });
+};
+
+/**
+ * @param {Object|Array} matcher
+ * @return {Array} Array of matching field items.
+ */
+FieldBag.prototype.filter = function filter (matcher) {
+  // multiple matchers to be tried.
+  if (Array.isArray(matcher)) {
+    return this.items.filter(function (item) { return matcher.some(function (m) { return item.matches(m); }); });
+  }
+
+  return this.items.filter(function (item) { return item.matches(matcher); });
+};
+
+/**
+ * Maps the field items using the mapping function.
+ *
+ * @param {Function} mapper
+ */
+FieldBag.prototype.map = function map (mapper) {
+  return this.items.map(mapper);
+};
+
+/**
+ * Finds and removes the first field that matches the provided matcher object, returns the removed item.
+ * @param {Object|Field} matcher
+ * @return {Field|null}
+ */
+FieldBag.prototype.remove = function remove (matcher) {
+  var item = null;
+  if (matcher instanceof Field) {
+    item = matcher;
+  } else {
+    item = this.find(matcher);
+  }
+
+  if (!item) { return null; }
+
+  var index = this.items.indexOf(item);
+  this.items.splice(index, 1);
+
+  return item;
+};
+
+/**
+ * Adds a field item to the list.
+ *
+ * @param {Field} item
+ */
+FieldBag.prototype.push = function push (item) {
+  if (! (item instanceof Field)) {
+    throw createError('FieldBag only accepts instances of Field that has an id defined.');
+  }
+
+  if (!item.id) {
+    throw createError('Field id must be defined.');
+  }
+
+  if (this.find({ id: item.id })) {
+    throw createError(("Field with id " + (item.id) + " is already added."));
+  }
+
+  this.items.push(item);
+};
+
+Object.defineProperties( FieldBag.prototype, prototypeAccessors$2 );
+
+var RULES = {};
+var LOCALE = 'en';
+var STRICT_MODE = true;
+var DICTIONARY = new Dictionary({
+  en: {
+    messages: messages,
+    attributes: {},
+    custom: {}
+  }
+});
+
+var Validator = function Validator (validations, options) {
+  var this$1 = this;
+  if ( options === void 0 ) options = { vm: null, fastExit: true };
+
+  this.strict = STRICT_MODE;
+  this.errors = new ErrorBag();
+  this.fields = new FieldBag();
+  this.flags = {};
+  this._createFields(validations);
+  this.paused = false;
+  this.fastExit = options.fastExit || false;
+  this.ownerId = options.vm && options.vm._uid;
+  // create it statically since we don't need constant access to the vm.
+  this.reset = options.vm && isCallable(options.vm.$nextTick) ? function () {
+    options.vm.$nextTick(function () {
+      this$1.fields.items.forEach(function (i) { return i.reset(); });
+      this$1.errors.clear();
+    });
+  } : function () {
+    this$1.fields.items.forEach(function (i) { return i.reset(); });
+    this$1.errors.clear();
+  };
+  /* istanbul ignore next */
+  this.clean = function () {
+    warn('validator.clean is marked for deprecation, please use validator.reset instead.');
+    this$1.reset();
+  };
+};
+
+var prototypeAccessors = { dictionary: {},locale: {},rules: {} };
+var staticAccessors = { dictionary: {},locale: {},rules: {} };
+
+/**
+ * @return {Dictionary}
+ */
+prototypeAccessors.dictionary.get = function () {
+  return DICTIONARY;
+};
+
+/**
+ * @return {Dictionary}
+ */
+staticAccessors.dictionary.get = function () {
+  return DICTIONARY;
+};
+
+/**
+ * @return {String}
+ */
+prototypeAccessors.locale.get = function () {
+  return LOCALE;
+};
+
+/**
+ * @param {String} value
+ */
+prototypeAccessors.locale.set = function (value) {
+  Validator.locale = value;
+};
+
+/**
+* @return {String}
+*/
+staticAccessors.locale.get = function () {
+  return LOCALE;
+};
+
+/**
+ * @param {String} value
+ */
+staticAccessors.locale.set = function (value) {
+  /* istanbul ignore if */
+  if (!DICTIONARY.hasLocale(value)) {
+    // eslint-disable-next-line
+    warn('You are setting the validator locale to a locale that is not defined in the dictionary. English messages may still be generated.');
+  }
+
+  LOCALE = value;
+};
+
+/**
+ * @return {Object}
+ */
+prototypeAccessors.rules.get = function () {
+  return RULES;
+};
+
+/**
+ * @return {Object}
+ */
+staticAccessors.rules.get = function () {
+  return RULES;
+};
+
+/**
+ * Static constructor.
+ *
+ * @param{object} validations The validations object.
+ * @return {Validator} validator A validator object.
+ */
+Validator.create = function create (validations, options) {
+  return new Validator(validations, options);
+};
+
+/**
+ * Adds a custom validator to the list of validation rules.
+ *
+ * @param{string} name The name of the validator.
+ * @param{object|function} validator The validator object/function.
+ */
+Validator.extend = function extend (name, validator) {
+  Validator._guardExtend(name, validator);
+  Validator._merge(name, validator);
+};
+
+/**
+ * Removes a rule from the list of validators.
+ * @param {String} name The name of the validator/rule.
+ */
+Validator.remove = function remove (name) {
+  delete RULES[name];
+};
+
+/**
+ * Sets the default locale for all validators.
+ * @deprecated
+ * @param {String} language The locale id.
+ */
+Validator.setLocale = function setLocale (language) {
+    if ( language === void 0 ) language = 'en';
+
+  Validator.locale = language;
+};
+
+/**
+ * @deprecated
+ */
+Validator.installDateTimeValidators = function installDateTimeValidators () {
+  /* istanbul ignore next */
+  warn('Date validations are now installed by default, you no longer need to install it.');
+};
+
+/**
+ * @deprecated
+ */
+Validator.prototype.installDateTimeValidators = function installDateTimeValidators () {
+  /* istanbul ignore next */
+  warn('Date validations are now installed by default, you no longer need to install it.');
+};
+
+/**
+ * Sets the operating mode for all newly created validators.
+ * strictMode = true: Values without a rule are invalid and cause failure.
+ * strictMode = false: Values without a rule are valid and are skipped.
+ * @param {Boolean} strictMode.
+ */
+Validator.setStrictMode = function setStrictMode (strictMode) {
+    if ( strictMode === void 0 ) strictMode = true;
+
+  STRICT_MODE = strictMode;
+};
+
+/**
+ * Updates the dictionary, overwriting existing values and adding new ones.
+ * @deprecated
+ * @param{object} data The dictionary object.
+ */
+Validator.updateDictionary = function updateDictionary (data) {
+  DICTIONARY.merge(data);
+};
+
+/**
+ * Adds a locale object to the dictionary.
+ * @deprecated
+ * @param {Object} locale
+ */
+Validator.addLocale = function addLocale (locale) {
+  if (! locale.name) {
+    warn('Your locale must have a name property');
+    return;
+  }
+
+  this.updateDictionary(( obj = {}, obj[locale.name] = locale, obj ));
+    var obj;
+};
+
+/**
+ * Adds a locale object to the dictionary.
+ * @deprecated
+ * @param {Object} locale
+ */
+Validator.prototype.addLocale = function addLocale (locale) {
+  Validator.addLocale(locale);
+};
+
+/**
+ * Adds and sets the current locale for the validator.
+ *
+ * @param {String} lang
+ * @param {Object} dictionary
+ */
+Validator.prototype.localize = function localize (lang, dictionary) {
+  Validator.localize(lang, dictionary);
+};
+
+/**
+ * Adds and sets the current locale for the validator.
+ *
+ * @param {String} lang
+ * @param {Object} dictionary
+ */
+Validator.localize = function localize (lang, dictionary) {
+  // merge the dictionary.
+  if (dictionary) {
+    dictionary = assign({}, dictionary, { name: lang });
+    Validator.addLocale(dictionary);
+  }
+
+  // set the locale.
+  Validator.locale = lang;
+};
+
+/**
+ * Registers a field to be validated.
+ *
+ * @param{Field|Object} name The field name.
+ * @return {Field}
+ */
+Validator.prototype.attach = function attach (field) {
+  // deprecate: handle old signature.
+  if (arguments.length > 1) {
+    field = assign({}, {
+      name: arguments[0],
+      rules: arguments[1]
+    }, arguments[2] || { vm: { $validator: this } });
+  }
+
+  // fixes initial value detection with v-model and select elements.
+  var value = field.initialValue;
+  if (!(field instanceof Field)) {
+    field = new Field(field.el || null, field);
+  }
+
+  this.fields.push(field);
+
+  // validate the field initially
+  if (field.initial) {
+    this.validate(("#" + (field.id)), value || field.value);
+  } else {
+    this._validate(field, value || field.value, true).then(function (valid) {
+      field.flags.valid = valid;
+      field.flags.invalid = !valid;
+    });
+  }
+
+  this._addFlag(field, field.scope);
+  return field;
+};
+
+/**
+ * Sets the flags on a field.
+ *
+ * @param {String} name
+ * @param {Object} flags
+ */
+Validator.prototype.flag = function flag (name, flags) {
+  var field = this._resolveField(name);
+  if (! field || !flags) {
+    return;
+  }
+
+  field.setFlags(flags);
+};
+
+/**
+ * Removes a field from the validator.
+ *
+ * @param{String} name The name of the field.
+ * @param {String} scope The name of the field scope.
+ */
+Validator.prototype.detach = function detach (name, scope) {
+  var field = name instanceof Field ? name : this._resolveField(name, scope);
+  if (!field) { return; }
+
+  field.destroy();
+  this.errors.remove(field.name, field.scope, field.id);
+  this.fields.remove(field);
+  var flags = this.flags;
+  if (!isNullOrUndefined(field.scope) && flags[("$" + (field.scope))]) {
+    delete flags[("$" + (field.scope))][field.name];
+  } else if (isNullOrUndefined(field.scope)) {
+    delete flags[field.name];
+  }
+
+  this.flags = assign({}, flags);
+};
+
+/**
+ * Adds a custom validator to the list of validation rules.
+ *
+ * @param{string} name The name of the validator.
+ * @param{object|function} validator The validator object/function.
+ */
+Validator.prototype.extend = function extend (name, validator) {
+  Validator.extend(name, validator);
+};
+
+/**
+ * Updates a field, updating both errors and flags.
+ *
+ * @param {String} id
+ * @param {Object} diff
+ */
+Validator.prototype.update = function update (id, ref) {
+    var scope = ref.scope;
+
+  var field = this._resolveField(("#" + id));
+  this.errors.update(id, { scope: scope });
+
+  // remove old scope.
+  if (!isNullOrUndefined(field.scope) && this.flags[("$" + (field.scope))]) {
+    delete this.flags[("$" + (field.scope))][field.name];
+  } else if (isNullOrUndefined(field.scope)) {
+    delete this.flags[field.name];
+  }
+
+  this._addFlag(field, scope);
+};
+
+/**
+ * Removes a rule from the list of validators.
+ * @param {String} name The name of the validator/rule.
+ */
+Validator.prototype.remove = function remove (name) {
+  Validator.remove(name);
+};
+
+/**
+ * Sets the validator current langauge.
+ *
+ * @param {string} language locale or language id.
+ */
+Validator.prototype.setLocale = function setLocale (language) {
+  this.locale = language;
+};
+
+/**
+ * Updates the messages dictionary, overwriting existing values and adding new ones.
+ * @deprecated
+ * @param{object} data The messages object.
+ */
+Validator.prototype.updateDictionary = function updateDictionary (data) {
+  Validator.updateDictionary(data);
+};
+
+/**
+ * Validates a value against a registered field validations.
+ *
+ * @param{string} name the field name.
+ * @param{*} value The value to be validated.
+ * @param {String} scope The scope of the field.
+ * @return {Promise}
+ */
+Validator.prototype.validate = function validate (name, value, scope) {
+    if ( scope === void 0 ) scope = null;
+
+  if (this.paused) { return Promise.resolve(true); }
+
+  // overload to validate all.
+  if (arguments.length === 0) {
+    return this.validateScopes();
+  }
+
+  // overload to validate scopeless fields.
+  if (arguments.length === 1 && arguments[0] === '*') {
+    return this.validateAll();
+  }
+
+  // overload to validate a scope.
+  if (arguments.length === 1 && typeof arguments[0] === 'string' && /^(.+)\.\*$/.test(arguments[0])) {
+    var matched = arguments[0].match(/^(.+)\.\*$/)[1];
+    return this.validateAll(matched);
+  }
+
+  var field = this._resolveField(name, scope);
+  if (!field) {
+    return this._handleFieldNotFound(name, scope);
+  }
+
+  this.errors.remove(field.name, field.scope, field.id);
+  field.flags.pending = true;
+  if (arguments.length === 1) {
+    value = field.value;
+  }
+
+  var silentRun = field.isDisabled;
+
+  return this._validate(field, value, silentRun).then(function (result) {
+    field.setFlags({
+      pending: false,
+      valid: result,
+      validated: true
+    });
+
+    if (silentRun) {
+      return Promise.resolve(true);
+    }
+
+    return result;
+  });
+};
+
+/**
+ * Pauses the validator.
+ *
+ * @return {Validator}
+ */
+Validator.prototype.pause = function pause () {
+  this.paused = true;
+
+  return this;
+};
+
+/**
+ * Resumes the validator.
+ *
+ * @return {Validator}
+ */
+Validator.prototype.resume = function resume () {
+  this.paused = false;
+
+  return this;
+};
+
+/**
+ * Validates each value against the corresponding field validations.
+ * @param{Object|String} values The values to be validated.
+ * @return {Promise} Returns a promise with the validation result.
+ */
+Validator.prototype.validateAll = function validateAll (values) {
+    var arguments$1 = arguments;
+    var this$1 = this;
+
+  if (this.paused) { return Promise.resolve(true); }
+
+  var matcher = null;
+  var providedValues = false;
+
+  if (typeof values === 'string') {
+    matcher = { scope: values };
+  } else if (isObject(values)) {
+    matcher = Object.keys(values).map(function (key) {
+      return { name: key, scope: arguments$1[1] || null };
+    });
+    providedValues = true;
+  } else if (arguments.length === 0) {
+    matcher = { scope: null }; // global scope.
+  }
+
+  var promises = this.fields.filter(matcher).map(function (field) { return this$1.validate(
+    ("#" + (field.id)),
+    providedValues ? values[field.name] : field.value
+  ); });
+
+  return Promise.all(promises).then(function (results) { return results.every(function (t) { return t; }); });
+};
+
+/**
+ * Validates all scopes.
+ *
+ * @returns {Promise} All promises resulted from each scope.
+ */
+Validator.prototype.validateScopes = function validateScopes () {
+    var this$1 = this;
+
+  if (this.paused) { return Promise.resolve(true); }
+
+  var promises = this.fields.map(function (field) { return this$1.validate(
+    ("#" + (field.id)),
+    field.value
+  ); });
+
+  return Promise.all(promises).then(function (results) { return results.every(function (t) { return t; }); });
+};
+
+/**
+ * Creates the fields to be validated.
+ *
+ * @param{object} validations
+ * @return {object} Normalized object.
+ */
+Validator.prototype._createFields = function _createFields (validations) {
+    var this$1 = this;
+
+  if (!validations) { return; }
+
+  Object.keys(validations).forEach(function (field) {
+    var options = assign({}, { name: field, rules: validations[field] });
+    this$1.attach(options);
+  });
+};
+
+/**
+ * Date rules need the existance of a format, so date_format must be supplied.
+ * @param {String} name The rule name.
+ * @param {Array} validations the field validations.
+ */
+Validator.prototype._getDateFormat = function _getDateFormat (validations) {
+  var format = null;
+  if (validations.date_format && Array.isArray(validations.date_format)) {
+    format = validations.date_format[0];
+  }
+
+  return format || this.dictionary.getDateFormat(this.locale);
+};
+
+/**
+ * Checks if the passed rule is a date rule.
+ */
+Validator.prototype._isADateRule = function _isADateRule (rule) {
+  return !! ~['after', 'before', 'date_between', 'date_format'].indexOf(rule);
+};
+
+/**
+ * Formats an error message for field and a rule.
+ *
+ * @param{Field} field The field object.
+ * @param{object} rule Normalized rule object.
+ * @param {object} data Additional Information about the validation result.
+ * @return {string} Formatted error message.
+ */
+Validator.prototype._formatErrorMessage = function _formatErrorMessage (field, rule, data, targetName) {
+    if ( data === void 0 ) data = {};
+    if ( targetName === void 0 ) targetName = null;
+
+  var name = this._getFieldDisplayName(field);
+  var params = this._getLocalizedParams(rule, targetName);
+  // Defaults to english message.
+  if (!this.dictionary.hasLocale(LOCALE)) {
+    var msg$1 = this.dictionary.getFieldMessage('en', field.name, rule.name);
+
+    return isCallable(msg$1) ? msg$1(name, params, data) : msg$1;
+  }
+
+  var msg = this.dictionary.getFieldMessage(LOCALE, field.name, rule.name);
+
+  return isCallable(msg) ? msg(name, params, data) : msg;
+};
+
+/**
+ * Translates the parameters passed to the rule (mainly for target fields).
+ */
+Validator.prototype._getLocalizedParams = function _getLocalizedParams (rule, targetName) {
+    if ( targetName === void 0 ) targetName = null;
+
+  if (~['after', 'before', 'confirmed'].indexOf(rule.name) && rule.params && rule.params[0]) {
+    var localizedName = targetName || this.dictionary.getAttribute(LOCALE, rule.params[0], rule.params[0]);
+    return [localizedName].concat(rule.params.slice(1));
+  }
+
+  return rule.params;
+};
+
+/**
+ * Resolves an appropiate display name, first checking 'data-as' or the registered 'prettyName'
+ * Then the dictionary, then fallsback to field name.
+ * @param {Field} field The field object.
+ * @return {String} The name to be used in the errors.
+ */
+Validator.prototype._getFieldDisplayName = function _getFieldDisplayName (field) {
+  return field.displayName || this.dictionary.getAttribute(LOCALE, field.name, field.name);
+};
+
+/**
+ * Adds a field flags to the flags collection.
+ * @param {Field} field
+ * @param {String|null} scope
+ */
+Validator.prototype._addFlag = function _addFlag (field, scope) {
+    if ( scope === void 0 ) scope = null;
+
+  if (isNullOrUndefined(scope)) {
+    this.flags = assign({}, this.flags, ( obj = {}, obj[("" + (field.name))] = field.flags, obj ));
+      var obj;
+    return;
+  }
+
+  var scopeObj = assign({}, this.flags[("$" + scope)] || {}, ( obj$1 = {}, obj$1[("" + (field.name))] = field.flags, obj$1 ));
+    var obj$1;
+  this.flags = assign({}, this.flags, ( obj$2 = {}, obj$2[("$" + scope)] = scopeObj, obj$2 ));
+    var obj$2;
+};
+
+/**
+ * Tests a single input value against a rule.
+ *
+ * @param{Field} field The field under validation.
+ * @param{*} valuethe value of the field.
+ * @param{object} rule the rule object.
+ * @return {boolean} Whether it passes the check.
+ */
+Validator.prototype._test = function _test (field, value, rule, silent) {
+    var this$1 = this;
+
+  var validator = RULES[rule.name];
+  var params = Array.isArray(rule.params) ? toArray(rule.params) : [];
+  var targetName = null;
+  if (!validator || typeof validator !== 'function') {
+    throw createError(("No such validator '" + (rule.name) + "' exists."));
+  }
+
+  // has field depenencies
+  if (/(confirmed|after|before)/.test(rule.name)) {
+    var target = find(field.dependencies, function (d) { return d.name === rule.name; });
+    if (target) {
+      targetName = target.field.displayName;
+      params = [target.field.value].concat(params.slice(1));
+    }
+  } else if (rule.name === 'required' && field.rejectsFalse) {
+    // invalidate false if no args were specified and the field rejects false by default.
+    params = params.length ? params : [true];
+  }
+
+  if (this._isADateRule(rule.name)) {
+    var dateFormat = this._getDateFormat(field.rules);
+    if (rule.name !== 'date_format') {
+      params.push(dateFormat);
+    }
+  }
+
+  var result = validator(value, params);
+
+  // If it is a promise.
+  if (isCallable(result.then)) {
+    return result.then(function (values) {
+      var allValid = true;
+      var data = {};
+      if (Array.isArray(values)) {
+        allValid = values.every(function (t) { return (isObject(t) ? t.valid : t); });
+      } else { // Is a single object/boolean.
+        allValid = isObject(values) ? values.valid : values;
+        data = values.data;
+      }
+
+      if (!allValid && !silent) {
+        this$1.errors.add({
+          id: field.id,
+          field: field.name,
+          msg: this$1._formatErrorMessage(field, rule, data, targetName),
+          rule: rule.name,
+          scope: field.scope
+        });
+      }
+
+      return allValid;
+    });
+  }
+
+  if (!isObject(result)) {
+    result = { valid: result, data: {} };
+  }
+
+  if (!result.valid && !silent) {
+    this.errors.add({
+      id: field.id,
+      field: field.name,
+      msg: this._formatErrorMessage(field, rule, result.data, targetName),
+      rule: rule.name,
+      scope: field.scope
+    });
+  }
+
+  return result.valid;
+};
+
+/**
+ * Merges a validator object into the RULES and Messages.
+ *
+ * @param{string} name The name of the validator.
+ * @param{function|object} validator The validator object.
+ */
+Validator._merge = function _merge (name, validator) {
+  if (isCallable(validator)) {
+    RULES[name] = validator;
+    return;
+  }
+
+  RULES[name] = validator.validate;
+  if (isCallable(validator.getMessage)) {
+    DICTIONARY.setMessage(LOCALE, name, validator.getMessage);
+  }
+
+  if (validator.messages) {
+    DICTIONARY.merge(
+      Object.keys(validator.messages).reduce(function (prev, curr) {
+        var dict = prev;
+        dict[curr] = {
+          messages: ( obj = {}, obj[name] = validator.messages[curr], obj )
+        };
+          var obj;
+
+        return dict;
+      }, {})
+    );
+  }
+};
+
+/**
+ * Guards from extnsion violations.
+ *
+ * @param{string} name name of the validation rule.
+ * @param{object} validator a validation rule object.
+ */
+Validator._guardExtend = function _guardExtend (name, validator) {
+  if (isCallable(validator)) {
+    return;
+  }
+
+  if (!isCallable(validator.validate)) {
+    throw createError(
+      // eslint-disable-next-line
+      ("Extension Error: The validator '" + name + "' must be a function or have a 'validate' method.")
+    );
+  }
+
+  if (!isCallable(validator.getMessage) && !isObject(validator.messages)) {
+    throw createError(
+      // eslint-disable-next-line
+      ("Extension Error: The validator '" + name + "' must have a 'getMessage' method or have a 'messages' object.")
+    );
+  }
+};
+
+/**
+ * Tries different strategies to find a field.
+ * @param {String} name
+ * @param {String} scope
+ * @return {Field}
+ */
+Validator.prototype._resolveField = function _resolveField (name, scope) {
+  if (!isNullOrUndefined(scope)) {
+    return this.fields.find({ name: name, scope: scope });
+  }
+
+  if (name[0] === '#') {
+    return this.fields.find({ id: name.slice(1) });
+  }
+
+  if (name.indexOf('.') > -1) {
+    var ref = name.split('.');
+      var fieldScope = ref[0];
+      var fieldName = ref.slice(1);
+    var field = this.fields.find({ name: fieldName.join('.'), scope: fieldScope });
+    if (field) {
+      return field;
+    }
+  }
+
+  return this.fields.find({ name: name, scope: null });
+};
+
+/**
+ * Handles when a field is not found depending on the strict flag.
+ *
+ * @param {String} name
+ * @param {String} scope
+ */
+Validator.prototype._handleFieldNotFound = function _handleFieldNotFound (name, scope) {
+  if (!this.strict) { return Promise.resolve(true); }
+
+  var fullName = isNullOrUndefined(scope) ? name : ("" + (!isNullOrUndefined(scope) ? scope + '.' : '') + name);
+  throw createError(
+    ("Validating a non-existant field: \"" + fullName + "\". Use \"attach()\" first.")
+  );
+};
+
+/**
+ * Starts the validation process.
+ *
+ * @param {Field} field
+ * @param {Promise} value
+ * @param {Boolean} silent
+ */
+Validator.prototype._validate = function _validate (field, value, silent) {
+    var this$1 = this;
+    if ( silent === void 0 ) silent = false;
+
+  if (!field.isRequired && (isNullOrUndefined(value) || value === '')) {
+    return Promise.resolve(true);
+  }
+
+  var promises = [];
+  var isExitEarly = false;
+  // use of '.some()' is to break iteration in middle by returning true
+  Object.keys(field.rules).some(function (rule) {
+    var result = this$1._test(field, value, { name: rule, params: field.rules[rule] }, silent);
+
+    if (isCallable(result.then)) {
+      promises.push(result);
+    } else if (this$1.fastExit && !result) {
+      isExitEarly = true;
+    } else {
+      var resultAsPromise = new Promise(function (resolve) {
+        resolve(result);
+      });
+      promises.push(resultAsPromise);
+    }
+
+    return isExitEarly;
+  });
+
+  if (isExitEarly) { return Promise.resolve(false); }
+
+  return Promise.all(promises).then(function (values) { return values.every(function (t) { return t; }); });
+};
+
+Object.defineProperties( Validator.prototype, prototypeAccessors );
+Object.defineProperties( Validator, staticAccessors );
+
+var fakeFlags = createProxy({}, {
+  get: function get (target, key) {
+    // is a scope
+    if (String(key).indexOf('$') === 0) {
+      return fakeFlags;
+    }
+
+    return createFlags();
+  }
+});
+
+/**
+ * Checks if a parent validator instance was requested.
+ * @param {Object|Array} injections
+ */
+var requestsValidator = function (injections) {
+  if (! injections) {
+    return false;
+  }
+
+  /* istanbul ignore next */
+  if (Array.isArray(injections) && ~injections.indexOf('$validator')) {
+    return true;
+  }
+
+  if (isObject(injections) && injections.$validator) {
+    return true;
+  }
+
+  return false;
+};
+
+/**
+ * Creates a validator instance.
+ * @param {Vue} vm
+ * @param {Object} options
+ */
+var createValidator = function (vm, options) { return new Validator(null, { vm: vm, fastExit: options.fastExit }); };
+
+var makeMixin = function (Vue, options) {
+  if ( options === void 0 ) options = {};
+
+  var mixin = {};
+  mixin.provide = function providesValidator () {
+    if (this.$validator) {
+      return {
+        $validator: this.$validator
+      };
+    }
+
+    return {};
+  };
+
+  mixin.beforeCreate = function beforeCreate () {
+    // if its a root instance, inject anyways, or if it requested a new instance.
+    if (this.$options.$validates || !this.$parent) {
+      this.$validator = createValidator(this, options);
+    }
+
+    var requested = requestsValidator(this.$options.inject);
+
+    // if automatic injection is enabled and no instance was requested.
+    if (! this.$validator && options.inject && !requested) {
+      this.$validator = createValidator(this, options);
+    }
+
+    // don't inject errors or fieldBag as no validator was resolved.
+    if (! requested && ! this.$validator) {
+      return;
+    }
+
+    // There is a validator but it isn't injected, mark as reactive.
+    if (! requested && this.$validator) {
+      Vue.util.defineReactive(this.$validator, 'errors', this.$validator.errors);
+      Vue.util.defineReactive(this.$validator, 'flags', this.$validator.flags);
+    }
+
+    if (! this.$options.computed) {
+      this.$options.computed = {};
+    }
+
+    this.$options.computed[options.errorBagName || 'errors'] = function errorBagGetter () {
+      return this.$validator.errors;
+    };
+    this.$options.computed[options.fieldsBagName || 'fields'] = function fieldBagGetter () {
+      if (!Object.keys(this.$validator.flags).length) {
+        return fakeFlags;
+      }
+
+      return this.$validator.flags;
+    };
+  };
+
+  mixin.beforeDestroy = function beforeDestroy () {
+    // mark the validator paused to prevent delayed validation.
+    if (this.$validator && this.$validator.ownerId === this._uid && isCallable(this.$validator.pause)) {
+      this.$validator.pause();
+    }
+  };
+
+  return mixin;
+};
+
+var config = {
+  locale: 'en',
+  delay: 0,
+  errorBagName: 'errors',
+  dictionary: null,
+  strict: true,
+  fieldsBagName: 'fields',
+  classes: false,
+  classNames: undefined,
+  events: 'input|blur',
+  inject: true,
+  fastExit: true,
+  aria: true,
+  validity: false
+};
+
+/**
+ * 
+ * 
+ * Finds the requested field by id from the context object.
+ * @param {Object} context
+ * @return {Field|null}
+ */
+var findField = function (el, context) {
+  if (!context || !context.$validator) {
+    return null;
+  }
+
+  return context.$validator.fields.find({ id: getDataAttribute(el, 'id') });
+};
+
+var createDirective$1 = function (options) {
+  options = assign({}, config, options);
+
+  return {
+    bind: function bind (el, binding, vnode) {
+      var validator = vnode.context.$validator;
+      if (! validator) {
+        warn("No validator instance is present on vm, did you forget to inject '$validator'?");
+        return;
+      }
+      var fieldOptions = Generator.generate(el, binding, vnode, options);
+      validator.attach(fieldOptions);
+    },
+    inserted: function (el, binding, vnode) {
+      var field = findField(el, vnode.context);
+      var scope = Generator.resolveScope(el, binding, vnode);
+
+      // skip if scope hasn't changed.
+      if (!field || scope === field.scope) { return; }
+
+      // only update scope.
+      field.update({ scope: scope });
+
+      // allows the field to re-evaluated once more in the update hook.
+      field.updated = false;
+    },
+    update: function (el, binding, vnode) {
+      var field = findField(el, vnode.context);
+
+      // make sure we don't do uneccessary work if no important change was done.
+      if (!field || (field.updated && isEqual(binding.value, binding.oldValue))) { return; }
+      var scope = Generator.resolveScope(el, binding, vnode);
+      var rules = Generator.resolveRules(el, binding);
+
+      field.update({
+        scope: scope,
+        rules: rules
+      });
+    },
+    unbind: function unbind (el, binding, ref) {
+      var context = ref.context;
+
+      var field = findField(el, context);
+      if (!field) { return; }
+
+      context.$validator.detach(field);
+    }
+  };
+};
+
+var Vue;
+
+function install (_Vue, options) {
+  if ( options === void 0 ) options = {};
+
+  if (Vue) {
+    warn('already installed, Vue.use(VeeValidate) should only be called once.');
+    return;
+  }
+
+  Vue = _Vue;
+  var config$$1 = assign({}, config, options);
+  if (config$$1.dictionary) {
+    Validator.updateDictionary(config$$1.dictionary);
+  }
+
+  if (options) {
+    if (options.locale) {
+      Validator.locale = options.locale;
+    }
+
+    if (options.strict) {
+      Validator.setStrictMode(config$$1.strict);
+    }
+  }
+
+  Vue.mixin(makeMixin(Vue, config$$1));
+  Vue.directive('validate', createDirective$1(config$$1));
+}
+
+function use (plugin, options) {
+  if ( options === void 0 ) options = {};
+
+  if (!isCallable(plugin)) {
+    return warn('The plugin must be a callable function');
+  }
+
+  plugin({ Validator: Validator, ErrorBag: ErrorBag, Rules: Validator.rules }, options);
+}
+
+var after = function (value, ref) {
+  var otherValue = ref[0];
+  var inclusion = ref[1];
+  var format = ref[2];
+
+  if (typeof format === 'undefined') {
+    format = inclusion;
+    inclusion = false;
+  }
+  value = parseDate(value, format);
+  otherValue = parseDate(otherValue, format);
+
+  // if either is not valid.
+  if (!value || !otherValue) {
+    return false;
+  }
+
+  return isAfter(value, otherValue) || (inclusion && isEqual$1(value, otherValue));
+};
 
 /**
  * Some Alpha Regex helpers.
@@ -34834,14 +40358,16 @@ var alpha$1 = {
   de: /^[A-ZÄÖÜß]*$/i,
   es: /^[A-ZÁÉÍÑÓÚÜ]*$/i,
   fr: /^[A-ZÀÂÆÇÉÈÊËÏÎÔŒÙÛÜŸ]*$/i,
+  lt: /^[A-ZĄČĘĖĮŠŲŪŽ]*$/i,
   nl: /^[A-ZÉËÏÓÖÜ]*$/i,
   hu: /^[A-ZÁÉÍÓÖŐÚÜŰ]*$/i,
   pl: /^[A-ZĄĆĘŚŁŃÓŻŹ]*$/i,
   pt: /^[A-ZÃÁÀÂÇÉÊÍÕÓÔÚÜ]*$/i,
   ru: /^[А-ЯЁ]*$/i,
+  sk: /^[A-ZÁÄČĎÉÍĹĽŇÓŔŠŤÚÝŽ]*$/i,
   sr: /^[A-ZČĆŽŠĐ]*$/i,
   tr: /^[A-ZÇĞİıÖŞÜ]*$/i,
-  uk: /^[А-ЩЬЮЯЄIЇҐ]*$/i,
+  uk: /^[А-ЩЬЮЯЄІЇҐ]*$/i,
   ar: /^[ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيًٌٍَُِّْٰ]*$/
 };
 
@@ -34852,14 +40378,16 @@ var alphaSpaces = {
   de: /^[A-ZÄÖÜß\s]*$/i,
   es: /^[A-ZÁÉÍÑÓÚÜ\s]*$/i,
   fr: /^[A-ZÀÂÆÇÉÈÊËÏÎÔŒÙÛÜŸ\s]*$/i,
+  lt: /^[A-ZĄČĘĖĮŠŲŪŽ\s]*$/i,
   nl: /^[A-ZÉËÏÓÖÜ\s]*$/i,
   hu: /^[A-ZÁÉÍÓÖŐÚÜŰ\s]*$/i,
   pl: /^[A-ZĄĆĘŚŁŃÓŻŹ\s]*$/i,
   pt: /^[A-ZÃÁÀÂÇÉÊÍÕÓÔÚÜ\s]*$/i,
   ru: /^[А-ЯЁ\s]*$/i,
+  sk: /^[A-ZÁÄČĎÉÍĹĽŇÓŔŠŤÚÝŽ\s]*$/i,
   sr: /^[A-ZČĆŽŠĐ\s]*$/i,
   tr: /^[A-ZÇĞİıÖŞÜ\s]*$/i,
-  uk: /^[А-ЩЬЮЯЄIЇҐ\s]*$/i,
+  uk: /^[А-ЩЬЮЯЄІЇҐ\s]*$/i,
   ar: /^[ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيًٌٍَُِّْٰ\s]*$/
 };
 
@@ -34870,14 +40398,16 @@ var alphanumeric = {
   de: /^[0-9A-ZÄÖÜß]*$/i,
   es: /^[0-9A-ZÁÉÍÑÓÚÜ]*$/i,
   fr: /^[0-9A-ZÀÂÆÇÉÈÊËÏÎÔŒÙÛÜŸ]*$/i,
+  lt: /^[0-9A-ZĄČĘĖĮŠŲŪŽ]*$/i,
   hu: /^[0-9A-ZÁÉÍÓÖŐÚÜŰ]*$/i,
   nl: /^[0-9A-ZÉËÏÓÖÜ]*$/i,
   pl: /^[0-9A-ZĄĆĘŚŁŃÓŻŹ]*$/i,
   pt: /^[0-9A-ZÃÁÀÂÇÉÊÍÕÓÔÚÜ]*$/i,
   ru: /^[0-9А-ЯЁ]*$/i,
+  sk: /^[0-9A-ZÁÄČĎÉÍĹĽŇÓŔŠŤÚÝŽ]*$/i,
   sr: /^[0-9A-ZČĆŽŠĐ]*$/i,
   tr: /^[0-9A-ZÇĞİıÖŞÜ]*$/i,
-  uk: /^[0-9А-ЩЬЮЯЄIЇҐ]*$/i,
+  uk: /^[0-9А-ЩЬЮЯЄІЇҐ]*$/i,
   ar: /^[٠١٢٣٤٥٦٧٨٩0-9ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيًٌٍَُِّْٰ]*$/
 };
 
@@ -34888,20 +40418,26 @@ var alphaDash = {
   de: /^[0-9A-ZÄÖÜß_-]*$/i,
   es: /^[0-9A-ZÁÉÍÑÓÚÜ_-]*$/i,
   fr: /^[0-9A-ZÀÂÆÇÉÈÊËÏÎÔŒÙÛÜŸ_-]*$/i,
+  lt: /^[0-9A-ZĄČĘĖĮŠŲŪŽ_-]*$/i,
   nl: /^[0-9A-ZÉËÏÓÖÜ_-]*$/i,
   hu: /^[0-9A-ZÁÉÍÓÖŐÚÜŰ_-]*$/i,
   pl: /^[0-9A-ZĄĆĘŚŁŃÓŻŹ_-]*$/i,
   pt: /^[0-9A-ZÃÁÀÂÇÉÊÍÕÓÔÚÜ_-]*$/i,
   ru: /^[0-9А-ЯЁ_-]*$/i,
+  sk: /^[0-9A-ZÁÄČĎÉÍĹĽŇÓŔŠŤÚÝŽ_-]*$/i,
   sr: /^[0-9A-ZČĆŽŠĐ_-]*$/i,
   tr: /^[0-9A-ZÇĞİıÖŞÜ_-]*$/i,
-  uk: /^[0-9А-ЩЬЮЯЄIЇҐ_-]*$/i,
+  uk: /^[0-9А-ЩЬЮЯЄІЇҐ_-]*$/i,
   ar: /^[٠١٢٣٤٥٦٧٨٩0-9ءآأؤإئابةتثجحخدذرزسشصضطظعغفقكلمنهوىيًٌٍَُِّْٰ_-]*$/
 };
 
-var alpha$$1 = function (value, ref) {
+var validate = function (value, ref) {
   if ( ref === void 0 ) ref = [null];
   var locale = ref[0];
+
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return validate(val, [locale]); });
+  }
 
   // Match at least one locale.
   if (! locale) {
@@ -34911,9 +40447,13 @@ var alpha$$1 = function (value, ref) {
   return (alpha$1[locale] || alpha$1.en).test(value);
 };
 
-var alpha_dash = function (value, ref) {
+var validate$1 = function (value, ref) {
   if ( ref === void 0 ) ref = [null];
   var locale = ref[0];
+
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return validate$1(val, [locale]); });
+  }
 
   // Match at least one locale.
   if (! locale) {
@@ -34923,9 +40463,13 @@ var alpha_dash = function (value, ref) {
   return (alphaDash[locale] || alphaDash.en).test(value);
 };
 
-var alpha_num = function (value, ref) {
+var validate$2 = function (value, ref) {
   if ( ref === void 0 ) ref = [null];
   var locale = ref[0];
+
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return validate$2(val, [locale]); });
+  }
 
   // Match at least one locale.
   if (! locale) {
@@ -34935,9 +40479,13 @@ var alpha_num = function (value, ref) {
   return (alphanumeric[locale] || alphanumeric.en).test(value);
 };
 
-var alpha_spaces = function (value, ref) {
+var validate$3 = function (value, ref) {
   if ( ref === void 0 ) ref = [null];
   var locale = ref[0];
+
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return validate$3(val, [locale]); });
+  }
 
   // Match at least one locale.
   if (! locale) {
@@ -34947,22 +40495,38 @@ var alpha_spaces = function (value, ref) {
   return (alphaSpaces[locale] || alphaSpaces.en).test(value);
 };
 
-var between = function (value, ref) {
-	var min = ref[0];
-	var max = ref[1];
+var before = function (value, ref) {
+  var otherValue = ref[0];
+  var inclusion = ref[1];
+  var format = ref[2];
 
-	return Number(min) <= value && Number(max) >= value;
+  if (typeof format === 'undefined') {
+    format = inclusion;
+    inclusion = false;
+  }
+  value = parseDate(value, format);
+  otherValue = parseDate(otherValue, format);
+
+  // if either is not valid.
+  if (!value || !otherValue) {
+    return false;
+  }
+
+  return isBefore(value, otherValue) || (inclusion && isEqual$1(value, otherValue));
 };
 
-var confirmed = function (value, ref, validatingField) {
-  var confirmedField = ref[0];
+var validate$4 = function (value, ref) {
+  var min = ref[0];
+  var max = ref[1];
 
-  var field = confirmedField
-    ? document.querySelector(("input[name='" + confirmedField + "']"))
-    : document.querySelector(("input[name='" + validatingField + "_confirmation']"));
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return validate$4(val, [min, max]); });
+  }
 
-  return !! (field && String(value) === field.value);
+  return Number(min) <= value && Number(max) >= value;
 };
+
+var confirmed = function (value, other) { return String(value) === String(other); };
 
 function unwrapExports (x) {
 	return x && x.__esModule ? x['default'] : x;
@@ -34980,12 +40544,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = assertString;
 function assertString(input) {
-  if (typeof input !== 'string') {
+  var isString = typeof input === 'string' || input instanceof String;
+
+  if (!isString) {
     throw new TypeError('This library (validator.js) validates strings only');
   }
 }
 module.exports = exports['default'];
 });
+
+unwrapExports(assertString_1);
 
 var isCreditCard_1 = createCommonjsModule(function (module, exports) {
 'use strict';
@@ -35002,12 +40570,12 @@ var _assertString2 = _interopRequireDefault(assertString_1);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /* eslint-disable max-len */
-var creditCard = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|(222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})|62[0-9]{14}$/;
+var creditCard = /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|(222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)[0-9]{12}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11}|62[0-9]{14})$/;
 /* eslint-enable max-len */
 
 function isCreditCard(str) {
   (0, _assertString2.default)(str);
-  var sanitized = str.replace(/[^0-9]+/g, '');
+  var sanitized = str.replace(/[- ]+/g, '');
   if (!creditCard.test(sanitized)) {
     return false;
   }
@@ -35039,17 +40607,17 @@ var isCreditCard = unwrapExports(isCreditCard_1);
 
 var credit_card = function (value) { return isCreditCard(String(value)); };
 
-var decimal = function (value, params) {
+var validate$5 = function (value, params) {
   var decimals = Array.isArray(params) ? (params[0] || '*') : '*';
   if (Array.isArray(value)) {
-    return false;
+    return value.every(function (val) { return validate$5(val, params); });
   }
 
   if (value === null || value === undefined || value === '') {
     return true;
   }
 
-    // if is 0.
+  // if is 0.
   if (Number(decimals) === 0) {
     return /^-?\d*$/.test(value);
   }
@@ -35063,13 +40631,60 @@ var decimal = function (value, params) {
 
   var parsedValue = parseFloat(value);
 
-    // eslint-disable-next-line
+  // eslint-disable-next-line
     return parsedValue === parsedValue;
 };
 
-var digits = function (value, ref) {
+var date_between = function (value, params) {
+  var min;
+  var max;
+  var format;
+  var inclusivity = '()';
+
+  if (params.length > 3) {
+    var assign$$1;
+    (assign$$1 = params, min = assign$$1[0], max = assign$$1[1], inclusivity = assign$$1[2], format = assign$$1[3]);
+  } else {
+    var assign$1;
+    (assign$1 = params, min = assign$1[0], max = assign$1[1], format = assign$1[2]);
+  }
+
+  var minDate = parseDate(min, format);
+  var maxDate = parseDate(max, format);
+  var dateVal = parseDate(value, format);
+
+  if (!minDate || !maxDate || !dateVal) {
+    return false;
+  }
+
+  if (inclusivity === '()') {
+    return isAfter(dateVal, minDate) && isBefore(dateVal, maxDate);
+  }
+
+  if (inclusivity === '(]') {
+    return isAfter(dateVal, minDate) && (isEqual$1(dateVal, maxDate) || isBefore(dateVal, maxDate));
+  }
+
+  if (inclusivity === '[)') {
+    return isBefore(dateVal, maxDate) && (isEqual$1(dateVal, minDate) || isAfter(dateVal, minDate));
+  }
+
+  return isEqual$1(dateVal, maxDate) || isEqual$1(dateVal, minDate) ||
+        (isBefore(dateVal, maxDate) && isAfter(dateVal, minDate));
+};
+
+var date_format = function (value, ref) {
+  var format = ref[0];
+
+  return !!parseDate(value, format);
+};
+
+var validate$6 = function (value, ref) {
   var length = ref[0];
 
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return validate$6(val, [length]); });
+  }
   var strVal = String(value);
 
   return /^[0-9]*$/.test(strVal) && strVal.length === Number(length);
@@ -35094,7 +40709,7 @@ var dimensions = function (files, ref) {
 
   var list = [];
   for (var i = 0; i < files.length; i++) {
-        // if file is not an image, reject.
+    // if file is not an image, reject.
     if (! /\.(jpg|svg|jpeg|png|bmp|gif)$/i.test(files[i].name)) {
       return false;
     }
@@ -35125,6 +40740,8 @@ function merge() {
 }
 module.exports = exports['default'];
 });
+
+unwrapExports(merge_1);
 
 var isByteLength_1 = createCommonjsModule(function (module, exports) {
 'use strict';
@@ -35161,6 +40778,8 @@ function isByteLength(str, options) {
 }
 module.exports = exports['default'];
 });
+
+unwrapExports(isByteLength_1);
 
 var isFQDN = createCommonjsModule(function (module, exports) {
 'use strict';
@@ -35200,6 +40819,10 @@ function isFDQN(str, options) {
     if (!parts.length || !/^([a-z\u00a1-\uffff]{2,}|xn[a-z0-9-]{2,})$/i.test(tld)) {
       return false;
     }
+    // disallow spaces
+    if (/[\s\u2002-\u200B\u202F\u205F\u3000\uFEFF\uDB40\uDC20]/.test(tld)) {
+      return false;
+    }
   }
   for (var part, i = 0; i < parts.length; i++) {
     part = parts[i];
@@ -35209,8 +40832,8 @@ function isFDQN(str, options) {
     if (!/^[a-z\u00a1-\uffff0-9-]+$/i.test(part)) {
       return false;
     }
+    // disallow full-width chars
     if (/[\uff01-\uff5e]/.test(part)) {
-      // disallow full-width chars
       return false;
     }
     if (part[0] === '-' || part[part.length - 1] === '-') {
@@ -35221,6 +40844,8 @@ function isFDQN(str, options) {
 }
 module.exports = exports['default'];
 });
+
+unwrapExports(isFQDN);
 
 var isEmail_1 = createCommonjsModule(function (module, exports) {
 'use strict';
@@ -35257,7 +40882,7 @@ var default_email_options = {
 
 /* eslint-disable max-len */
 /* eslint-disable no-control-regex */
-var displayName = /^[a-z\d!#\$%&'\*\+\-\/=\?\^_`{\|}~\.\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+[a-z\d!#\$%&'\*\+\-\/=\?\^_`{\|}~\.\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\s]*<(.+)>$/i;
+var displayName = /^[a-z\d!#\$%&'\*\+\-\/=\?\^_`{\|}~\.\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+[a-z\d!#\$%&'\*\+\-\/=\?\^_`{\|}~\,\.\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF\s]*<(.+)>$/i;
 var emailUserPart = /^[a-z\d!#\$%&'\*\+\-\/=\?\^_`{\|}~]+$/i;
 var quotedEmailUser = /^([\s\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e]|(\\[\x01-\x09\x0b\x0c\x0d-\x7f]))*$/i;
 var emailUserUtf8Part = /^[a-z\d!#\$%&'\*\+\-\/=\?\^_`{\|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+$/i;
@@ -35287,7 +40912,7 @@ function isEmail(str, options) {
     user = user.replace(/\./g, '').toLowerCase();
   }
 
-  if (!(0, _isByteLength2.default)(user, { max: 64 }) || !(0, _isByteLength2.default)(domain, { max: 256 })) {
+  if (!(0, _isByteLength2.default)(user, { max: 64 }) || !(0, _isByteLength2.default)(domain, { max: 254 })) {
     return false;
   }
 
@@ -35316,7 +40941,13 @@ module.exports = exports['default'];
 
 var isEmail = unwrapExports(isEmail_1);
 
-var email = function (value) { return isEmail(String(value)); };
+var validate$7 = function (value) {
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return isEmail(String(val)); });
+  }
+
+  return isEmail(String(value));
+};
 
 var ext = function (files, extensions) {
   var regex = new RegExp((".(" + (extensions.join('|')) + ")$"), 'i');
@@ -35327,7 +40958,14 @@ var ext = function (files, extensions) {
 var image = function (files) { return files.every(function (file) { return /\.(jpg|svg|jpeg|png|bmp|gif)$/i.test(file.name); }
 ); };
 
-var In = function (value, options) { return !! options.filter(function (option) { return option == value; }).length; }; // eslint-disable-line
+var validate$8 = function (value, options) {
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return validate$8(val, options); });
+  }
+
+  // eslint-disable-next-line
+  return !! options.filter(function (option) { return option == value; }).length;
+};
 
 var isIP_1 = createCommonjsModule(function (module, exports) {
 'use strict';
@@ -35416,13 +41054,61 @@ module.exports = exports['default'];
 var isIP = unwrapExports(isIP_1);
 
 var ip = function (value, ref) {
-	if ( ref === void 0 ) ref = [4];
-	var version = ref[0];
+  if ( ref === void 0 ) ref = [4];
+  var version = ref[0];
 
-	return isIP(value, version);
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return isIP(val, [version]); });
+  }
+
+  return isIP(value, version);
 };
 
-var max = function (value, ref) {
+/**
+ * @param {Array|String} value 
+ * @param {Number} length
+ * @param {Number} max 
+ */
+var compare = function (value, length, max) {
+  if (max === undefined) {
+    return value.length === length;
+  }
+
+  // cast to number.
+  max = Number(max);
+
+  return value.length >= length && value.length <= max;
+};
+
+var length = function (value, ref) {
+  var length = ref[0];
+  var max = ref[1]; if ( max === void 0 ) max = undefined;
+
+  length = Number(length);
+  if (value === undefined || value === null) {
+    return false;
+  }
+
+  if (typeof value === 'number') {
+    value = String(value);
+  }
+
+  if (!value.length) {
+    value = toArray(value);
+  }
+
+  return compare(value, length, max);
+};
+
+var integer = function (value) {
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return /^-?[0-9]+$/.test(String(val)); });
+  }
+
+  return /^-?[0-9]+$/.test(String(value));
+};
+
+var max$1 = function (value, ref) {
   var length = ref[0];
 
   if (value === undefined || value === null) {
@@ -35448,7 +41134,7 @@ var mimes = function (files, mimes) {
   return files.every(function (file) { return regex.test(file.type); });
 };
 
-var min = function (value, ref) {
+var min$1 = function (value, ref) {
   var length = ref[0];
 
   if (value === undefined || value === null) {
@@ -35467,9 +41153,22 @@ var min_value = function (value, ref) {
   return Number(value) >= min;
 };
 
-var not_in = function (value, options) { return ! options.filter(function (option) { return option == value; }).length; }; // eslint-disable-line
+var validate$9 = function (value, options) {
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return validate$9(val, options); });
+  }
 
-var numeric = function (value) { return /^[0-9]+$/.test(String(value)); };
+  // eslint-disable-next-line
+  return ! options.filter(function (option) { return option == value; }).length;
+};
+
+var numeric = function (value) {
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return /^[0-9]+$/.test(String(val)); });
+  }
+
+  return /^[0-9]+$/.test(String(value));
+};
 
 var regex = function (value, ref) {
   var regex = ref[0];
@@ -35482,12 +41181,20 @@ var regex = function (value, ref) {
   return new RegExp(regex, flags).test(String(value));
 };
 
-var required = function (value) {
+var required = function (value, params) {
+  if ( params === void 0 ) params = [false];
+
   if (Array.isArray(value)) {
     return !! value.length;
   }
 
-  if (value === undefined || value === null || value === false) {
+  // incase a field considers `false` as an empty value like checkboxes.
+  var invalidateFalse = params[0];
+  if (value === false && invalidateFalse) {
+    return false;
+  }
+
+  if (value === undefined || value === null) {
     return false;
   }
 
@@ -35601,6 +41308,10 @@ function isURL(url, options) {
   }
   url = split.join('://');
 
+  if (url === '') {
+    return false;
+  }
+
   split = url.split('/');
   url = split.shift();
 
@@ -35617,7 +41328,8 @@ function isURL(url, options) {
   }
   hostname = split.join('@');
 
-  port_str = ipv6 = null;
+  port_str = null;
+  ipv6 = null;
   var ipv6_match = hostname.match(wrapped_ipv6);
   if (ipv6_match) {
     host = '';
@@ -35638,7 +41350,7 @@ function isURL(url, options) {
     }
   }
 
-  if (!(0, _isIP2.default)(host) && !(0, _isFQDN2.default)(host, options) && (!ipv6 || !(0, _isIP2.default)(ipv6, 6)) && host !== 'localhost') {
+  if (!(0, _isIP2.default)(host) && !(0, _isFQDN2.default)(host, options) && (!ipv6 || !(0, _isIP2.default)(ipv6, 6))) {
     return false;
   }
 
@@ -35659,2659 +41371,52 @@ module.exports = exports['default'];
 var isURL = unwrapExports(isURL_1);
 
 var url = function (value, ref) {
-        if ( ref === void 0 ) ref = [true];
-        var requireProtocol = ref[0];
+  if ( ref === void 0 ) ref = [true];
+  var requireProtocol = ref[0];
 
-        return isURL(value, { require_protocol: !! requireProtocol });
+  var options = { require_protocol: !!requireProtocol, allow_underscores: true };
+  if (Array.isArray(value)) {
+    return value.every(function (val) { return isURL(val, options); });
+  }
+
+  return isURL(value, options);
 };
 
 /* eslint-disable camelcase */
 var Rules = {
-  alpha_dash: alpha_dash,
-  alpha_num: alpha_num,
-  alpha_spaces: alpha_spaces,
-  alpha: alpha$$1,
-  between: between,
+  after: after,
+  alpha_dash: validate$1,
+  alpha_num: validate$2,
+  alpha_spaces: validate$3,
+  alpha: validate,
+  before: before,
+  between: validate$4,
   confirmed: confirmed,
   credit_card: credit_card,
-  decimal: decimal,
-  digits: digits,
+  date_between: date_between,
+  date_format: date_format,
+  decimal: validate$5,
+  digits: validate$6,
   dimensions: dimensions,
-  email: email,
+  email: validate$7,
   ext: ext,
   image: image,
-  in: In,
+  in: validate$8,
+  integer: integer,
+  length: length,
   ip: ip,
-  max: max,
+  max: max$1,
   max_value: max_value,
   mimes: mimes,
-  min: min,
+  min: min$1,
   min_value: min_value,
-  not_in: not_in,
+  not_in: validate$9,
   numeric: numeric,
   regex: regex,
   required: required,
   size: size,
   url: url
 };
-
-var ErrorBag = function ErrorBag() {
-  this.errors = [];
-};
-
-  /**
-   * Adds an error to the internal array.
-   *
-   * @param {string} field The field name.
-   * @param {string} msg The error message.
-   * @param {String} rule The rule that is responsible for the error.
-   * @param {String} scope The Scope name, optional.
-   */
-ErrorBag.prototype.add = function add (field, msg, rule, scope) {
-    if ( scope === void 0 ) scope = '__global__';
-
-  this.errors.push({ field: field, msg: msg, rule: rule, scope: scope });
-};
-
-  /**
-   * Gets all error messages from the internal array.
-   *
-   * @param {String} scope The Scope name, optional.
-   * @return {Array} errors Array of all error messages.
-   */
-ErrorBag.prototype.all = function all (scope) {
-  if (! scope) {
-    return this.errors.map(function (e) { return e.msg; });
-  }
-
-  return this.errors.filter(function (e) { return e.scope === scope; }).map(function (e) { return e.msg; });
-};
-
-  /**
-   * Checks if there are any errors in the internal array.
-   * @param {String} scope The Scope name, optional.
-   * @return {boolean} result True if there was at least one error, false otherwise.
-   */
-ErrorBag.prototype.any = function any (scope) {
-  if (! scope) {
-    return !! this.errors.length;
-  }
-
-  return !! this.errors.filter(function (e) { return e.scope === scope; }).length;
-};
-
-  /**
-   * Removes all items from the internal array.
-   *
-   * @param {String} scope The Scope name, optional.
-   */
-ErrorBag.prototype.clear = function clear (scope) {
-  if (! scope) {
-    scope = '__global__';
-  }
-
-  this.errors = this.errors.filter(function (e) { return e.scope !== scope; });
-};
-
-  /**
-   * Collects errors into groups or for a specific field.
-   *
-   * @param{string} field The field name.
-   * @param{string} scope The scope name.
-   * @param {Boolean} map If it should map the errors to strings instead of objects.
-   * @return {Array} errors The errors for the specified field.
-   */
-ErrorBag.prototype.collect = function collect (field, scope, map) {
-    if ( map === void 0 ) map = true;
-
-  if (! field) {
-    var collection = {};
-    this.errors.forEach(function (e) {
-      if (! collection[e.field]) {
-        collection[e.field] = [];
-      }
-
-      collection[e.field].push(map ? e.msg : e);
-    });
-
-    return collection;
-  }
-
-  if (! scope) {
-    return this.errors.filter(function (e) { return e.field === field; }).map(function (e) { return (map ? e.msg : e); });
-  }
-
-  return this.errors.filter(function (e) { return e.field === field && e.scope === scope; })
-                    .map(function (e) { return (map ? e.msg : e); });
-};
-  /**
-   * Gets the internal array length.
-   *
-   * @return {Number} length The internal array length.
-   */
-ErrorBag.prototype.count = function count () {
-  return this.errors.length;
-};
-
-  /**
-   * Gets the first error message for a specific field.
-   *
-   * @param{string} field The field name.
-   * @return {string|null} message The error message.
-   */
-ErrorBag.prototype.first = function first (field, scope) {
-    var this$1 = this;
-    if ( scope === void 0 ) scope = '__global__';
-
-  var selector = this._selector(field);
-  var scoped = this._scope(field);
-
-  if (scoped) {
-    var result = this.first(scoped.name, scoped.scope);
-    // if such result exist, return it. otherwise it could be a field.
-    // with dot in its name.
-    if (result) {
-      return result;
-    }
-  }
-
-  if (selector) {
-    return this.firstByRule(selector.name, selector.rule, scope);
-  }
-
-  for (var i = 0; i < this.errors.length; i++) {
-    if (this$1.errors[i].field === field && (this$1.errors[i].scope === scope)) {
-      return this$1.errors[i].msg;
-    }
-  }
-
-  return null;
-};
-
-  /**
-   * Returns the first error rule for the specified field
-   *
-   * @param {string} field The specified field.
-   * @return {string|null} First error rule on the specified field if one is found, otherwise null
-   */
-ErrorBag.prototype.firstRule = function firstRule (field, scope) {
-  var errors = this.collect(field, scope, false);
-
-  return (errors.length && errors[0].rule) || null;
-};
-
-  /**
-   * Checks if the internal array has at least one error for the specified field.
-   *
-   * @param{string} field The specified field.
-   * @return {Boolean} result True if at least one error is found, false otherwise.
-   */
-ErrorBag.prototype.has = function has (field, scope) {
-    if ( scope === void 0 ) scope = '__global__';
-
-  return !! this.first(field, scope);
-};
-
-  /**
-   * Gets the first error message for a specific field and a rule.
-   * @param {String} name The name of the field.
-   * @param {String} rule The name of the rule.
-   * @param {String} scope The name of the scope (optional).
-   */
-ErrorBag.prototype.firstByRule = function firstByRule (name, rule, scope) {
-  var error = this.collect(name, scope, false).filter(function (e) { return e.rule === rule; })[0];
-
-  return (error && error.msg) || null;
-};
-
-  /**
-   * Removes all error messages associated with a specific field.
-   *
-   * @param{string} field The field which messages are to be removed.
-   * @param {String} scope The Scope name, optional.
-   */
-ErrorBag.prototype.remove = function remove (field, scope) {
-  var filter = scope ? (function (e) { return e.field !== field || e.scope !== scope; }) :
-                         (function (e) { return e.field !== field || e.scope !== '__global__'; });
-
-  this.errors = this.errors.filter(filter);
-};
-
-
-  /**
-   * Get the field attributes if there's a rule selector.
-   *
-   * @param{string} field The specified field.
-   * @return {Object|null}
-   */
-ErrorBag.prototype._selector = function _selector (field) {
-  if (field.indexOf(':') > -1) {
-    var ref = field.split(':');
-      var name = ref[0];
-      var rule = ref[1];
-
-    return { name: name, rule: rule };
-  }
-
-  return null;
-};
-
-  /**
-   * Get the field scope if specified using dot notation.
-   *
-   * @param {string} field the specifie field.
-   * @return {Object|null}
-   */
-ErrorBag.prototype._scope = function _scope (field) {
-  if (field.indexOf('.') > -1) {
-    var ref = field.split('.');
-      var scope = ref[0];
-      var name = ref[1];
-
-    return { name: name, scope: scope };
-  }
-
-  return null;
-};
-
-var ValidatorException = (function () {
-  function anonymous(msg) {
-    this.msg = "[vee-validate]: " + msg;
-  }
-
-  anonymous.prototype.toString = function toString () {
-    return this.msg;
-  };
-
-  return anonymous;
-}());
-
-/**
- * Gets the data attribute. the name must be kebab-case.
- */
-var getDataAttribute = function (el, name) { return el.getAttribute(("data-vv-" + name)); };
-
-/**
- * Determines the input field scope.
- */
-var getScope = function (el) {
-  var scope = getDataAttribute(el, 'scope');
-  if (! scope && el.form) {
-    scope = getDataAttribute(el.form, 'scope');
-  }
-
-  return scope;
-};
-
-/**
- * Gets the value in an object safely.
- * @param {String} propPath
- * @param {Object} target
- * @param {*} def
- */
-var getPath = function (propPath, target, def) {
-  if ( def === void 0 ) def = undefined;
-
-  if (!propPath || !target) { return def; }
-
-  var value = target;
-  propPath.split('.').every(function (prop) {
-    if (! Object.prototype.hasOwnProperty.call(value, prop)) {
-      value = def;
-
-      return false;
-    }
-
-    value = value[prop];
-
-    return true;
-  });
-
-  return value;
-};
-
-/**
- * Debounces a function.
- */
-var debounce = function (callback, wait, immediate) {
-  if ( wait === void 0 ) wait = 0;
-  if ( immediate === void 0 ) immediate = true;
-
-  var timeout;
-
-  return function () {
-    var args = [], len = arguments.length;
-    while ( len-- ) args[ len ] = arguments[ len ];
-
-    var later = function () {
-      timeout = null;
-      if (!immediate) { callback.apply(void 0, args); }
-    };
-    var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) { callback.apply(void 0, args); }
-  };
-};
-
-/**
- * Emits a warning to the console.
- */
-var warn = function (message) {
-  if (! console) {
-    return;
-  }
-
-    console.warn(("[vee-validate]: " + message)); // eslint-disable-line
-};
-
-/**
- * Checks if the value is an object.
- */
-var isObject = function (object) { return object !== null && object && typeof object === 'object' && ! Array.isArray(object); };
-
-/**
- * Checks if a function is callable.
- */
-var isCallable = function (func) { return typeof func === 'function'; };
-
-/**
- * Check if element has the css class on it.
- */
-var hasClass = function (el, className) {
-  if (el.classList) {
-    return el.classList.contains(className);
-  }
-
-  return !!el.className.match(new RegExp(("(\\s|^)" + className + "(\\s|$)")));
-};
-
-/**
- * Adds the provided css className to the element.
- */
-var addClass = function (el, className) {
-  if (el.classList) {
-    el.classList.add(className);
-    return;
-  }
-
-  if (!hasClass(el, className)) {
-    el.className += " " + className;
-  }
-};
-
-/**
- * Remove the provided css className from the element.
- */
-var removeClass = function (el, className) {
-  if (el.classList) {
-    el.classList.remove(className);
-    return;
-  }
-
-  if (hasClass(el, className)) {
-    var reg = new RegExp(("(\\s|^)" + className + "(\\s|$)"));
-    el.className = el.className.replace(reg, ' ');
-  }
-};
-
-/**
- * Converts an array-like object to array.
- * Simple polyfill for Array.from
- */
-var toArray = function (arrayLike) {
-  if (Array.from) {
-    return Array.from(arrayLike);
-  }
-
-  var array = [];
-  var length = arrayLike.length;
-  for (var i = 0; i < length; i++) {
-    array.push(arrayLike[i]);
-  }
-
-  return array;
-};
-
-/**
- * Assign polyfill from the mdn.
- */
-var assign = function (target) {
-  var others = [], len = arguments.length - 1;
-  while ( len-- > 0 ) others[ len ] = arguments[ len + 1 ];
-
-  if (Object.assign) {
-    return Object.assign.apply(Object, [ target ].concat( others ));
-  }
-
-  if (target == null) {
-    throw new TypeError('Cannot convert undefined or null to object');
-  }
-
-  var to = Object(target);
-  others.forEach(function (arg) {
-    // Skip over if undefined or null
-    if (arg != null) {
-      Object.keys(arg).forEach(function (key) {
-        to[key] = arg[key];
-      });
-    }
-  });
-
-  return to;
-};
-
-/**
- * polyfills array.find
- * @param {Array} array
- * @param {Function} predicate
- */
-var find = function (array, predicate) {
-  if (array.find) {
-    return array.find(predicate);
-  }
-
-  var result;
-  array.some(function (item) {
-    if (predicate(item)) {
-      result = item;
-      return true;
-    }
-
-    return false;
-  });
-
-  return result;
-};
-
-/**
- * Gets the rules from a binding value or the element dataset.
- *
- * @param {String} expression The binding expression.
- * @param {Object|String} value The binding value.
- * @param {element} el The element.
- * @returns {String|Object}
- */
-var getRules = function (expression, value, el) {
-  if (! expression) {
-    return getDataAttribute(el, 'rules');
-  }
-
-  if (typeof value === 'string') {
-    return value;
-  }
-
-  if (~['string', 'object'].indexOf(typeof value.rules)) {
-    return value.rules;
-  }
-
-  return value;
-};
-
-var Dictionary = function Dictionary(dictionary) {
-  if ( dictionary === void 0 ) dictionary = {};
-
-  this.dictionary = {};
-  this.merge(dictionary);
-};
-
-Dictionary.prototype.hasLocale = function hasLocale (locale) {
-  return !! this.dictionary[locale];
-};
-
-Dictionary.prototype.getMessage = function getMessage (locale, key, fallback) {
-  if (! this.hasMessage(locale, key)) {
-    return fallback || this._getDefaultMessage(locale);
-  }
-
-  return this.dictionary[locale].messages[key];
-};
-
-/**
- * Gets a specific message for field. fallsback to the rule message.
- *
- * @param {String} locale
- * @param {String} field
- * @param {String} key
- */
-Dictionary.prototype.getFieldMessage = function getFieldMessage (locale, field, key) {
-  if (! this.hasLocale(locale)) {
-    return this.getMessage(locale, key);
-  }
-
-  var dict = this.dictionary[locale].custom && this.dictionary[locale].custom[field];
-  if (! dict || ! dict[key]) {
-    return this.getMessage(locale, key);
-  }
-
-  return dict[key];
-};
-
-Dictionary.prototype._getDefaultMessage = function _getDefaultMessage (locale) {
-  if (this.hasMessage(locale, '_default')) {
-    return this.dictionary[locale].messages._default;
-  }
-
-  return this.dictionary.en.messages._default;
-};
-
-Dictionary.prototype.getAttribute = function getAttribute (locale, key, fallback) {
-    if ( fallback === void 0 ) fallback = '';
-
-  if (! this.hasAttribute(locale, key)) {
-    return fallback;
-  }
-
-  return this.dictionary[locale].attributes[key];
-};
-
-Dictionary.prototype.hasMessage = function hasMessage (locale, key) {
-  return !! (
-          this.hasLocale(locale) &&
-          this.dictionary[locale].messages &&
-          this.dictionary[locale].messages[key]
-      );
-};
-
-Dictionary.prototype.hasAttribute = function hasAttribute (locale, key) {
-  return !! (
-          this.hasLocale(locale) &&
-          this.dictionary[locale].attributes &&
-          this.dictionary[locale].attributes[key]
-      );
-};
-
-Dictionary.prototype.merge = function merge (dictionary) {
-  this._merge(this.dictionary, dictionary);
-};
-
-Dictionary.prototype.setMessage = function setMessage (locale, key, message) {
-  if (! this.hasLocale(locale)) {
-    this.dictionary[locale] = {
-      messages: {},
-      attributes: {}
-    };
-  }
-
-  this.dictionary[locale].messages[key] = message;
-};
-
-Dictionary.prototype.setAttribute = function setAttribute (locale, key, attribute) {
-  if (! this.hasLocale(locale)) {
-    this.dictionary[locale] = {
-      messages: {},
-      attributes: {}
-    };
-  }
-
-  this.dictionary[locale].attributes[key] = attribute;
-};
-
-Dictionary.prototype._merge = function _merge (target, source) {
-    var this$1 = this;
-
-  if (! (isObject(target) && isObject(source))) {
-    return target;
-  }
-
-  Object.keys(source).forEach(function (key) {
-    if (isObject(source[key])) {
-      if (! target[key]) {
-        assign(target, ( obj = {}, obj[key] = {}, obj ));
-          var obj;
-      }
-
-      this$1._merge(target[key], source[key]);
-      return;
-    }
-
-    assign(target, ( obj$1 = {}, obj$1[key] = source[key], obj$1 ));
-      var obj$1;
-  });
-
-  return target;
-};
-
-/* istanbul ignore next */
-var messages = {
-  _default: function (field) { return ("The " + field + " value is not valid."); },
-  alpha_dash: function (field) { return ("The " + field + " field may contain alpha-numeric characters as well as dashes and underscores."); },
-  alpha_num: function (field) { return ("The " + field + " field may only contain alpha-numeric characters."); },
-  alpha_spaces: function (field) { return ("The " + field + " field may only contain alphabetic characters as well as spaces."); },
-  alpha: function (field) { return ("The " + field + " field may only contain alphabetic characters."); },
-  between: function (field, ref) {
-    var min = ref[0];
-    var max = ref[1];
-
-    return ("The " + field + " field must be between " + min + " and " + max + ".");
-},
-  confirmed: function (field) { return ("The " + field + " confirmation does not match."); },
-  credit_card: function (field) { return ("The " + field + " field is invalid."); },
-  decimal: function (field, ref) {
-    if ( ref === void 0 ) ref = ['*'];
-    var decimals = ref[0];
-
-    return ("The " + field + " field must be numeric and may contain " + (decimals === '*' ? '' : decimals) + " decimal points.");
-},
-  digits: function (field, ref) {
-    var length = ref[0];
-
-    return ("The " + field + " field must be numeric and exactly contain " + length + " digits.");
-},
-  dimensions: function (field, ref) {
-    var width = ref[0];
-    var height = ref[1];
-
-    return ("The " + field + " field must be " + width + " pixels by " + height + " pixels.");
-},
-  email: function (field) { return ("The " + field + " field must be a valid email."); },
-  ext: function (field) { return ("The " + field + " field must be a valid file."); },
-  image: function (field) { return ("The " + field + " field must be an image."); },
-  in: function (field) { return ("The " + field + " field must be a valid value."); },
-  ip: function (field) { return ("The " + field + " field must be a valid ip address."); },
-  max: function (field, ref) {
-    var length = ref[0];
-
-    return ("The " + field + " field may not be greater than " + length + " characters.");
-},
-  max_value: function (field, ref) {
-    var max = ref[0];
-
-    return ("The " + field + " field must be " + max + " or less.");
-},
-  mimes: function (field) { return ("The " + field + " field must have a valid file type."); },
-  min: function (field, ref) {
-    var length = ref[0];
-
-    return ("The " + field + " field must be at least " + length + " characters.");
-},
-  min_value: function (field, ref) {
-    var min = ref[0];
-
-    return ("The " + field + " field must be " + min + " or more.");
-},
-  not_in: function (field) { return ("The " + field + " field must be a valid value."); },
-  numeric: function (field) { return ("The " + field + " field may only contain numeric characters."); },
-  regex: function (field) { return ("The " + field + " field format is invalid."); },
-  required: function (field) { return ("The " + field + " field is required."); },
-  size: function (field, ref) {
-    var size = ref[0];
-
-    return ("The " + field + " field must be less than " + size + " KB.");
-},
-  url: function (field) { return ("The " + field + " field is not a valid URL."); }
-};
-
-var after = function (moment) { return function (value, ref) {
-  var targetField = ref[0];
-  var inclusion = ref[1];
-  var format = ref[2];
-
-  var field = document.querySelector(("input[name='" + targetField + "']"));
-  if (typeof format === 'undefined') {
-    format = inclusion;
-    inclusion = false;
-  }
-  var dateValue = moment(value, format, true);
-  var otherValue = moment(field ? field.value : targetField, format, true);
-
-  // if either is not valid.
-  if (! dateValue.isValid() || ! otherValue.isValid()) {
-    return false;
-  }
-
-  return dateValue.isAfter(otherValue) || (inclusion && dateValue.isSame(otherValue));
-}; };
-
-var before = function (moment) { return function (value, ref) {
-  var targetField = ref[0];
-  var inclusion = ref[1];
-  var format = ref[2];
-
-  var field = document.querySelector(("input[name='" + targetField + "']"));
-  if (typeof format === 'undefined') {
-    format = inclusion;
-    inclusion = false;
-  }
-  var dateValue = moment(value, format, true);
-  var otherValue = moment(field ? field.value : targetField, format, true);
-
-  // if either is not valid.
-  if (! dateValue.isValid() || ! otherValue.isValid()) {
-    return false;
-  }
-
-  return dateValue.isBefore(otherValue) || (inclusion && dateValue.isSame(otherValue));
-}; };
-
-var date_format = function (moment) { return function (value, ref) {
-	var format = ref[0];
-
-	return moment(value, format, true).isValid();
- }	};
-
-var date_between = function (moment) { return function (value, params) {
-  var min;
-  var max;
-  var format;
-  var inclusivity = '()';
-
-  if (params.length > 3) {
-    var assign;
-    (assign = params, min = assign[0], max = assign[1], inclusivity = assign[2], format = assign[3]);
-  } else {
-    var assign$1;
-    (assign$1 = params, min = assign$1[0], max = assign$1[1], format = assign$1[2]);
-  }
-
-  var minDate = moment(min, format, true);
-  var maxDate = moment(max, format, true);
-  var dateVal = moment(value, format, true);
-
-  if (! (minDate.isValid() && maxDate.isValid() && dateVal.isValid())) {
-    return false;
-  }
-
-  return dateVal.isBetween(minDate, maxDate, 'days', inclusivity);
-}; };
-
-/* istanbul ignore next */
-/* eslint-disable max-len */
-var messages$1 = {
-  after: function (field, ref) {
-    var target = ref[0];
-
-    return ("The " + field + " must be after " + target + ".");
-},
-  before: function (field, ref) {
-    var target = ref[0];
-
-    return ("The " + field + " must be before " + target + ".");
-},
-  date_between: function (field, ref) {
-    var min = ref[0];
-    var max = ref[1];
-
-    return ("The " + field + " must be between " + min + " and " + max + ".");
-},
-  date_format: function (field, ref) {
-    var format = ref[0];
-
-    return ("The " + field + " must be in the format " + format + ".");
-}
-};
-
-var date = {
-  make: function (moment) { return ({
-    date_format: date_format(moment),
-    after: after(moment),
-    before: before(moment),
-    date_between: date_between(moment)
-  }); },
-  messages: messages$1,
-  installed: false
-};
-
-var LOCALE = 'en';
-var STRICT_MODE = true;
-var DICTIONARY = new Dictionary({
-  en: {
-    messages: messages,
-    attributes: {},
-    custom: {}
-  }
-});
-
-var Validator = function Validator(validations, options) {
-  if ( options === void 0 ) options = { init: true, vm: null };
-
-  this.strictMode = STRICT_MODE;
-  this.$scopes = { __global__: {} };
-  this._createFields(validations);
-  this.errorBag = new ErrorBag();
-  this.fieldBag = {};
-  this.paused = false;
-  this.$vm = options.vm;
-
-  // Some fields will be later evaluated, because the vm isn't mounted yet
-  // so it may register it under an inaccurate scope.
-  this.$deferred = [];
-  this.$ready = false;
-
-  // if momentjs is present, install the validators.
-  if (typeof moment === 'function') {
-    // eslint-disable-next-line
-    this.installDateTimeValidators(moment);
-  }
-
-  if (options.init) {
-    this.init();
-  }
-};
-
-var prototypeAccessors = { dictionary: {},locale: {},rules: {} };
-
-/**
- * @return {Dictionary}
- */
-prototypeAccessors.dictionary.get = function () {
-  return DICTIONARY;
-};
-
-/**
- * @return {String}
- */
-prototypeAccessors.locale.get = function () {
-  return LOCALE;
-};
-
-/**
- * @return {Object}
- */
-prototypeAccessors.rules.get = function () {
-  return Rules;
-};
-
-/**
- * Merges a validator object into the Rules and Messages.
- *
- * @param{string} name The name of the validator.
- * @param{function|object} validator The validator object.
- */
-Validator._merge = function _merge (name, validator) {
-  if (isCallable(validator)) {
-    Rules[name] = validator;
-    return;
-  }
-
-  Rules[name] = validator.validate;
-  if (isCallable(validator.getMessage)) {
-    DICTIONARY.setMessage(LOCALE, name, validator.getMessage);
-  }
-
-  if (validator.messages) {
-    DICTIONARY.merge(
-      Object.keys(validator.messages).reduce(function (prev, curr) {
-        var dict = prev;
-        dict[curr] = {
-          messages: ( obj = {}, obj[name] = validator.messages[curr], obj )
-        };
-          var obj;
-
-        return dict;
-      }, {})
-    );
-  }
-};
-
-/**
- * Guards from extnsion violations.
- *
- * @param{string} name name of the validation rule.
- * @param{object} validator a validation rule object.
- */
-Validator._guardExtend = function _guardExtend (name, validator) {
-  if (Rules[name]) {
-    throw new ValidatorException(
-      ("Extension Error: There is an existing validator with the same name '" + name + "'.")
-    );
-  }
-
-  if (isCallable(validator)) {
-    return;
-  }
-
-  if (! isCallable(validator.validate)) {
-    throw new ValidatorException(
-      // eslint-disable-next-line
-      ("Extension Error: The validator '" + name + "' must be a function or have a 'validate' method.")
-    );
-  }
-
-  if (! isCallable(validator.getMessage) && ! isObject(validator.messages)) {
-    throw new ValidatorException(
-      // eslint-disable-next-line
-      ("Extension Error: The validator '" + name + "' must have a 'getMessage' method or have a 'messages' object.")
-    );
-  }
-};
-
-/**
- * Static constructor.
- *
- * @param{object} validations The validations object.
- * @return {Validator} validator A validator object.
- */
-Validator.create = function create (validations, options) {
-  return new Validator(validations, options);
-};
-
-/**
- * Adds a custom validator to the list of validation rules.
- *
- * @param{string} name The name of the validator.
- * @param{object|function} validator The validator object/function.
- */
-Validator.extend = function extend (name, validator) {
-  Validator._guardExtend(name, validator);
-  Validator._merge(name, validator);
-};
-
-/**
- * Installs the datetime validators and the messages.
- */
-Validator.installDateTimeValidators = function installDateTimeValidators (moment) {
-  if (typeof moment !== 'function') {
-    warn('To use the date-time validators you must provide moment reference.');
-
-    return false;
-  }
-
-  if (date.installed) {
-    return true;
-  }
-
-  var validators = date.make(moment);
-  Object.keys(validators).forEach(function (name) {
-    Validator.extend(name, validators[name]);
-  });
-
-  Validator.updateDictionary({
-    en: {
-      messages: date.messages
-    }
-  });
-  date.installed = true;
-
-  return true;
-};
-
-/**
- * Removes a rule from the list of validators.
- * @param {String} name The name of the validator/rule.
- */
-Validator.remove = function remove (name) {
-  delete Rules[name];
-};
-
-/**
- * Sets the default locale for all validators.
- *
- * @param {String} language The locale id.
- */
-Validator.setLocale = function setLocale (language) {
-    if ( language === void 0 ) language = 'en';
-
-  /* istanbul ignore if */
-  if (! DICTIONARY.hasLocale(language)) {
-    // eslint-disable-next-line
-    warn('You are setting the validator locale to a locale that is not defined in the dicitionary. English messages may still be generated.');
-  }
-
-  LOCALE = language;
-};
-
-/**
- * Sets the operating mode for all newly created validators.
- * strictMode = true: Values without a rule are invalid and cause failure.
- * strictMode = false: Values without a rule are valid and are skipped.
- * @param {Boolean} strictMode.
- */
-Validator.setStrictMode = function setStrictMode (strictMode) {
-    if ( strictMode === void 0 ) strictMode = true;
-
-  STRICT_MODE = strictMode;
-};
-
-/**
- * Updates the dicitionary, overwriting existing values and adding new ones.
- *
- * @param{object} data The dictionary object.
- */
-Validator.updateDictionary = function updateDictionary (data) {
-  DICTIONARY.merge(data);
-};
-
-Validator.addLocale = function addLocale (locale) {
-  if (! locale.name) {
-    warn('Your locale must have a name property');
-    return;
-  }
-
-  this.updateDictionary(( obj = {}, obj[locale.name] = locale, obj ));
-    var obj;
-};
-
-Validator.prototype.addLocale = function addLocale (locale) {
-  Validator.addLocale(locale);
-};
-
-/**
- * Resolves the scope value. Only strings and functions are allowed.
- * @param {Function|String} scope
- * @returns {String}
- */
-Validator.prototype._resolveScope = function _resolveScope (scope) {
-  if (typeof scope === 'string') {
-    return scope;
-  }
-
-  // The resolved value should be string.
-  if (isCallable(scope)) {
-    var value = scope();
-    return typeof value === 'string' ? value : '__global__';
-  }
-
-  return '__global__';
-};
-
-/**
- * Resolves the field values from the getter functions.
- */
-Validator.prototype._resolveValuesFromGetters = function _resolveValuesFromGetters (scope) {
-    var this$1 = this;
-    if ( scope === void 0 ) scope = '__global__';
-
-  if (! this.$scopes[scope]) {
-    return {};
-  }
-  var values = {};
-  Object.keys(this.$scopes[scope]).forEach(function (name) {
-    var field = this$1.$scopes[scope][name];
-    var getter = field.getter;
-    var context = field.context;
-    var fieldScope = this$1._resolveScope(field.scope);
-    if (getter && context && (scope === '__global__' || fieldScope === scope)) {
-      values[name] = {
-        value: getter(context()),
-        scope: fieldScope
-      };
-    }
-  });
-
-  return values;
-};
-
-/**
- * Creates the fields to be validated.
- *
- * @param{object} validations
- * @return {object} Normalized object.
- */
-Validator.prototype._createFields = function _createFields (validations) {
-    var this$1 = this;
-
-  if (! validations) {
-    return;
-  }
-
-  Object.keys(validations).forEach(function (field) {
-    this$1._createField(field, validations[field]);
-  });
-};
-
-/**
- * Creates a field entry in the fields object.
- * @param {String} name.
- * @param {String|Array} checks.
- */
-Validator.prototype._createField = function _createField (name, checks, scope) {
-    if ( scope === void 0 ) scope = '__global__';
-
-  scope = this._resolveScope(scope);
-  if (! this.$scopes[scope]) {
-    this.$scopes[scope] = {};
-  }
-
-  if (! this.$scopes[scope][name]) {
-    this.$scopes[scope][name] = {};
-  }
-
-  var field = this.$scopes[scope][name];
-  field.validations = this._normalizeRules(name, checks, scope);
-  field.required = this._isRequired(field);
-};
-
-/**
- * Normalizes rules.
- * @return {Object}
- */
-Validator.prototype._normalizeRules = function _normalizeRules (name, checks, scope) {
-  if (! checks) { return {}; }
-
-  if (typeof checks === 'string') {
-    return this._normalizeString(checks);
-  }
-
-  if (! isObject(checks)) {
-    warn(("Your checks for '" + scope + "." + name + "' must be either a string or an object."));
-    return {};
-  }
-
-  return this._normalizeObject(checks);
-};
-
-/**
- * Checks if a field has a required rule.
- */
-Validator.prototype._isRequired = function _isRequired (field) {
-  return field.validations && field.validations.required;
-};
-
-/**
- * Normalizes an object of rules.
- */
-Validator.prototype._normalizeObject = function _normalizeObject (rules) {
-    var this$1 = this;
-
-  var validations = {};
-  Object.keys(rules).forEach(function (rule) {
-    var params = [];
-    if (rules[rule] === true) {
-      params = [];
-    } else if (Array.isArray(rules[rule])) {
-      params = rules[rule];
-    } else {
-      params = [rules[rule]];
-    }
-
-    if (rules[rule] === false) {
-      delete validations[rule];
-    } else {
-      validations[rule] = params;
-    }
-
-    if (date.installed && this$1._isADateRule(rule)) {
-      var dateFormat = this$1._getDateFormat(validations);
-
-      if (! this$1._containsValidation(validations[rule], dateFormat)) {
-        validations[rule].push(this$1._getDateFormat(validations));
-      }
-    }
-  });
-
-  return validations;
-};
-
-/**
- * Date rules need the existance of a format, so date_format must be supplied.
- * @param {String} name The rule name.
- * @param {Array} validations the field validations.
- */
-Validator.prototype._getDateFormat = function _getDateFormat (validations) {
-  if (validations.date_format && Array.isArray(validations.date_format)) {
-    return validations.date_format[0];
-  }
-
-  return null;
-};
-
-/**
- * Checks if the passed rule is a date rule.
- */
-Validator.prototype._isADateRule = function _isADateRule (rule) {
-  return !! ~['after', 'before', 'date_between'].indexOf(rule);
-};
-
-/**
- * Checks if the passed validation appears inside the array.
- */
-Validator.prototype._containsValidation = function _containsValidation (validations, validation) {
-  return !! ~validations.indexOf(validation);
-};
-
-/**
- * Normalizes string rules.
- * @param {String} rules The rules that will be normalized.
- * @param {Object} field The field object that is being operated on.
- */
-Validator.prototype._normalizeString = function _normalizeString (rules) {
-    var this$1 = this;
-
-  var validations = {};
-  rules.split('|').forEach(function (rule) {
-    var parsedRule = this$1._parseRule(rule);
-    if (! parsedRule.name) {
-      return;
-    }
-
-    if (parsedRule.name === 'required') {
-      validations.required = true;
-    }
-
-    validations[parsedRule.name] = parsedRule.params;
-    if (date.installed && this$1._isADateRule(parsedRule.name)) {
-      var dateFormat = this$1._getDateFormat(validations);
-
-      if (! this$1._containsValidation(validations[parsedRule.name], dateFormat)) {
-        validations[parsedRule.name].push(this$1._getDateFormat(validations));
-      }
-    }
-  });
-
-  return validations;
-};
-
-/**
- * Normalizes a string rule.
- *
- * @param {string} rule The rule to be normalized.
- * @return {object} rule The normalized rule.
- */
-Validator.prototype._parseRule = function _parseRule (rule) {
-  var params = [];
-  var name = rule.split(':')[0];
-
-  if (~rule.indexOf(':')) {
-    params = rule.split(':').slice(1).join(':').split(',');
-  }
-
-  return { name: name, params: params };
-};
-
-/**
- * Formats an error message for field and a rule.
- *
- * @param{string} field The field name.
- * @param{object} rule Normalized rule object.
- * @param {object} data Additional Information about the validation result.
- * @param {string} scope The field scope.
- * @return {string} Formatted error message.
- */
-Validator.prototype._formatErrorMessage = function _formatErrorMessage (field, rule, data, scope) {
-    if ( data === void 0 ) data = {};
-    if ( scope === void 0 ) scope = '__global__';
-
-  var name = this._getFieldDisplayName(field, scope);
-  var params = this._getLocalizedParams(rule, scope);
-  // Defaults to english message.
-  if (! this.dictionary.hasLocale(LOCALE)) {
-    var msg$1 = this.dictionary.getFieldMessage('en', field, rule.name);
-
-    return isCallable(msg$1) ? msg$1(name, params, data) : msg$1;
-  }
-
-  var msg = this.dictionary.getFieldMessage(LOCALE, field, rule.name);
-
-  return isCallable(msg) ? msg(name, params, data) : msg;
-};
-
-/**
- * Translates the parameters passed to the rule (mainly for target fields).
- */
-Validator.prototype._getLocalizedParams = function _getLocalizedParams (rule, scope) {
-    if ( scope === void 0 ) scope = '__global__';
-
-  if (~ ['after', 'before', 'confirmed'].indexOf(rule.name) &&
-      rule.params && rule.params[0]) {
-    var param = this.$scopes[scope][rule.params[0]];
-    if (param && param.name) { return [param.name]; }
-    return [this.dictionary.getAttribute(LOCALE, rule.params[0], rule.params[0])];
-  }
-
-  return rule.params;
-};
-
-/**
- * Resolves an appropiate display name, first checking 'data-as' or the registered 'prettyName'
- * Then the dictionary, then fallsback to field name.
- * @return {String} displayName The name to be used in the errors.
- */
-Validator.prototype._getFieldDisplayName = function _getFieldDisplayName (field, scope) {
-    if ( scope === void 0 ) scope = '__global__';
-
-  return this.$scopes[scope][field].as || this.dictionary.getAttribute(LOCALE, field, field);
-};
-
-/**
- * Tests a single input value against a rule.
- *
- * @param{*} name The name of the field.
- * @param{*} valuethe value of the field.
- * @param{object} rule the rule object.
- * @param {scope} scope The field scope.
- * @return {boolean} Whether it passes the check.
- */
-Validator.prototype._test = function _test (name, value, rule, scope) {
-    var this$1 = this;
-    if ( scope === void 0 ) scope = '__global__';
-
-  var validator = Rules[rule.name];
-  if (! validator || typeof validator !== 'function') {
-    throw new ValidatorException(("No such validator '" + (rule.name) + "' exists."));
-  }
-
-  var result = validator(value, rule.params, name);
-
-  // If it is a promise.
-  if (isCallable(result.then)) {
-    return result.then(function (values) {
-      var allValid = true;
-      var data = {};
-      if (Array.isArray(values)) {
-        allValid = values.every(function (t) { return t.valid; });
-      } else { // Is a single object.
-        allValid = values.valid;
-        data = values.data;
-      }
-
-      if (! allValid) {
-        this$1.errorBag.add(
-                      name,
-                      this$1._formatErrorMessage(name, rule, data, scope),
-                      rule.name,
-                      scope
-                  );
-      }
-
-      return allValid;
-    });
-  }
-
-  if (! isObject(result)) {
-    result = { valid: result, data: {} };
-  }
-
-  if (! result.valid) {
-    this.errorBag.add(
-              name,
-              this._formatErrorMessage(name, rule, result.data, scope),
-              rule.name,
-              scope
-          );
-  }
-
-  return result.valid;
-};
-
-/**
- * Adds an event listener for a specific field.
- * @param {String} name
- * @param {String} fieldName
- * @param {Function} callback
- */
-Validator.prototype.on = function on (name, fieldName, scope, callback) {
-  if (! fieldName) {
-    throw new ValidatorException(("Cannot add a listener for non-existent field " + fieldName + "."));
-  }
-
-  if (! isCallable(callback)) {
-    throw new ValidatorException(("The " + name + " callback for field " + fieldName + " is not callable."));
-  }
-
-  this.$scopes[scope][fieldName].events[name] = callback;
-};
-
-/**
- * Removes the event listener for a specific field.
- * @param {String} name
- * @param {String} fieldName
- */
-Validator.prototype.off = function off (name, fieldName, scope) {
-  if (! fieldName) {
-    warn(("Cannot remove a listener for non-existent field " + fieldName + "."));
-  }
-
-  this.$scopes[scope][fieldName].events[name] = undefined;
-};
-
-Validator.prototype._assignFlags = function _assignFlags (field) {
-  field.flags = {
-    untouched: true,
-    touched: false,
-    dirty: false,
-    pristine: true,
-    valid: null,
-    invalid: null,
-    required: field.required,
-    pending: false
-  };
-
-  var flagObj = {};
-    flagObj[field.name] = field.flags;
-  if (field.scope === '__global__') {
-    this.fieldBag = assign({}, this.fieldBag, flagObj);
-    return;
-  }
-
-  var scopeObj = assign({}, this.fieldBag[("$" + (field.scope))], flagObj);
-
-  this.fieldBag = assign({}, this.fieldBag, ( obj = {}, obj[("$" + (field.scope))] = scopeObj, obj ));
-    var obj;
-};
-
-/**
- * Registers a field to be validated.
- *
- * @param{string} name The field name.
- * @param{String|Array|Object} checks validations expression.
- * @param {string} prettyName Custom name to be used as field name in error messages.
- * @param {Function} getter A function used to retrive a fresh value for the field.
- */
-Validator.prototype.attach = function attach (name, checks, options) {
-    var this$1 = this;
-    if ( options === void 0 ) options = {};
-
-  var attach = function () {
-    options.scope = this$1._resolveScope(options.scope);
-    this$1.updateField(name, checks, options);
-    var field = this$1.$scopes[options.scope][name];
-    field.scope = options.scope;
-    field.name = name;
-    field.as = options.prettyName;
-    field.getter = options.getter;
-    field.context = options.context;
-    field.listeners = options.listeners || { detach: function detach() {} };
-    field.el = field.listeners.el;
-    field.events = {};
-    this$1._assignFlags(field);
-    // cache the scope property.
-    if (field.el && isCallable(field.el.setAttribute)) {
-      field.el.setAttribute('data-vv-scope', field.scope);
-    }
-
-    if (field.listeners.classes) {
-      field.listeners.classes.attach(field);
-    }
-    this$1._setAriaRequiredAttribute(field);
-    this$1._setAriaValidAttribute(field, true);
-    // if initial modifier is applied, validate immediatly.
-    if (options.initial) {
-      this$1.validate(name, field.getter(field.context()), field.scope).catch(function () {});
-    }
-  };
-
-  var scope = isCallable(options.scope) ? options.scope() : options.scope;
-  if (! scope && ! this.$ready) {
-    this.$deferred.push(attach);
-    return;
-  }
-
-  attach();
-};
-
-/**
- * Initializes the non-scoped fields and any bootstrap logic.
- */
-Validator.prototype.init = function init () {
-  this.$ready = true;
-  this.$deferred.forEach(function (attach) {
-    attach();
-  });
-  this.$deferred = [];
-
-  return this;
-};
-
-/**
- * Sets the flags on a field.
- *
- * @param {String} name
- * @param {Object} flags
- */
-Validator.prototype.flag = function flag (name, flags) {
-  var ref = name.split('.');
-    var scope = ref[0];
-    var fieldName = ref[1];
-  if (!fieldName) {
-    fieldName = scope;
-    scope = null;
-  }
-  var field = scope ? getPath((scope + "." + fieldName), this.$scopes) :
-                        this.$scopes.__global__[fieldName];
-  if (! field) {
-    return;
-  }
-
-  Object.keys(field.flags).forEach(function (flag) {
-    field.flags[flag] = flags[flag] !== undefined ? flags[flag] : field.flags[flag];
-  });
-  field.listeners.classes.sync();
-};
-
-/**
- * Append another validation to an existing field.
- *
- * @param{string} name The field name.
- * @param{string} checks validations expression.
- */
-Validator.prototype.append = function append (name, checks, options) {
-    if ( options === void 0 ) options = {};
-
-  options.scope = this._resolveScope(options.scope);
-  // No such field
-  if (! this.$scopes[options.scope] || ! this.$scopes[options.scope][name]) {
-    this.attach(name, checks, options);
-  }
-
-  var field = this.$scopes[options.scope][name];
-  var newChecks = this._normalizeRules(name, checks, options.scope);
-  Object.keys(newChecks).forEach(function (key) {
-    field.validations[key] = newChecks[key];
-  });
-};
-
-/**
- * Updates the field rules with new ones.
- */
-Validator.prototype.updateField = function updateField (name, checks, options) {
-    if ( options === void 0 ) options = {};
-
-  var field = getPath(((options.scope) + "." + name), this.$scopes, null);
-  var oldChecks = field ? JSON.stringify(field.validations) : '';
-  this._createField(name, checks, options.scope);
-  field = getPath(((options.scope) + "." + name), this.$scopes, null);
-  var newChecks = field ? JSON.stringify(field.validations) : '';
-
-  // compare both newChecks and oldChecks to make sure we don't trigger uneccessary directive
-  // update by changing the errorBag (prevents infinite loops).
-  if (newChecks !== oldChecks) {
-    this.errorBag.remove(name, options.scope);
-  }
-};
-
-/**
- * Clears the errors from the errorBag using the next tick if possible.
- */
-Validator.prototype.clean = function clean () {
-    var this$1 = this;
-
-  if (! this.$vm || ! isCallable(this.$vm.$nextTick)) {
-    return;
-  }
-
-  this.$vm.$nextTick(function () {
-    this$1.errorBag.clear();
-  });
-};
-
-/**
- * Removes a field from the validator.
- *
- * @param{String} name The name of the field.
- * @param {String} scope The name of the field scope.
- */
-Validator.prototype.detach = function detach (name, scope) {
-    if ( scope === void 0 ) scope = '__global__';
-
-  // No such field.
-  if (! this.$scopes[scope] || ! this.$scopes[scope][name]) {
-    return;
-  }
-
-  if (this.$scopes[scope][name].listeners) {
-    this.$scopes[scope][name].listeners.detach();
-  }
-
-  this.errorBag.remove(name, scope);
-  delete this.$scopes[scope][name];
-};
-
-/**
- * Adds a custom validator to the list of validation rules.
- *
- * @param{string} name The name of the validator.
- * @param{object|function} validator The validator object/function.
- */
-Validator.prototype.extend = function extend (name, validator) {
-  Validator.extend(name, validator);
-};
-
-/**
- * Gets the internal errorBag instance.
- *
- * @return {ErrorBag} errorBag The internal error bag object.
- */
-Validator.prototype.getErrors = function getErrors () {
-  return this.errorBag;
-};
-
-/**
- * Just an alias to the static method for convienece.
- */
-Validator.prototype.installDateTimeValidators = function installDateTimeValidators (moment) {
-  Validator.installDateTimeValidators(moment);
-};
-
-/**
- * Removes a rule from the list of validators.
- * @param {String} name The name of the validator/rule.
- */
-Validator.prototype.remove = function remove (name) {
-  Validator.remove(name);
-};
-
-/**
- * Sets the validator current langauge.
- *
- * @param {string} language locale or language id.
- */
-Validator.prototype.setLocale = function setLocale (language) {
-  /* istanbul ignore if */
-  if (! this.dictionary.hasLocale(language)) {
-    // eslint-disable-next-line
-    warn('You are setting the validator locale to a locale that is not defined in the dicitionary. English messages may still be generated.');
-  }
-
-  LOCALE = language;
-};
-
-/**
- * Sets the operating mode for this validator.
- * strictMode = true: Values without a rule are invalid and cause failure.
- * strictMode = false: Values without a rule are valid and are skipped.
- * @param {Boolean} strictMode.
- */
-Validator.prototype.setStrictMode = function setStrictMode (strictMode) {
-    if ( strictMode === void 0 ) strictMode = true;
-
-  this.strictMode = strictMode;
-};
-
-/**
- * Updates the messages dicitionary, overwriting existing values and adding new ones.
- *
- * @param{object} data The messages object.
- */
-Validator.prototype.updateDictionary = function updateDictionary (data) {
-  Validator.updateDictionary(data);
-};
-
-/**
- * Adds a scope.
- */
-Validator.prototype.addScope = function addScope (scope) {
-  if (scope && ! this.$scopes[scope]) {
-    this.$scopes[scope] = {};
-  }
-};
-
-/**
- * Validates a value against a registered field validations.
- *
- * @param{string} name the field name.
- * @param{*} value The value to be validated.
- * @param {String} scope The scope of the field.
- * @param {Boolean} throws If it should throw.
- * @return {Promise}
- */
-Validator.prototype.validate = function validate (name, value, scope, throws) {
-    var this$1 = this;
-    if ( scope === void 0 ) scope = '__global__';
-    if ( throws === void 0 ) throws = true;
-
-  if (this.paused) { return Promise.resolve(true); }
-
-  if (name && name.indexOf('.') > -1) {
-    // no such field, try the scope form.
-    if (! this.$scopes.__global__[name]) {
-      var assign$$1;
-        (assign$$1 = name.split('.'), scope = assign$$1[0], name = assign$$1[1]);
-    }
-  }
-  if (! scope) { scope = '__global__'; }
-  if (! this.$scopes[scope] || ! this.$scopes[scope][name]) {
-    if (! this.strictMode) { return Promise.resolve(true); }
-
-    var fullName = scope === '__global__' ? name : (scope + "." + name);
-    warn(("Validating a non-existant field: \"" + fullName + "\". Use \"attach()\" first."));
-
-    throw new ValidatorException('Validation Failed');
-  }
-
-  var field = this.$scopes[scope][name];
-  if (field.flags) {
-    field.flags.pending = true;
-  }
-  this.errorBag.remove(name, scope);
-  // if its not required and is empty or null or undefined then it passes.
-  if (! field.required && ~[null, undefined, ''].indexOf(value)) {
-    this._setAriaValidAttribute(field, true);
-    if (field.events && isCallable(field.events.after)) {
-      field.events.after({ valid: true });
-    }
-
-    return Promise.resolve(true);
-  }
-
-  try {
-    var promises = Object.keys(field.validations).map(function (rule) {
-      var result = this$1._test(
-        name,
-        value,
-        { name: rule, params: field.validations[rule] },
-        scope
-      );
-
-      if (isCallable(result.then)) {
-        return result;
-      }
-
-      // Early exit.
-      if (! result) {
-        if (field.events && isCallable(field.events.after)) {
-          field.events.after({ valid: false });
-        }
-        throw new ValidatorException('Validation Aborted.');
-      }
-
-      if (field.events && isCallable(field.events.after)) {
-        field.events.after({ valid: true });
-      }
-      return Promise.resolve(result);
-    });
-
-    return Promise.all(promises).then(function (values) {
-      var valid = values.every(function (t) { return t; });
-      this$1._setAriaValidAttribute(field, valid);
-
-      if (! valid && throws) {
-        if (field.events && isCallable(field.events.after)) {
-          field.events.after({ valid: false });
-        }
-        throw new ValidatorException('Failed Validation');
-      }
-      return valid;
-    });
-  } catch (error) {
-    if (error.msg === '[vee-validate]: Validation Aborted.') {
-      if (field.events && isCallable(field.events.after)) {
-        field.events.after({ valid: false });
-      }
-      return Promise.resolve(false);
-    }
-
-    throw error;
-  }
-};
-
-/**
- * Sets the aria-invalid attribute on the element.
- */
-Validator.prototype._setAriaValidAttribute = function _setAriaValidAttribute (field, valid) {
-  if (! field.el || field.listeners.component) {
-    return;
-  }
-
-  field.el.setAttribute('aria-invalid', !valid);
-};
-
-/**
- * Sets the aria-required attribute on the element.
- */
-Validator.prototype._setAriaRequiredAttribute = function _setAriaRequiredAttribute (field) {
-  if (! field.el || field.listeners.component) {
-    return;
-  }
-
-  field.el.setAttribute('aria-required', !! field.required);
-};
-
-/**
- * Pauses the validator.
- *
- * @return {Validator}
- */
-Validator.prototype.pause = function pause () {
-  this.paused = true;
-
-  return this;
-};
-
-/**
- * Resumes the validator.
- *
- * @return {Validator}
- */
-Validator.prototype.resume = function resume () {
-  this.paused = false;
-
-  return this;
-};
-
-/**
- * Validates each value against the corresponding field validations.
- * @param{object} values The values to be validated.
- * @param{String} scope The scope to be applied on validation.
- * @return {Promise} Returns a promise with the validation result.
- */
-Validator.prototype.validateAll = function validateAll (values, scope) {
-    var this$1 = this;
-    if ( scope === void 0 ) scope = '__global__';
-
-  if (this.paused) { return Promise.resolve(true); }
-
-  var normalizedValues;
-  if (! values || typeof values === 'string') {
-    this.errorBag.clear(values);
-    normalizedValues = this._resolveValuesFromGetters(values);
-  } else {
-    normalizedValues = {};
-    Object.keys(values).forEach(function (key) {
-      normalizedValues[key] = {
-        value: values[key],
-        scope: scope
-      };
-    });
-  }
-  var promises = Object.keys(normalizedValues).map(function (property) { return this$1.validate(
-    property,
-    normalizedValues[property].value,
-    normalizedValues[property].scope,
-    false // do not throw
-  ); });
-
-  return Promise.all(promises).then(function (results) {
-    var valid = results.every(function (t) { return t; });
-    if (! valid) {
-      throw new ValidatorException('Validation Failed');
-    }
-
-    return valid;
-  });
-};
-
-/**
- * Validates all scopes.
- * @returns {Promise} All promises resulted from each scope.
- */
-Validator.prototype.validateScopes = function validateScopes () {
-    var this$1 = this;
-
-  if (this.paused) { return Promise.resolve(true); }
-
-  return Promise.all(
-    Object.keys(this.$scopes).map(function (scope) { return this$1.validateAll(scope); })
-  );
-};
-
-Object.defineProperties( Validator.prototype, prototypeAccessors );
-
-var validatorRequested = function (injections) {
-  if (! injections) {
-    return false;
-  }
-
-  if (Array.isArray(injections) && ~injections.indexOf('$validator')) {
-    return true;
-  }
-
-  if (isObject(injections) && injections.$validator) {
-    return true;
-  }
-
-  return false;
-};
-
-var makeMixin = function (Vue, options) {
-  var mixin = {};
-  mixin.provide = function providesValidator() {
-    if (this.$validator) {
-      return {
-        $validator: this.$validator
-      };
-    }
-
-    return {};
-  };
-
-  mixin.beforeCreate = function beforeCreate() {
-    // if its a root instance, inject anyways, or if it requested a new instance.
-    if (this.$options.$validates || !this.$parent) {
-      this.$validator = new Validator(null, { init: false, vm: this });
-    }
-
-    var requested = validatorRequested(this.$options.inject);
-
-    // if automatic injection is enabled and no instance was requested.
-    if (! this.$validator && options.inject && !requested) {
-      this.$validator = new Validator(null, { init: false, vm: this });
-    }
-
-    // don't inject errors or fieldBag as no validator was resolved.
-    if (! requested && ! this.$validator) {
-      return;
-    }
-
-    // There is a validator but it isn't injected, mark as reactive.
-    if (! requested && this.$validator) {
-      Vue.util.defineReactive(this.$validator, 'errorBag', this.$validator.errorBag);
-      Vue.util.defineReactive(this.$validator, 'fieldBag', this.$validator.fieldBag);
-    }
-
-    if (! this.$options.computed) {
-      this.$options.computed = {};
-    }
-
-    this.$options.computed[options.errorBagName] = function errorBagGetter() {
-      return this.$validator.errorBag;
-    };
-    this.$options.computed[options.fieldsBagName] = function fieldBagGetter() {
-      return this.$validator.fieldBag;
-    };
-  };
-
-  mixin.mounted = function mounted() {
-    if (this.$validator) {
-      this.$validator.init();
-    }
-  };
-
-  return mixin;
-};
-
-var DEFAULT_CLASS_NAMES = {
-  touched: 'touched', // the control has been blurred
-  untouched: 'untouched', // the control hasn't been blurred
-  valid: 'valid', // model is valid
-  invalid: 'invalid', // model is invalid
-  pristine: 'pristine', // control has not been interacted with
-  dirty: 'dirty' // control has been interacted with
-};
-
-var ClassListener = function ClassListener(el, validator, options) {
-  if ( options === void 0 ) options = {};
-
-  this.el = el;
-  this.validator = validator;
-  this.enabled = options.enableAutoClasses;
-  this.classNames = assign({}, DEFAULT_CLASS_NAMES, options.classNames || {});
-  this.component = options.component;
-  this.listeners = {};
-};
-
-/**
- * Resets the classes state.
- */
-ClassListener.prototype.reset = function reset () {
-  // detach all listeners.
-  this.detach();
-
-  // remove classes
-  this.remove(this.classNames.dirty);
-  this.remove(this.classNames.touched);
-  this.remove(this.classNames.valid);
-  this.remove(this.classNames.invalid);
-
-  // listen again.
-  this.attach(this.field);
-};
-
-/**
- * Syncs the automatic classes.
- */
-ClassListener.prototype.sync = function sync () {
-  this.addInteractionListeners();
-
-  if (! this.enabled) { return; }
-
-  this.toggle(this.classNames.dirty, this.field.flags.dirty);
-  this.toggle(this.classNames.pristine, this.field.flags.pristine);
-  this.toggle(this.classNames.valid, this.field.flags.valid);
-  this.toggle(this.classNames.invalid, this.field.flags.invalid);
-  this.toggle(this.classNames.touched, this.field.flags.touched);
-  this.toggle(this.classNames.untouched, this.field.flags.untouched);
-};
-
-ClassListener.prototype.addFocusListener = function addFocusListener () {
-    var this$1 = this;
-
-  // listen for focus event.
-  this.listeners.focus = function () {
-    this$1.remove(this$1.classNames.untouched);
-    this$1.add(this$1.classNames.touched);
-    this$1.field.flags.touched = true;
-    this$1.field.flags.untouched = false;
-
-    if (this$1.component) { return; }
-
-    // only needed once.
-    this$1.el.removeEventListener('focus', this$1.listeners.focus);
-    this$1.listeners.focus = null;
-  };
-
-  if (this.component) {
-    this.component.$once('focus', this.listeners.focus);
-  } else {
-    this.el.addEventListener('focus', this.listeners.focus);
-  }
-};
-
-ClassListener.prototype.addInputListener = function addInputListener () {
-    var this$1 = this;
-
-  // listen for input.
-  this.listeners.input = function () {
-    this$1.remove(this$1.classNames.pristine);
-    this$1.add(this$1.classNames.dirty);
-    this$1.field.flags.dirty = true;
-    this$1.field.flags.pristine = false;
-
-    if (this$1.component) { return; }
-
-    // only needed once.
-    this$1.el.removeEventListener('input', this$1.listeners.input);
-    this$1.listeners.input = null;
-  };
-
-  if (this.component) {
-    this.component.$once('input', this.listeners.input);
-  } else {
-    this.el.addEventListener('input', this.listeners.input);
-  }
-};
-
-ClassListener.prototype.addInteractionListeners = function addInteractionListeners () {
-  if (! this.listeners.focus) {
-    this.addFocusListener();
-  }
-
-  if (! this.listeners.input) {
-    this.addInputListener();
-  }
-};
-
-/**
- * Attach field with its listeners.
- * @param {*} field
- */
-ClassListener.prototype.attach = function attach (field) {
-    var this$1 = this;
-
-  this.field = field;
-  this.add(this.classNames.pristine);
-  this.add(this.classNames.untouched);
-
-  this.addInteractionListeners();
-
-  this.listeners.after = function (e) {
-    this$1.remove(e.valid ? this$1.classNames.invalid : this$1.classNames.valid);
-    this$1.add(e.valid ? this$1.classNames.valid : this$1.classNames.invalid);
-    this$1.field.flags.valid = e.valid;
-    this$1.field.flags.invalid = ! e.valid;
-    this$1.field.flags.pending = false;
-  };
-
-  this.validator.on('after', this.field.name, this.field.scope, this.listeners.after);
-};
-
-/**
- * Detach all listeners.
- */
-ClassListener.prototype.detach = function detach () {
-  // TODO: Why could the field be undefined?
-  if (! this.field) { return; }
-
-  if (this.component) {
-    this.component.$off('input', this.listeners.input);
-    this.component.$off('focus', this.listeners.focus);
-  } else {
-    this.el.removeEventListener('focus', this.listeners.focus);
-    this.el.removeEventListener('input', this.listeners.input);
-  }
-  this.validator.off('after', this.field.name, this.field.scope);
-};
-
-/**
- * Add a class.
- * @param {*} className
- */
-ClassListener.prototype.add = function add (className) {
-  if (! this.enabled) { return; }
-
-  addClass(this.el, className);
-};
-
-/**
- * Remove a class.
- * @param {*} className
- */
-ClassListener.prototype.remove = function remove (className) {
-  if (! this.enabled) { return; }
-
-  removeClass(this.el, className);
-};
-
-/**
- * Toggles the class name.
- *
- * @param {String} className
- * @param {Boolean} status
- */
-ClassListener.prototype.toggle = function toggle (className, status) {
-  if (status) {
-    this.add(className);
-    return;
-  }
-
-  this.remove(className);
-};
-
-var config = {
-  locale: 'en',
-  delay: 0,
-  errorBagName: 'errors',
-  dictionary: null,
-  strict: true,
-  fieldsBagName: 'fields',
-  enableAutoClasses: false,
-  classNames: {},
-  events: 'input|blur',
-  inject: true
-};
-
-var ListenerGenerator = function ListenerGenerator(el, binding, vnode, options) {
-  this.unwatch = undefined;
-  this.callbacks = [];
-  this.el = el;
-  this.scope = isObject(binding.value) ? binding.value.scope : getScope(el);
-  this.binding = binding;
-  this.vm = vnode.context;
-  this.component = vnode.child;
-  this.options = assign({}, config, options);
-  this.fieldName = this._resolveFieldName();
-  this.model = this._resolveModel(vnode.data.directives);
-  this.classes = new ClassListener(el, this.vm.$validator, {
-    component: this.component,
-    enableAutoClasses: options.enableAutoClasses,
-    classNames: options.classNames
-  });
-};
-
-/**
- * Checks if the node directives contains a v-model.
- */
-ListenerGenerator.prototype._resolveModel = function _resolveModel (directives) {
-  var expRegex = /^[a-z_]+[0-9]*(\w*\.[a-z_]\w*)*$/i;
-  var model = find(directives, function (d) { return d.name === 'model' && expRegex.test(d.expression); });
-
-  return model && this._isExistingPath(model.expression) && model.expression;
-};
-
-/**
- * @param {String} path
- */
-ListenerGenerator.prototype._isExistingPath = function _isExistingPath (path) {
-  var obj = this.vm;
-  return path.split('.').every(function (prop) {
-    if (! Object.prototype.hasOwnProperty.call(obj, prop)) {
-      return false;
-    }
-
-    obj = obj[prop];
-
-    return true;
-  });
-};
-
-  /**
-   * Resolves the field name to trigger validations.
-   * @return {String} The field name.
-   */
-ListenerGenerator.prototype._resolveFieldName = function _resolveFieldName () {
-  if (this.component) {
-    return getDataAttribute(this.el, 'name') || this.component.name;
-  }
-
-  return getDataAttribute(this.el, 'name') || this.el.name;
-};
-
-  /**
-   * Determines if the validation rule requires additional listeners on target fields.
-   */
-ListenerGenerator.prototype._hasFieldDependency = function _hasFieldDependency (rules) {
-    var this$1 = this;
-
-  var fieldName = false;
-  if (! rules) {
-    return false;
-  }
-
-  if (isObject(rules)) {
-    Object.keys(rules).forEach(function (r) { // eslint-disable-line
-      if (/confirmed|after|before/.test(r)) {
-        fieldName = rules[r];
-
-        return false;
-      }
-    });
-
-    return fieldName;
-  }
-
-  rules.split('|').every(function (r) {
-    if (/\b(confirmed|after|before):/.test(r)) {
-      fieldName = r.split(':')[1];
-      return false;
-    }
-
-    if (/\b(confirmed)/.test(r)) {
-      fieldName = (this$1.fieldName) + "_confirmation";
-      return false;
-    }
-
-    return true;
-  });
-
-  return fieldName;
-};
-
-  /**
-   * Validates input value, triggered by 'input' event.
-   */
-ListenerGenerator.prototype._inputListener = function _inputListener () {
-  return this._validate(this.el.value);
-};
-
-  /**
-   * Validates files, triggered by 'change' event.
-   */
-ListenerGenerator.prototype._fileListener = function _fileListener () {
-    var this$1 = this;
-
-  return this._validate(toArray(this.el.files)).then(function (isValid) {
-    if (! isValid && this$1.binding.modifiers.reject) {
-      this$1.el.value = '';
-    }
-  });
-};
-
-  /**
-   * Validates radio buttons, triggered by 'change' event.
-   */
-ListenerGenerator.prototype._radioListener = function _radioListener () {
-  var checked = document.querySelector(("input[name=\"" + (this.el.name) + "\"]:checked"));
-  return this._validate(checked ? checked.value : null);
-};
-
-  /**
-   * Validates checkboxes, triggered by change event.
-   */
-ListenerGenerator.prototype._checkboxListener = function _checkboxListener () {
-    var this$1 = this;
-
-  var checkedBoxes = document.querySelectorAll(("input[name=\"" + (this.el.name) + "\"]:checked"));
-  if (! checkedBoxes || ! checkedBoxes.length) {
-    this._validate(null);
-    return;
-  }
-
-  toArray(checkedBoxes).forEach(function (box) {
-    this$1._validate(box.value);
-  });
-};
-
-  /**
-   * Trigger the validation for a specific value.
-   */
-ListenerGenerator.prototype._validate = function _validate (value) {
-  return this.vm.$validator.validate(
-    this.fieldName, value, this.scope || getScope(this.el)
-    ).catch(function (result) { return result; });
-};
-
-  /**
-   * Returns a scoped callback, only runs if the el scope is the same as the recieved scope
-   * From the event.
-   */
-ListenerGenerator.prototype._getScopedListener = function _getScopedListener (callback) {
-    var this$1 = this;
-
-  return function (scope) {
-    if (! scope || scope === this$1.scope || scope instanceof window.Event) {
-      callback();
-    }
-  };
-};
-
-  /**
-   * Attaches validator event-triggered validation.
-   */
-ListenerGenerator.prototype._attachValidatorEvent = function _attachValidatorEvent () {
-    var this$1 = this;
-
-  var listener = this._getScopedListener(this._getSuitableListener().listener.bind(this));
-  var fieldName = this._hasFieldDependency(
-      getRules(this.binding.expression, this.binding.value, this.el)
-    );
-  if (fieldName) {
-          // Wait for the validator ready triggered when vm is mounted because maybe
-          // the element isn't mounted yet.
-    this.vm.$nextTick(function () {
-      var target = document.querySelector(("input[name='" + fieldName + "']"));
-      if (! target) {
-        warn('Cannot find target field, no additional listeners were attached.');
-        return;
-      }
-
-      var events = getDataAttribute(this$1.el, 'validate-on') || this$1.options.events;
-      events.split('|').forEach(function (e) {
-        target.addEventListener(e, listener, false);
-        this$1.callbacks.push({ name: e, listener: listener, el: target });
-      });
-    });
-  }
-};
-
-  /**
-   * Determines a suitable listener for the element.
-   */
-ListenerGenerator.prototype._getSuitableListener = function _getSuitableListener () {
-  var listener;
-  var overrides = {
-    input: 'input',
-    blur: 'blur'
-  };
-
-  if (this.el.tagName === 'SELECT') {
-    overrides.input = 'change';
-    listener = {
-      names: ['change', 'blur'],
-      listener: this._inputListener
-    };
-  } else {
-    // determine the suitable listener and events to handle
-    switch (this.el.type) {
-    case 'file':
-      overrides.input = 'change';
-      overrides.blur = null;
-      listener = {
-        names: ['change'],
-        listener: this._fileListener
-      };
-      break;
-
-    case 'radio':
-      overrides.input = 'change';
-      overrides.blur = null;
-      listener = {
-        names: ['change'],
-        listener: this._radioListener
-      };
-      break;
-
-    case 'checkbox':
-      overrides.input = 'change';
-      overrides.blur = null;
-      listener = {
-        names: ['change'],
-        listener: this._checkboxListener
-      };
-      break;
-
-    default:
-      listener = {
-        names: ['input', 'blur'],
-        listener: this._inputListener
-      };
-      break;
-    }
-  }
-  // users are able to specify which events they want to validate on
-  var events = getDataAttribute(this.el, 'validate-on') || this.options.events;
-  listener.names = events.split('|')
-                         .filter(function (e) { return overrides[e] !== null; })
-                         .map(function (e) { return overrides[e] || e; });
-
-  return listener;
-};
-
-/**
- * Attaches neccessary validation events for the component.
- */
-ListenerGenerator.prototype._attachComponentListeners = function _attachComponentListeners () {
-    var this$1 = this;
-
-  this.componentListener = debounce(function (value) {
-    this$1._validate(value);
-  }, getDataAttribute(this.el, 'delay') || this.options.delay);
-
-  this.component.$on('input', this.componentListener);
-  this.componentPropUnwatch = this.component.$watch('value', this.componentListener);
-};
-
-/**
- * Attachs a suitable listener for the input.
- */
-ListenerGenerator.prototype._attachFieldListeners = function _attachFieldListeners () {
-    var this$1 = this;
-
-  // If it is a component, use vue events instead.
-  if (this.component) {
-    this._attachComponentListeners();
-
-    return;
-  }
-
-  var handler = this._getSuitableListener();
-  var listener = debounce(
-    handler.listener.bind(this),
-    getDataAttribute(this.el, 'delay') || this.options.delay
-  );
-
-  if (~['radio', 'checkbox'].indexOf(this.el.type)) {
-    this.vm.$nextTick(function () {
-      var elms = document.querySelectorAll(("input[name=\"" + (this$1.el.name) + "\"]"));
-      toArray(elms).forEach(function (input) {
-        handler.names.forEach(function (handlerName) {
-          input.addEventListener(handlerName, listener, false);
-          this$1.callbacks.push({ name: handlerName, listener: listener, el: input });
-        });
-      });
-    });
-
-    return;
-  }
-
-  handler.names.forEach(function (handlerName) {
-    this$1.el.addEventListener(handlerName, listener, false);
-    this$1.callbacks.push({ name: handlerName, listener: listener, el: this$1.el });
-  });
-};
-
-/**
- * Returns a context, getter factory pairs for each input type.
- */
-ListenerGenerator.prototype._resolveValueGetter = function _resolveValueGetter () {
-    var this$1 = this;
-
-  if (this.component) {
-    return {
-      context: function () { return this$1.component; },
-      getter: function getter(context) {
-        return context.value;
-      }
-    };
-  }
-
-  switch (this.el.type) {
-  case 'checkbox': return {
-    context: function () { return document.querySelectorAll(("input[name=\"" + (this$1.el.name) + "\"]:checked")); },
-    getter: function getter(context) {
-      if (! context || ! context.length) {
-        return null;
-      }
-
-      return toArray(context).map(function (checkbox) { return checkbox.value; });
-    }
-  };
-  case 'radio': return {
-    context: function () { return document.querySelector(("input[name=\"" + (this$1.el.name) + "\"]:checked")); },
-    getter: function getter(context) {
-      return context && context.value;
-    }
-  };
-  case 'file': return {
-    context: function () { return this$1.el; },
-    getter: function getter(context) {
-      return toArray(context.files);
-    }
-  };
-
-  default: return {
-    context: function () { return this$1.el; },
-    getter: function getter(context) {
-      return context.value;
-    }
-  };
-  }
-};
-
-/*
-* Gets the arg string value, either from the directive or the expression value.
-*/
-ListenerGenerator.prototype._getArg = function _getArg () {
-  // Get it from the directive arg.
-  if (this.binding.arg) {
-    return this.binding.arg;
-  }
-
-  // Get it from v-model.
-  if (this.model) {
-    return this.model;
-  }
-
-  return isObject(this.binding.value) ? this.binding.value.arg : null;
-};
-
-/**
- * Attaches model watchers and extra listeners.
- */
-ListenerGenerator.prototype._attachModelWatcher = function _attachModelWatcher (arg) {
-    var this$1 = this;
-
-  var events = getDataAttribute(this.el, 'validate-on') || this.options.events;
-  var listener = debounce(
-    this._getSuitableListener().listener.bind(this),
-    getDataAttribute(this.el, 'delay') || this.options.delay
-  );
-  events.split('|').forEach(function (name) {
-    if (~['input', 'change'].indexOf(name)) {
-      var debounced = debounce(function (value) {
-        this$1.vm.$validator.validate(
-          this$1.fieldName, value, this$1.scope || getScope(this$1.el)
-        ).catch(function (result) { return result; });
-      }, getDataAttribute(this$1.el, 'delay') || this$1.options.delay);
-      this$1.unwatch = this$1.vm.$watch(arg, debounced, { deep: true });
-      // No need to attach it on element as it will use the vue watcher.
-      return;
-    }
-
-    this$1.el.addEventListener(name, listener, false);
-    this$1.callbacks.push({ name: name, listener: listener, el: this$1.el });
-  });
-};
-
-/**
- * Attaches the Event Listeners.
- */
-ListenerGenerator.prototype.attach = function attach () {
-    var this$1 = this;
-
-  var ref = this._resolveValueGetter();
-    var context = ref.context;
-    var getter = ref.getter;
-  this.vm.$validator.attach(
-    this.fieldName,
-    getRules(this.binding.expression, this.binding.value, this.el), {
-      // eslint-disable-next-line
-      scope: function () {
-        return this$1.scope || getScope(this$1.el);
-      },
-      prettyName: getDataAttribute(this.el, 'as') || this.el.title,
-      context: context,
-      getter: getter,
-      listeners: this,
-      initial: this.binding.modifiers.initial
-    }
-  );
-
-  if (this.binding.modifiers.disable) {
-    return;
-  }
-
-  this._attachValidatorEvent();
-  var arg = this._getArg();
-  if (arg) {
-    this._attachModelWatcher(arg);
-    return;
-  }
-
-  this._attachFieldListeners();
-};
-
-  /**
-   * Removes all attached event listeners.
-   */
-ListenerGenerator.prototype.detach = function detach () {
-  if (this.component) {
-    this.component.$off('input', this.componentListener);
-
-    if (isCallable(this.componentPropUnwatch)) {
-      this.componentPropUnwatch();
-    }
-  }
-
-  if (this.unwatch) {
-    this.unwatch();
-  }
-
-  this.classes.detach();
-
-  this.callbacks.forEach(function (h) {
-    h.el.removeEventListener(h.name, h.listener);
-  });
-  this.callbacks = [];
-};
-
-var listenersInstances = [];
-
-var makeDirective = function (options) { return ({
-  inserted: function inserted(el, binding, vnode) {
-    if (! vnode.context.$validator) {
-      var name = vnode.context.$options._componentTag;
-      // eslint-disable-next-line
-      warn(("No validator instance is present on " + (name ?'component "' +  name + '"' : 'un-named component') + ", did you forget to inject '$validator'?"));
-
-      return;
-    }
-    var listener = new ListenerGenerator(el, binding, vnode, options);
-    listener.attach();
-    listenersInstances.push({ vm: vnode.context, el: el, instance: listener });
-  },
-  update: function update(el, ref, ref$1) {
-    var expression = ref.expression;
-    var value = ref.value;
-    var context = ref$1.context;
-
-    var ref$2 = find(listenersInstances, function (l) { return l.vm === context && l.el === el; });
-    var instance = ref$2.instance;
-    // make sure we don't do uneccessary work if no expression was passed
-    // nor if the expression did not change.
-    if (! expression || (instance.cachedExp === JSON.stringify(value))) { return; }
-
-    instance.cachedExp = JSON.stringify(value);
-    var scope = isObject(value) ? (value.scope || getScope(el)) : getScope(el);
-    context.$validator.updateField(
-      instance.fieldName,
-      getRules(expression, value, el),
-      { scope: scope || '__global__' }
-    );
-  },
-  unbind: function unbind(el, ref, ref$1) {
-    var value = ref.value;
-    var context = ref$1.context;
-
-    var holder = find(listenersInstances, function (l) { return l.vm === context && l.el === el; });
-    if (typeof holder === 'undefined') {
-      return;
-    }
-
-    var scope = isObject(value) ? value.scope : (getScope(el) || '__global__');
-    context.$validator.detach(holder.instance.fieldName, scope);
-    listenersInstances.splice(listenersInstances.indexOf(holder), 1);
-  }
-}); };
 
 var normalize = function (fields) {
   if (Array.isArray(fields)) {
@@ -38338,52 +41443,59 @@ var mapFields = function (fields) {
   var normalized = normalize(fields);
   return Object.keys(normalized).reduce(function (prev, curr) {
     var field = normalized[curr];
-    prev[curr] = function mappedField() {
-      if (this.$validator.fieldBag[field]) {
-        return this.$validator.fieldBag[field];
+    prev[curr] = function mappedField () {
+      // if field exists
+      if (this.$validator.flags[field]) {
+        return this.$validator.flags[field];
       }
 
+      // if it has a scope defined
       var index = field.indexOf('.');
       if (index <= 0) {
         return {};
       }
+
       var ref = field.split('.');
       var scope = ref[0];
-      var name = ref[1];
+      var name = ref.slice(1);
+      scope = this.$validator.flags[("$" + scope)];
+      name = name.join('.');
 
-      return getPath(("$" + scope + "." + name), this.$validator.fieldBag, {});
+      if (scope && scope[name]) {
+        return scope[name];
+      }
+
+      return {};
     };
 
     return prev;
   }, {});
 };
 
-// eslint-disable-next-line
-var install = function (Vue, options) {
-  var config$$1 = assign({}, config, options);
-  if (config$$1.dictionary) {
-    Validator.updateDictionary(config$$1.dictionary);
-  }
+var version = '2.0.0-rc.18';
 
-  Validator.setLocale(config$$1.locale);
-  Validator.setStrictMode(config$$1.strict);
+var rulesPlugin = function (ref) {
+  var Validator$$1 = ref.Validator;
 
-  Vue.mixin(makeMixin(Vue, config$$1));
-  Vue.directive('validate', makeDirective(config$$1));
+  Object.keys(Rules).forEach(function (rule) {
+    Validator$$1.extend(rule, Rules[rule]);
+  });
 };
 
-var index = {
+use(rulesPlugin);
+
+var index_esm = {
   install: install,
+  use: use,
   mapFields: mapFields,
   Validator: Validator,
   ErrorBag: ErrorBag,
   Rules: Rules,
-  version: '2.0.0-rc.5'
+  version: version
 };
 
-return index;
 
-})));
+/* harmony default export */ __webpack_exports__["default"] = (index_esm);
 
 
 /***/ }),
@@ -38486,7 +41598,7 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-01a7b1e3\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/shipping-address.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-01a7b1e3\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/shipping-address.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38506,7 +41618,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-037c5eae\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/message-modal.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-037c5eae\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/message-modal.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38542,7 +41654,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0a4a4a52\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/order-page.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0a4a4a52\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/order-page.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38565,7 +41677,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
   }, [_c('order-details', {
     attrs: {
       "current": _vm.current,
-      "addresses": _vm.addresses,
       "cart": _vm.cart,
       "user_order": _vm.user_order
     },
@@ -38618,7 +41729,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0e9f43d7\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/auth/login-form.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0e9f43d7\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/auth/login-form.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38756,7 +41867,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-13d976bc\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/animations/slide-in-animation.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-13d976bc\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/animations/slide-in-animation.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38776,7 +41887,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-13e110b8\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/review-stars.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-13e110b8\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/review-stars.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38803,7 +41914,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-208ec0aa\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/order-details.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-208ec0aa\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/order-details.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38852,7 +41963,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-2391ffbb\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/step-progress-bar.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-2391ffbb\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/step-progress-bar.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38883,7 +41994,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-26989a9c\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shopping-cart/remove-item-icon.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-26989a9c\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shopping-cart/remove-item-icon.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38911,8 +42022,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "cancel": _vm.toggleModal
     }
   }, [_c('h3', {
+    attrs: {
+      "slot": "header"
+    },
     slot: "header"
   }, [_vm._v("Remove " + _vm._s(_vm.product))]), _vm._v(" "), _c('p', {
+    attrs: {
+      "slot": "body"
+    },
     slot: "body"
   }, [_vm._v("Are you sure you want to remove " + _vm._s(_vm.product) + " from your order?")])])], 1)
 },staticRenderFns: []}
@@ -38926,7 +42043,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-306f45dc\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/form-modal.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-306f45dc\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/form-modal.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38966,7 +42083,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-30bf5ded\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/shared/user-order-header.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-30bf5ded\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/shared/user-order-header.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -38980,15 +42097,29 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     staticClass: "col-sm-6"
   }, [_c('user-details', {
     attrs: {
-      "user": _vm.user
+      "user": _vm.order.user
     }
   })], 1), _vm._v(" "), _c('div', {
     staticClass: "col-sm-6"
   }, [_c('shipping-address', {
     attrs: {
-      "address": _vm.address
+      "address": _vm.order.address
     }
-  })], 1)])])])
+  })], 1)]), _vm._v(" "), _c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-sm-6"
+  }, [_c('div', {
+    staticClass: "well"
+  }, [_c('h3', [_vm._v("Payment")]), _vm._v(" "), _c('strong', [_vm._v("Paid:\n                        "), (_vm.order.paid_for) ? _c('span', {
+    staticClass: "text-success"
+  }, [_vm._v("Yes")]) : _c('span', {
+    staticClass: "text-danger"
+  }, [_vm._v("No")])]), _vm._v(" "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Shipped:\n                        "), (_vm.order.shipped) ? _c('span', {
+    staticClass: "text-success"
+  }, [_vm._v("Yes")]) : _c('span', {
+    staticClass: "text-danger"
+  }, [_vm._v("No")])]), _vm._v(" "), _c('br'), _vm._v(" "), (_vm.order.shipped) ? _c('strong', [_vm._v("\n                        Ship Date: " + _vm._s(_vm.order.ship_date) + "\n                    ")]) : _vm._e()])])])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "panel-heading"
@@ -39004,7 +42135,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-341fbcfd\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/add-new-address.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-341fbcfd\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/add-new-address.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39022,8 +42153,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_c('h3', {
+    attrs: {
+      "slot": "header"
+    },
     slot: "header"
   }, [_vm._v("Add a New Address")]), _vm._v(" "), _c('div', {
+    attrs: {
+      "slot": "body"
+    },
     slot: "body"
   }, [_c('user-address-form', {
     attrs: {
@@ -39044,7 +42181,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-35f37f86\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/navbar-cart.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-35f37f86\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/navbar-cart.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39138,7 +42275,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-40b90216\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-header.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-40b90216\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-header.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39172,7 +42309,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-41e7436a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/error-message.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-41e7436a\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/error-message.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39196,7 +42333,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-44b537bc\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/confirm-modal.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-44b537bc\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/confirm-modal.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39240,7 +42377,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-50aedfaf\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/address/select-user-address.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-50aedfaf\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/address/select-user-address.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39354,7 +42491,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-53035ca1\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/user-address-form.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-53035ca1\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/user-address-form.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39592,7 +42729,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-58512a5a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/screen/full-screen.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-58512a5a\",\"hasScoped\":true}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/screen/full-screen.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39612,7 +42749,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5a26a2ea\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/categories-navbar.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5a26a2ea\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/categories-navbar.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39651,7 +42788,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5ab1390e\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/auth/registration-form.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5ab1390e\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/auth/registration-form.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39907,7 +43044,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-6a0cbed4\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-order.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-6a0cbed4\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-order.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39938,7 +43075,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-710dcf78\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/address-box.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-710dcf78\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/address-box.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -39974,7 +43111,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-71a000d6\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-71a000d6\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40042,7 +43179,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-75da4b78\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/animations/fade-out-animation.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-75da4b78\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/animations/fade-out-animation.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40062,7 +43199,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-780935d4\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/confirm-cart/order-information.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-780935d4\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/confirm-cart/order-information.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40086,7 +43223,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-78e225a8\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/payment/billing-form.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-78e225a8\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/payment/billing-form.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40120,7 +43257,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-7ebcbfa5\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/payment/order-payment.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-7ebcbfa5\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/payment/order-payment.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40150,7 +43287,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-7ec0463c\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-address.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-7ec0463c\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-address.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40183,13 +43320,13 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-a07575da\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/user-details.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-a07575da\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/user-details.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
     staticClass: "well"
-  }, [_vm._m(0), _vm._v(" "), (_vm.user) ? _c('p', [_c('strong', [_vm._v("Name:")]), _vm._v("  " + _vm._s(_vm.user.first_name) + " " + _vm._s(_vm.user.last_name) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Username: ")]), _vm._v("  " + _vm._s(_vm.user.username) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Email: ")]), _vm._v(" " + _vm._s(_vm.user.email) + "\n    ")]) : _vm._e()])
+  }, [_vm._m(0), _vm._v(" "), (_vm.user) ? _c('p', [_c('strong', [_vm._v("Name:")]), _vm._v("  " + _vm._s(_vm.user.first_name) + " " + _vm._s(_vm.user.last_name) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Username: ")]), _vm._v("  " + _vm._s(_vm.user.user_name) + " "), _c('br'), _vm._v(" "), _c('strong', [_vm._v("Email: ")]), _vm._v(" " + _vm._s(_vm.user.email) + "\n    ")]) : _vm._e()])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('h4', [_c('u', [_vm._v("Account Details:")])])
 }]}
@@ -40203,7 +43340,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b20ad8f4\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/success-message.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b20ad8f4\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/success-message.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40227,7 +43364,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b242f982\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/edit-address.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b242f982\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/edit-address.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40242,8 +43379,14 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_c('h3', {
+    attrs: {
+      "slot": "header"
+    },
     slot: "header"
   }, [_vm._v("Edit this Address")]), _vm._v(" "), _c('div', {
+    attrs: {
+      "slot": "body"
+    },
     slot: "body"
   }, [_c('user-address-form', {
     attrs: {
@@ -40265,7 +43408,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b2cf91da\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/select-cart-quantity.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b2cf91da\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/select-cart-quantity.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40305,7 +43448,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b4397b4a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/confirm-cart/user-order-item.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b4397b4a\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/confirm-cart/user-order-item.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40357,7 +43500,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c14b3100\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/user-address.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c14b3100\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/user-address.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40384,7 +43527,7 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c4b8fc0e\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/shared/order-total-details.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c4b8fc0e\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/shared/order-total-details.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40414,154 +43557,11 @@ if (false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-d5cb6ed0\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shopping-cart/add-cart-icon.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-cd57dfd2\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/search-products-screen.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('div', {
-    staticClass: "shopping-cart-form"
-  }, [_c('div', {
-    staticClass: "shopping-cart-form"
-  }, [_c('button', {
-    staticClass: "btn btn-primary",
-    on: {
-      "click": _vm.addToCart
-    }
-  }, [_c('i', {
-    staticClass: "fa fa-cart-plus",
-    attrs: {
-      "aria-hidden": "true"
-    }
-  }), _vm._v("Add to Cart\n        ")])])])
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-d5cb6ed0", module.exports)
-  }
-}
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-e07681d2\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/invoice/user-order.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return (_vm.order) ? _c('div', [((_vm.showTotal && _vm.order)) ? _c('order-total-details', {
-    attrs: {
-      "order": _vm.order.cost
-    }
-  }) : _vm._e(), _vm._v(" "), _c('user-order-header', {
-    attrs: {
-      "address": _vm.order.address,
-      "user": _vm.order.user
-    }
-  }), _vm._v(" "), _c('h3', [_vm._v("Your Order")]), _vm._v(" "), _c('ul', {
-    staticClass: "list-group"
-  }, _vm._l((_vm.order.products), function(product) {
-    return _c('user-order-item', {
-      key: product.id,
-      attrs: {
-        "item": product
-      }
-    })
-  }))], 1) : _vm._e()
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-e07681d2", module.exports)
-  }
-}
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f0b2e840\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/delete-address.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', [_c('div', {
-    on: {
-      "click": _vm.toggleModal
-    }
-  }, [_c('span', [_vm._v("Delete")])]), _vm._v(" "), (_vm.showConfirm) ? _c('confirm-modal', {
-    on: {
-      "confirm": _vm.onDelete,
-      "cancel": function($event) {
-        _vm.showConfirm = false
-      }
-    }
-  }, [_c('h3', {
-    slot: "header"
-  }, [_vm._v("Delete this Address?")]), _vm._v(" "), _c('p', {
-    slot: "body"
-  }, [_vm._v("\n            " + _vm._s(_vm.address.address) + " "), _c('br'), _vm._v("\n            " + _vm._s(_vm.address.city + ', ' + _vm.address.state + _vm.address.postal_code) + "\n        ")])]) : _vm._e()], 1)
-},staticRenderFns: []}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-f0b2e840", module.exports)
-  }
-}
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f10203c2\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/order/order-list-item.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('div', {
-    staticClass: "row order-list-item"
-  }, [_c('div', {
-    staticClass: "order-list-blocks order-list-border"
-  }, [_vm._m(0), _vm._v(" "), _c('p', [_vm._v("\n            Order Date: "), _c('strong', [_vm._v(_vm._s(_vm.order.order_date))]), _vm._v(" "), _c('br'), _vm._v("\n            Has Been Shipped: "), _c('strong', [_vm._v(_vm._s(_vm.shipped))]), _vm._v(" "), _c('br'), _vm._v("\n            Shipped Date : "), (_vm.order.ship_date) ? _c('strong', [_vm._v(_vm._s(_vm.order.ship_date))]) : _vm._e()])]), _vm._v(" "), _c('div', {
-    staticClass: "order-list-blocks order-list-border"
-  }, [_vm._m(1), _vm._v(" "), _c('p', [_vm._v("\n            Subtotal: "), _c('strong', [_vm._v("$" + _vm._s(_vm.order.cost.sub_total))]), _vm._v(" "), _c('br'), _vm._v("\n            Taxes : "), _c('strong', [_vm._v("$" + _vm._s(_vm.order.cost.taxes))]), _vm._v(" "), _c('br'), _vm._v("\n            Total: "), _c('strong', [_vm._v("$" + _vm._s(_vm.order.cost.total))])])]), _vm._v(" "), _c('div', {
-    staticClass: "order-list-blocks"
-  }, [_vm._m(2), _vm._v(" "), _c('p', [_vm._v("\n            " + _vm._s(_vm.order.address.street_address) + " "), _c('br'), _vm._v("\n            " + _vm._s(_vm.order.address.city) + ", " + _vm._s(_vm.order.address.state) + " " + _vm._s(_vm.order.address.postal_code) + "  "), _c('br')])])])
-},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('h5', [_c('u', [_vm._v("Order Date")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('h5', [_c('u', [_vm._v("Order Details")])])
-},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('h5', [_c('u', [_vm._v("Order Address")])])
-}]}
-module.exports.render._withStripped = true
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-f10203c2", module.exports)
-  }
-}
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f82ceb9c\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/search-products.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
-  return _c('li', [_c('a', {
-    attrs: {
-      "href": "#"
-    },
-    on: {
-      "click": _vm.toggleSearch
-    }
-  }, [_c('i', {
-    staticClass: "fa fa-search",
-    attrs: {
-      "aria-hidden": "true"
-    }
-  })]), _vm._v(" "), _c('div', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.showSearch),
-      expression: "showSearch"
-    }],
     staticClass: "modal-mask"
   }, [_c('form', {
     attrs: {
@@ -40598,7 +43598,10 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       "value": (_vm.search)
     },
     on: {
-      "keyup": _vm.toggleResults,
+      "keyup": [_vm.toggleResults, function($event) {
+        if (!('button' in $event) && _vm._k($event.keyCode, "esc", 27)) { return null; }
+        _vm.close($event)
+      }],
       "input": function($event) {
         if ($event.target.composing) { return; }
         _vm.search = $event.target.value
@@ -40622,7 +43625,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
         "src": product.image
       }
     }), _vm._v(" "), _c('p', [_c('strong', [_vm._v(_vm._s(product.title))])]), _vm._v(" "), _c('p', [_vm._v("$" + _vm._s(product.price))])])])
-  }))])])])])
+  }))])])])
 },staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
   return _c('button', {
     staticClass: "search-button",
@@ -40640,13 +43643,171 @@ module.exports.render._withStripped = true
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-cd57dfd2", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-d5cb6ed0\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shopping-cart/add-cart-icon.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "shopping-cart-form"
+  }, [_c('div', {
+    staticClass: "shopping-cart-form"
+  }, [_c('button', {
+    staticClass: "btn btn-primary",
+    on: {
+      "click": _vm.addToCart
+    }
+  }, [_c('i', {
+    staticClass: "fa fa-cart-plus",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  }), _vm._v("Add to Cart\n        ")])])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-d5cb6ed0", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-e07681d2\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/invoice/user-order.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return (_vm.order) ? _c('div', [((_vm.showTotal && _vm.order)) ? _c('order-total-details', {
+    attrs: {
+      "order": _vm.order.cost
+    }
+  }) : _vm._e(), _vm._v(" "), _c('user-order-header', {
+    attrs: {
+      "order": _vm.order
+    }
+  }), _vm._v(" "), _c('h3', [_vm._v("Your Order")]), _vm._v(" "), _c('ul', {
+    staticClass: "list-group"
+  }, _vm._l((_vm.order.products), function(product) {
+    return _c('user-order-item', {
+      key: product.id,
+      attrs: {
+        "item": product
+      }
+    })
+  }))], 1) : _vm._e()
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-e07681d2", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f0b2e840\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/delete-address.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    on: {
+      "click": _vm.toggleModal
+    }
+  }, [_c('span', [_vm._v("Delete")])]), _vm._v(" "), (_vm.showConfirm) ? _c('confirm-modal', {
+    on: {
+      "confirm": _vm.onDelete,
+      "cancel": function($event) {
+        _vm.showConfirm = false
+      }
+    }
+  }, [_c('h3', {
+    attrs: {
+      "slot": "header"
+    },
+    slot: "header"
+  }, [_vm._v("Delete this Address?")]), _vm._v(" "), _c('p', {
+    attrs: {
+      "slot": "body"
+    },
+    slot: "body"
+  }, [_vm._v("\n            " + _vm._s(_vm.address.address) + " "), _c('br'), _vm._v("\n            " + _vm._s(_vm.address.city + ', ' + _vm.address.state + _vm.address.postal_code) + "\n        ")])]) : _vm._e()], 1)
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-f0b2e840", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f10203c2\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/order/order-list-item.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "row order-list-item"
+  }, [_c('div', {
+    staticClass: "order-list-blocks order-list-border"
+  }, [_vm._m(0), _vm._v(" "), _c('p', [_vm._v("\n            Order Date: "), _c('strong', [_vm._v(_vm._s(_vm.order.order_date))]), _vm._v(" "), _c('br'), _vm._v("\n            Has Been Shipped: "), _c('strong', [_vm._v(_vm._s(_vm.shipped))]), _vm._v(" "), _c('br'), _vm._v("\n            Shipped Date : "), (_vm.order.ship_date) ? _c('strong', [_vm._v(_vm._s(_vm.order.ship_date))]) : _vm._e()])]), _vm._v(" "), _c('div', {
+    staticClass: "order-list-blocks order-list-border"
+  }, [_vm._m(1), _vm._v(" "), _c('p', [_vm._v("\n            Subtotal: "), _c('strong', [_vm._v("$" + _vm._s(_vm.order.cost.sub_total))]), _vm._v(" "), _c('br'), _vm._v("\n            Taxes : "), _c('strong', [_vm._v("$" + _vm._s(_vm.order.cost.taxes))]), _vm._v(" "), _c('br'), _vm._v("\n            Total: "), _c('strong', [_vm._v("$" + _vm._s(_vm.order.cost.total))])])]), _vm._v(" "), _c('div', {
+    staticClass: "order-list-blocks"
+  }, [_vm._m(2), _vm._v(" "), _c('p', [_vm._v("\n            " + _vm._s(_vm.order.address.street_address) + " "), _c('br'), _vm._v("\n            " + _vm._s(_vm.order.address.city) + ", " + _vm._s(_vm.order.address.state) + " " + _vm._s(_vm.order.address.postal_code) + "  "), _c('br')])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('h5', [_c('u', [_vm._v("Order Date")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('h5', [_c('u', [_vm._v("Order Details")])])
+},function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('h5', [_c('u', [_vm._v("Order Address")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-f10203c2", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f82ceb9c\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/search-products.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('li', [_c('a', {
+    attrs: {
+      "href": "#"
+    },
+    on: {
+      "click": _vm.show
+    }
+  }, [_c('i', {
+    staticClass: "fa fa-search",
+    attrs: {
+      "aria-hidden": "true"
+    }
+  })])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
      require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-f82ceb9c", module.exports)
   }
 }
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-fc400b2a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/view-message.vue":
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-fc400b2a\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/view-message.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -40990,33 +44151,6 @@ if(false) {
 
 /***/ }),
 
-/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-f82ceb9c\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/navbar/search-products.vue":
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-f82ceb9c\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/navbar/search-products.vue");
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("74883a9a", content, false);
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-f82ceb9c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./search-products.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-f82ceb9c\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./search-products.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-
 /***/ "./node_modules/vue-style-loader/lib/addStylesClient.js":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -41278,7 +44412,7 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {/*!
- * Vue.js v2.3.3
+ * Vue.js v2.4.4
  * (c) 2014-2017 Evan You
  * Released under the MIT License.
  */
@@ -41303,11 +44437,16 @@ function isTrue (v) {
 function isFalse (v) {
   return v === false
 }
+
 /**
  * Check if value is primitive
  */
 function isPrimitive (value) {
-  return typeof value === 'string' || typeof value === 'number'
+  return (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  )
 }
 
 /**
@@ -41331,6 +44470,14 @@ function isPlainObject (obj) {
 
 function isRegExp (v) {
   return _toString.call(v) === '[object RegExp]'
+}
+
+/**
+ * Check if val is a valid array index.
+ */
+function isValidArrayIndex (val) {
+  var n = parseFloat(val);
+  return n >= 0 && Math.floor(n) === n && isFinite(val)
 }
 
 /**
@@ -41375,6 +44522,11 @@ function makeMap (
  * Check if a tag is a built-in tag.
  */
 var isBuiltInTag = makeMap('slot,component', true);
+
+/**
+ * Check if a attribute is a reserved attribute.
+ */
+var isReservedAttribute = makeMap('key,ref,slot,is');
 
 /**
  * Remove an item from an array
@@ -41425,12 +44577,9 @@ var capitalize = cached(function (str) {
 /**
  * Hyphenate a camelCase string.
  */
-var hyphenateRE = /([^-])([A-Z])/g;
+var hyphenateRE = /\B([A-Z])/g;
 var hyphenate = cached(function (str) {
-  return str
-    .replace(hyphenateRE, '$1-$2')
-    .replace(hyphenateRE, '$1-$2')
-    .toLowerCase()
+  return str.replace(hyphenateRE, '-$1').toLowerCase()
 });
 
 /**
@@ -41488,13 +44637,15 @@ function toObject (arr) {
 
 /**
  * Perform no operation.
+ * Stubbing args to make Flow happy without leaving useless transpiled code
+ * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/)
  */
-function noop () {}
+function noop (a, b, c) {}
 
 /**
  * Always return false.
  */
-var no = function () { return false; };
+var no = function (a, b, c) { return false; };
 
 /**
  * Return same value
@@ -41515,14 +44666,30 @@ function genStaticKeys (modules) {
  * if they are plain objects, do they have the same shape?
  */
 function looseEqual (a, b) {
+  if (a === b) { return true }
   var isObjectA = isObject(a);
   var isObjectB = isObject(b);
   if (isObjectA && isObjectB) {
     try {
-      return JSON.stringify(a) === JSON.stringify(b)
+      var isArrayA = Array.isArray(a);
+      var isArrayB = Array.isArray(b);
+      if (isArrayA && isArrayB) {
+        return a.length === b.length && a.every(function (e, i) {
+          return looseEqual(e, b[i])
+        })
+      } else if (!isArrayA && !isArrayB) {
+        var keysA = Object.keys(a);
+        var keysB = Object.keys(b);
+        return keysA.length === keysB.length && keysA.every(function (key) {
+          return looseEqual(a[key], b[key])
+        })
+      } else {
+        /* istanbul ignore next */
+        return false
+      }
     } catch (e) {
-      // possible circular reference
-      return a === b
+      /* istanbul ignore next */
+      return false
     }
   } else if (!isObjectA && !isObjectB) {
     return String(a) === String(b)
@@ -41604,6 +44771,11 @@ var config = ({
    * Error handler for watcher errors
    */
   errorHandler: null,
+
+  /**
+   * Warn handler for watcher warns
+   */
+  warnHandler: null,
 
   /**
    * Ignore certain custom elements
@@ -41711,10 +44883,12 @@ if (true) {
     .replace(/[-_]/g, ''); };
 
   warn = function (msg, vm) {
-    if (hasConsole && (!config.silent)) {
-      console.error("[Vue warn]: " + msg + (
-        vm ? generateComponentTrace(vm) : ''
-      ));
+    var trace = vm ? generateComponentTrace(vm) : '';
+
+    if (config.warnHandler) {
+      config.warnHandler.call(null, msg, vm, trace);
+    } else if (hasConsole && (!config.silent)) {
+      console.error(("[Vue warn]: " + msg + trace));
     }
   };
 
@@ -41824,6 +44998,9 @@ var isAndroid = UA && UA.indexOf('android') > 0;
 var isIOS = UA && /iphone|ipad|ipod|ios/.test(UA);
 var isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge;
 
+// Firefox has a "watch" function on Object.prototype...
+var nativeWatch = ({}).watch;
+
 var supportsPassive = false;
 if (inBrowser) {
   try {
@@ -41833,7 +45010,7 @@ if (inBrowser) {
         /* istanbul ignore next */
         supportsPassive = true;
       }
-    } )); // https://github.com/facebook/flow/issues/285
+    })); // https://github.com/facebook/flow/issues/285
     window.addEventListener('test-passive', null, opts);
   } catch (e) {}
 }
@@ -41903,13 +45080,13 @@ var nextTick = (function () {
       // "force" the microtask queue to be flushed by adding an empty timer.
       if (isIOS) { setTimeout(noop); }
     };
-  } else if (typeof MutationObserver !== 'undefined' && (
+  } else if (!isIE && typeof MutationObserver !== 'undefined' && (
     isNative(MutationObserver) ||
     // PhantomJS and iOS 7.x
     MutationObserver.toString() === '[object MutationObserverConstructor]'
   )) {
     // use MutationObserver where native Promise is not available,
-    // e.g. PhantomJS IE11, iOS7, Android 4.4
+    // e.g. PhantomJS, iOS7, Android 4.4
     var counter = 1;
     var observer = new MutationObserver(nextTickHandler);
     var textNode = document.createTextNode(String(counter));
@@ -42048,22 +45225,14 @@ var arrayMethods = Object.create(arrayProto);[
   // cache original method
   var original = arrayProto[method];
   def(arrayMethods, method, function mutator () {
-    var arguments$1 = arguments;
+    var args = [], len = arguments.length;
+    while ( len-- ) args[ len ] = arguments[ len ];
 
-    // avoid leaking arguments:
-    // http://jsperf.com/closure-with-arguments
-    var i = arguments.length;
-    var args = new Array(i);
-    while (i--) {
-      args[i] = arguments$1[i];
-    }
     var result = original.apply(this, args);
     var ob = this.__ob__;
     var inserted;
     switch (method) {
       case 'push':
-        inserted = args;
-        break
       case 'unshift':
         inserted = args;
         break
@@ -42089,8 +45258,7 @@ var arrayKeys = Object.getOwnPropertyNames(arrayMethods);
  * under a frozen data structure. Converting it would defeat the optimization.
  */
 var observerState = {
-  shouldConvert: true,
-  isSettingProps: false
+  shouldConvert: true
 };
 
 /**
@@ -42142,7 +45310,7 @@ Observer.prototype.observeArray = function observeArray (items) {
  * Augment an target Object or Array by intercepting
  * the prototype chain using __proto__
  */
-function protoAugment (target, src) {
+function protoAugment (target, src, keys) {
   /* eslint-disable no-proto */
   target.__proto__ = src;
   /* eslint-enable no-proto */
@@ -42194,7 +45362,8 @@ function defineReactive$$1 (
   obj,
   key,
   val,
-  customSetter
+  customSetter,
+  shallow
 ) {
   var dep = new Dep();
 
@@ -42207,7 +45376,7 @@ function defineReactive$$1 (
   var getter = property && property.get;
   var setter = property && property.set;
 
-  var childOb = observe(val);
+  var childOb = !shallow && observe(val);
   Object.defineProperty(obj, key, {
     enumerable: true,
     configurable: true,
@@ -42217,9 +45386,9 @@ function defineReactive$$1 (
         dep.depend();
         if (childOb) {
           childOb.dep.depend();
-        }
-        if (Array.isArray(value)) {
-          dependArray(value);
+          if (Array.isArray(value)) {
+            dependArray(value);
+          }
         }
       }
       return value
@@ -42239,7 +45408,7 @@ function defineReactive$$1 (
       } else {
         val = newVal;
       }
-      childOb = observe(newVal);
+      childOb = !shallow && observe(newVal);
       dep.notify();
     }
   });
@@ -42251,7 +45420,7 @@ function defineReactive$$1 (
  * already exist.
  */
 function set (target, key, val) {
-  if (Array.isArray(target) && typeof key === 'number') {
+  if (Array.isArray(target) && isValidArrayIndex(key)) {
     target.length = Math.max(target.length, key);
     target.splice(key, 1, val);
     return val
@@ -42260,7 +45429,7 @@ function set (target, key, val) {
     target[key] = val;
     return val
   }
-  var ob = (target ).__ob__;
+  var ob = (target).__ob__;
   if (target._isVue || (ob && ob.vmCount)) {
     "development" !== 'production' && warn(
       'Avoid adding reactive properties to a Vue instance or its root $data ' +
@@ -42281,11 +45450,11 @@ function set (target, key, val) {
  * Delete a property and trigger change if necessary.
  */
 function del (target, key) {
-  if (Array.isArray(target) && typeof key === 'number') {
+  if (Array.isArray(target) && isValidArrayIndex(key)) {
     target.splice(key, 1);
     return
   }
-  var ob = (target ).__ob__;
+  var ob = (target).__ob__;
   if (target._isVue || (ob && ob.vmCount)) {
     "development" !== 'production' && warn(
       'Avoid deleting properties on a Vue instance or its root $data ' +
@@ -42364,7 +45533,7 @@ function mergeData (to, from) {
 /**
  * Data
  */
-strats.data = function (
+function mergeDataOrFn (
   parentVal,
   childVal,
   vm
@@ -42372,15 +45541,6 @@ strats.data = function (
   if (!vm) {
     // in a Vue.extend merge, both should be functions
     if (!childVal) {
-      return parentVal
-    }
-    if (typeof childVal !== 'function') {
-      "development" !== 'production' && warn(
-        'The "data" option should be a function ' +
-        'that returns a per-instance value in component ' +
-        'definitions.',
-        vm
-      );
       return parentVal
     }
     if (!parentVal) {
@@ -42393,8 +45553,8 @@ strats.data = function (
     // it has to be a function to pass previous merges.
     return function mergedDataFn () {
       return mergeData(
-        childVal.call(this),
-        parentVal.call(this)
+        typeof childVal === 'function' ? childVal.call(this) : childVal,
+        typeof parentVal === 'function' ? parentVal.call(this) : parentVal
       )
     }
   } else if (parentVal || childVal) {
@@ -42405,7 +45565,7 @@ strats.data = function (
         : childVal;
       var defaultData = typeof parentVal === 'function'
         ? parentVal.call(vm)
-        : undefined;
+        : parentVal;
       if (instanceData) {
         return mergeData(instanceData, defaultData)
       } else {
@@ -42413,6 +45573,28 @@ strats.data = function (
       }
     }
   }
+}
+
+strats.data = function (
+  parentVal,
+  childVal,
+  vm
+) {
+  if (!vm) {
+    if (childVal && typeof childVal !== 'function') {
+      "development" !== 'production' && warn(
+        'The "data" option should be a function ' +
+        'that returns a per-instance value in component ' +
+        'definitions.',
+        vm
+      );
+
+      return parentVal
+    }
+    return mergeDataOrFn.call(this, parentVal, childVal)
+  }
+
+  return mergeDataOrFn(parentVal, childVal, vm)
 };
 
 /**
@@ -42460,6 +45642,9 @@ ASSET_TYPES.forEach(function (type) {
  * another, so we merge them as arrays.
  */
 strats.watch = function (parentVal, childVal) {
+  // work around Firefox's Object.prototype.watch...
+  if (parentVal === nativeWatch) { parentVal = undefined; }
+  if (childVal === nativeWatch) { childVal = undefined; }
   /* istanbul ignore if */
   if (!childVal) { return Object.create(parentVal || null) }
   if (!parentVal) { return childVal }
@@ -42473,7 +45658,7 @@ strats.watch = function (parentVal, childVal) {
     }
     ret[key] = parent
       ? parent.concat(child)
-      : [child];
+      : Array.isArray(child) ? child : [child];
   }
   return ret
 };
@@ -42483,14 +45668,15 @@ strats.watch = function (parentVal, childVal) {
  */
 strats.props =
 strats.methods =
+strats.inject =
 strats.computed = function (parentVal, childVal) {
-  if (!childVal) { return Object.create(parentVal || null) }
   if (!parentVal) { return childVal }
   var ret = Object.create(null);
   extend(ret, parentVal);
-  extend(ret, childVal);
+  if (childVal) { extend(ret, childVal); }
   return ret
 };
+strats.provide = mergeDataOrFn;
 
 /**
  * Default strategy.
@@ -42549,6 +45735,19 @@ function normalizeProps (options) {
 }
 
 /**
+ * Normalize all injections into Object-based format
+ */
+function normalizeInject (options) {
+  var inject = options.inject;
+  if (Array.isArray(inject)) {
+    var normalized = options.inject = {};
+    for (var i = 0; i < inject.length; i++) {
+      normalized[inject[i]] = inject[i];
+    }
+  }
+}
+
+/**
  * Normalize raw function directives into object format.
  */
 function normalizeDirectives (options) {
@@ -42581,6 +45780,7 @@ function mergeOptions (
   }
 
   normalizeProps(child);
+  normalizeInject(child);
   normalizeDirectives(child);
   var extendsFrom = child.extends;
   if (extendsFrom) {
@@ -42768,7 +45968,12 @@ function assertType (value, type) {
   var valid;
   var expectedType = getType(type);
   if (simpleCheckRE.test(expectedType)) {
-    valid = typeof value === expectedType.toLowerCase();
+    var t = typeof value;
+    valid = t === expectedType.toLowerCase();
+    // for primitive wrapper objects
+    if (!valid && t === 'object') {
+      valid = value instanceof type;
+    }
   } else if (expectedType === 'Object') {
     valid = isPlainObject(value);
   } else if (expectedType === 'Array') {
@@ -42913,7 +46118,8 @@ var VNode = function VNode (
   text,
   elm,
   context,
-  componentOptions
+  componentOptions,
+  asyncFactory
 ) {
   this.tag = tag;
   this.data = data;
@@ -42933,6 +46139,9 @@ var VNode = function VNode (
   this.isComment = false;
   this.isCloned = false;
   this.isOnce = false;
+  this.asyncFactory = asyncFactory;
+  this.asyncMeta = undefined;
+  this.isAsyncPlaceholder = false;
 };
 
 var prototypeAccessors = { child: {} };
@@ -42945,9 +46154,11 @@ prototypeAccessors.child.get = function () {
 
 Object.defineProperties( VNode.prototype, prototypeAccessors );
 
-var createEmptyVNode = function () {
+var createEmptyVNode = function (text) {
+  if ( text === void 0 ) text = '';
+
   var node = new VNode();
-  node.text = '';
+  node.text = text;
   node.isComment = true;
   return node
 };
@@ -42960,7 +46171,7 @@ function createTextVNode (val) {
 // used for static nodes and slot nodes because they may be reused across
 // multiple renders, cloning them avoids errors when DOM manipulations rely
 // on their elm reference.
-function cloneVNode (vnode) {
+function cloneVNode (vnode, deep) {
   var cloned = new VNode(
     vnode.tag,
     vnode.data,
@@ -42968,21 +46179,25 @@ function cloneVNode (vnode) {
     vnode.text,
     vnode.elm,
     vnode.context,
-    vnode.componentOptions
+    vnode.componentOptions,
+    vnode.asyncFactory
   );
   cloned.ns = vnode.ns;
   cloned.isStatic = vnode.isStatic;
   cloned.key = vnode.key;
   cloned.isComment = vnode.isComment;
   cloned.isCloned = true;
+  if (deep && vnode.children) {
+    cloned.children = cloneVNodes(vnode.children);
+  }
   return cloned
 }
 
-function cloneVNodes (vnodes) {
+function cloneVNodes (vnodes, deep) {
   var len = vnodes.length;
   var res = new Array(len);
   for (var i = 0; i < len; i++) {
-    res[i] = cloneVNode(vnodes[i]);
+    res[i] = cloneVNode(vnodes[i], deep);
   }
   return res
 }
@@ -42996,8 +46211,10 @@ var normalizeEvent = cached(function (name) {
   name = once$$1 ? name.slice(1) : name;
   var capture = name.charAt(0) === '!';
   name = capture ? name.slice(1) : name;
+  var plain = !(passive || once$$1 || capture);
   return {
     name: name,
+    plain: plain,
     once: once$$1,
     capture: capture,
     passive: passive
@@ -43010,8 +46227,9 @@ function createFnInvoker (fns) {
 
     var fns = invoker.fns;
     if (Array.isArray(fns)) {
-      for (var i = 0; i < fns.length; i++) {
-        fns[i].apply(null, arguments$1);
+      var cloned = fns.slice();
+      for (var i = 0; i < cloned.length; i++) {
+        cloned[i].apply(null, arguments$1);
       }
     } else {
       // return handler return value for single handlers
@@ -43022,6 +46240,11 @@ function createFnInvoker (fns) {
   return invoker
 }
 
+// #6552
+function prioritizePlainEvents (a, b) {
+  return a.plain ? -1 : b.plain ? 1 : 0
+}
+
 function updateListeners (
   on,
   oldOn,
@@ -43030,10 +46253,13 @@ function updateListeners (
   vm
 ) {
   var name, cur, old, event;
+  var toAdd = [];
+  var hasModifier = false;
   for (name in on) {
     cur = on[name];
     old = oldOn[name];
     event = normalizeEvent(name);
+    if (!event.plain) { hasModifier = true; }
     if (isUndef(cur)) {
       "development" !== 'production' && warn(
         "Invalid handler for event \"" + (event.name) + "\": got " + String(cur),
@@ -43043,10 +46269,18 @@ function updateListeners (
       if (isUndef(cur.fns)) {
         cur = on[name] = createFnInvoker(cur);
       }
-      add(event.name, cur, event.once, event.capture, event.passive);
+      event.handler = cur;
+      toAdd.push(event);
     } else if (cur !== old) {
       old.fns = cur;
       on[name] = old;
+    }
+  }
+  if (toAdd.length) {
+    if (hasModifier) { toAdd.sort(prioritizePlainEvents); }
+    for (var i = 0; i < toAdd.length; i++) {
+      var event$1 = toAdd[i];
+      add(event$1.name, event$1.handler, event$1.once, event$1.capture, event$1.passive);
     }
   }
   for (name in oldOn) {
@@ -43238,9 +46472,25 @@ function normalizeArrayChildren (children, nestedIndex) {
 /*  */
 
 function ensureCtor (comp, base) {
+  if (comp.__esModule && comp.default) {
+    comp = comp.default;
+  }
   return isObject(comp)
     ? base.extend(comp)
     : comp
+}
+
+function createAsyncPlaceholder (
+  factory,
+  data,
+  context,
+  children,
+  tag
+) {
+  var node = createEmptyVNode();
+  node.asyncFactory = factory;
+  node.asyncMeta = { data: data, context: context, children: children, tag: tag };
+  return node
 }
 
 function resolveAsyncComponent (
@@ -43347,11 +46597,17 @@ function resolveAsyncComponent (
 
 /*  */
 
+function isAsyncPlaceholder (node) {
+  return node.isComment && node.asyncFactory
+}
+
+/*  */
+
 function getFirstComponentChild (children) {
   if (Array.isArray(children)) {
     for (var i = 0; i < children.length; i++) {
       var c = children[i];
-      if (isDef(c) && isDef(c.componentOptions)) {
+      if (isDef(c) && (isDef(c.componentOptions) || isAsyncPlaceholder(c))) {
         return c
       }
     }
@@ -43438,8 +46694,8 @@ function eventsMixin (Vue) {
     }
     // array of events
     if (Array.isArray(event)) {
-      for (var i$1 = 0, l = event.length; i$1 < l; i$1++) {
-        this$1.$off(event[i$1], fn);
+      for (var i = 0, l = event.length; i < l; i++) {
+        this$1.$off(event[i], fn);
       }
       return vm
     }
@@ -43452,14 +46708,16 @@ function eventsMixin (Vue) {
       vm._events[event] = null;
       return vm
     }
-    // specific handler
-    var cb;
-    var i = cbs.length;
-    while (i--) {
-      cb = cbs[i];
-      if (cb === fn || cb.fn === fn) {
-        cbs.splice(i, 1);
-        break
+    if (fn) {
+      // specific handler
+      var cb;
+      var i$1 = cbs.length;
+      while (i$1--) {
+        cb = cbs[i$1];
+        if (cb === fn || cb.fn === fn) {
+          cbs.splice(i$1, 1);
+          break
+        }
       }
     }
     return vm
@@ -43484,7 +46742,11 @@ function eventsMixin (Vue) {
       cbs = cbs.length > 1 ? toArray(cbs) : cbs;
       var args = toArray(arguments, 1);
       for (var i = 0, l = cbs.length; i < l; i++) {
-        cbs[i].apply(vm, args);
+        try {
+          cbs[i].apply(vm, args);
+        } catch (e) {
+          handleError(e, vm, ("event handler for \"" + event + "\""));
+        }
       }
     }
     return vm
@@ -43507,10 +46769,15 @@ function resolveSlots (
   var defaultSlot = [];
   for (var i = 0, l = children.length; i < l; i++) {
     var child = children[i];
+    var data = child.data;
+    // remove slot attribute if the node is resolved as a Vue slot node
+    if (data && data.attrs && data.attrs.slot) {
+      delete data.attrs.slot;
+    }
     // named slots should only be respected if the vnode was rendered in the
     // same context.
     if ((child.context === context || child.functionalContext === context) &&
-      child.data && child.data.slot != null
+      data && data.slot != null
     ) {
       var name = child.data.slot;
       var slot = (slots[name] || (slots[name] = []));
@@ -43552,6 +46819,7 @@ function resolveScopedSlots (
 /*  */
 
 var activeInstance = null;
+var isUpdatingChildComponent = false;
 
 function initLifecycle (vm) {
   var options = vm.$options;
@@ -43599,6 +46867,9 @@ function lifecycleMixin (Vue) {
         vm.$options._parentElm,
         vm.$options._refElm
       );
+      // no need for the ref nodes after initial patch
+      // this prevents keeping a detached DOM tree in memory (#5851)
+      vm.$options._parentElm = vm.$options._refElm = null;
     } else {
       // updates
       vm.$el = vm.__patch__(prevVnode, vnode);
@@ -43663,8 +46934,6 @@ function lifecycleMixin (Vue) {
     if (vm.$el) {
       vm.$el.__vue__ = null;
     }
-    // remove reference to DOM nodes (prevents leak)
-    vm.$options._parentElm = vm.$options._refElm = null;
   };
 }
 
@@ -43740,6 +47009,10 @@ function updateChildComponent (
   parentVnode,
   renderChildren
 ) {
+  if (true) {
+    isUpdatingChildComponent = true;
+  }
+
   // determine whether component has slot children
   // we need to do this before overwriting $options._renderChildren
   var hasChildren = !!(
@@ -43751,17 +47024,21 @@ function updateChildComponent (
 
   vm.$options._parentVnode = parentVnode;
   vm.$vnode = parentVnode; // update vm's placeholder node without re-render
+
   if (vm._vnode) { // update child tree's parent
     vm._vnode.parent = parentVnode;
   }
   vm.$options._renderChildren = renderChildren;
 
+  // update $attrs and $listeners hash
+  // these are also reactive so they may trigger child update if the child
+  // used them during render
+  vm.$attrs = (parentVnode.data && parentVnode.data.attrs) || emptyObject;
+  vm.$listeners = listeners || emptyObject;
+
   // update props
   if (propsData && vm.$options.props) {
     observerState.shouldConvert = false;
-    if (true) {
-      observerState.isSettingProps = true;
-    }
     var props = vm._props;
     var propKeys = vm.$options._propKeys || [];
     for (var i = 0; i < propKeys.length; i++) {
@@ -43769,12 +47046,10 @@ function updateChildComponent (
       props[key] = validateProp(key, vm.$options.props, propsData, vm);
     }
     observerState.shouldConvert = true;
-    if (true) {
-      observerState.isSettingProps = false;
-    }
     // keep a copy of raw propsData
     vm.$options.propsData = propsData;
   }
+
   // update listeners
   if (listeners) {
     var oldListeners = vm.$options._parentListeners;
@@ -43785,6 +47060,10 @@ function updateChildComponent (
   if (hasChildren) {
     vm.$slots = resolveSlots(renderChildren, parentVnode.context);
     vm.$forceUpdate();
+  }
+
+  if (true) {
+    isUpdatingChildComponent = false;
   }
 }
 
@@ -43919,7 +47198,7 @@ function flushSchedulerQueue () {
 
   // call component updated and activated hooks
   callActivatedHooks(activatedQueue);
-  callUpdateHooks(updatedQueue);
+  callUpdatedHooks(updatedQueue);
 
   // devtool hook
   /* istanbul ignore if */
@@ -43928,7 +47207,7 @@ function flushSchedulerQueue () {
   }
 }
 
-function callUpdateHooks (queue) {
+function callUpdatedHooks (queue) {
   var i = queue.length;
   while (i--) {
     var watcher = queue[i];
@@ -44049,22 +47328,23 @@ Watcher.prototype.get = function get () {
   pushTarget(this);
   var value;
   var vm = this.vm;
-  if (this.user) {
-    try {
-      value = this.getter.call(vm, vm);
-    } catch (e) {
-      handleError(e, vm, ("getter for watcher \"" + (this.expression) + "\""));
-    }
-  } else {
+  try {
     value = this.getter.call(vm, vm);
+  } catch (e) {
+    if (this.user) {
+      handleError(e, vm, ("getter for watcher \"" + (this.expression) + "\""));
+    } else {
+      throw e
+    }
+  } finally {
+    // "touch" every property so they are all tracked as
+    // dependencies for deep watching
+    if (this.deep) {
+      traverse(value);
+    }
+    popTarget();
+    this.cleanupDeps();
   }
-  // "touch" every property so they are all tracked as
-  // dependencies for deep watching
-  if (this.deep) {
-    traverse(value);
-  }
-  popTarget();
-  this.cleanupDeps();
   return value
 };
 
@@ -44257,14 +47537,20 @@ function initState (vm) {
     observe(vm._data = {}, true /* asRootData */);
   }
   if (opts.computed) { initComputed(vm, opts.computed); }
-  if (opts.watch) { initWatch(vm, opts.watch); }
+  if (opts.watch && opts.watch !== nativeWatch) {
+    initWatch(vm, opts.watch);
+  }
 }
 
-var isReservedProp = {
-  key: 1,
-  ref: 1,
-  slot: 1
-};
+function checkOptionType (vm, name) {
+  var option = vm.$options[name];
+  if (!isPlainObject(option)) {
+    warn(
+      ("component option \"" + name + "\" should be an object."),
+      vm
+    );
+  }
+}
 
 function initProps (vm, propsOptions) {
   var propsData = vm.$options.propsData || {};
@@ -44280,14 +47566,14 @@ function initProps (vm, propsOptions) {
     var value = validateProp(key, propsOptions, propsData, vm);
     /* istanbul ignore else */
     if (true) {
-      if (isReservedProp[key] || config.isReservedAttr(key)) {
+      if (isReservedAttribute(key) || config.isReservedAttr(key)) {
         warn(
           ("\"" + key + "\" is a reserved attribute and cannot be used as component prop."),
           vm
         );
       }
       defineReactive$$1(props, key, value, function () {
-        if (vm.$parent && !observerState.isSettingProps) {
+        if (vm.$parent && !isUpdatingChildComponent) {
           warn(
             "Avoid mutating a prop directly since the value will be " +
             "overwritten whenever the parent component re-renders. " +
@@ -44328,16 +47614,26 @@ function initData (vm) {
   // proxy data on instance
   var keys = Object.keys(data);
   var props = vm.$options.props;
+  var methods = vm.$options.methods;
   var i = keys.length;
   while (i--) {
-    if (props && hasOwn(props, keys[i])) {
+    var key = keys[i];
+    if (true) {
+      if (methods && hasOwn(methods, key)) {
+        warn(
+          ("Method \"" + key + "\" has already been defined as a data property."),
+          vm
+        );
+      }
+    }
+    if (props && hasOwn(props, key)) {
       "development" !== 'production' && warn(
-        "The data property \"" + (keys[i]) + "\" is already declared as a prop. " +
+        "The data property \"" + key + "\" is already declared as a prop. " +
         "Use prop default value instead.",
         vm
       );
-    } else if (!isReserved(keys[i])) {
-      proxy(vm, "_data", keys[i]);
+    } else if (!isReserved(key)) {
+      proxy(vm, "_data", key);
     }
   }
   // observe data
@@ -44356,22 +47652,30 @@ function getData (data, vm) {
 var computedWatcherOptions = { lazy: true };
 
 function initComputed (vm, computed) {
+  "development" !== 'production' && checkOptionType(vm, 'computed');
   var watchers = vm._computedWatchers = Object.create(null);
+  // computed properties are just getters during SSR
+  var isSSR = isServerRendering();
 
   for (var key in computed) {
     var userDef = computed[key];
     var getter = typeof userDef === 'function' ? userDef : userDef.get;
-    if (true) {
-      if (getter === undefined) {
-        warn(
-          ("No getter function has been defined for computed property \"" + key + "\"."),
-          vm
-        );
-        getter = noop;
-      }
+    if ("development" !== 'production' && getter == null) {
+      warn(
+        ("Getter is missing for computed property \"" + key + "\"."),
+        vm
+      );
     }
-    // create internal watcher for the computed property.
-    watchers[key] = new Watcher(vm, getter, noop, computedWatcherOptions);
+
+    if (!isSSR) {
+      // create internal watcher for the computed property.
+      watchers[key] = new Watcher(
+        vm,
+        getter || noop,
+        noop,
+        computedWatcherOptions
+      );
+    }
 
     // component-defined computed properties are already defined on the
     // component prototype. We only need to define computed properties defined
@@ -44388,19 +47692,35 @@ function initComputed (vm, computed) {
   }
 }
 
-function defineComputed (target, key, userDef) {
+function defineComputed (
+  target,
+  key,
+  userDef
+) {
+  var shouldCache = !isServerRendering();
   if (typeof userDef === 'function') {
-    sharedPropertyDefinition.get = createComputedGetter(key);
+    sharedPropertyDefinition.get = shouldCache
+      ? createComputedGetter(key)
+      : userDef;
     sharedPropertyDefinition.set = noop;
   } else {
     sharedPropertyDefinition.get = userDef.get
-      ? userDef.cache !== false
+      ? shouldCache && userDef.cache !== false
         ? createComputedGetter(key)
         : userDef.get
       : noop;
     sharedPropertyDefinition.set = userDef.set
       ? userDef.set
       : noop;
+  }
+  if ("development" !== 'production' &&
+      sharedPropertyDefinition.set === noop) {
+    sharedPropertyDefinition.set = function () {
+      warn(
+        ("Computed property \"" + key + "\" was assigned to but it has no setter."),
+        this
+      );
+    };
   }
   Object.defineProperty(target, key, sharedPropertyDefinition);
 }
@@ -44421,28 +47741,36 @@ function createComputedGetter (key) {
 }
 
 function initMethods (vm, methods) {
+  "development" !== 'production' && checkOptionType(vm, 'methods');
   var props = vm.$options.props;
   for (var key in methods) {
-    vm[key] = methods[key] == null ? noop : bind(methods[key], vm);
     if (true) {
       if (methods[key] == null) {
         warn(
-          "method \"" + key + "\" has an undefined value in the component definition. " +
+          "Method \"" + key + "\" has an undefined value in the component definition. " +
           "Did you reference the function correctly?",
           vm
         );
       }
       if (props && hasOwn(props, key)) {
         warn(
-          ("method \"" + key + "\" has already been defined as a prop."),
+          ("Method \"" + key + "\" has already been defined as a prop."),
           vm
         );
       }
+      if ((key in vm) && isReserved(key)) {
+        warn(
+          "Method \"" + key + "\" conflicts with an existing Vue instance method. " +
+          "Avoid defining component methods that start with _ or $."
+        );
+      }
     }
+    vm[key] = methods[key] == null ? noop : bind(methods[key], vm);
   }
 }
 
 function initWatch (vm, watch) {
+  "development" !== 'production' && checkOptionType(vm, 'watch');
   for (var key in watch) {
     var handler = watch[key];
     if (Array.isArray(handler)) {
@@ -44455,8 +47783,12 @@ function initWatch (vm, watch) {
   }
 }
 
-function createWatcher (vm, key, handler) {
-  var options;
+function createWatcher (
+  vm,
+  keyOrFn,
+  handler,
+  options
+) {
   if (isPlainObject(handler)) {
     options = handler;
     handler = handler.handler;
@@ -44464,7 +47796,7 @@ function createWatcher (vm, key, handler) {
   if (typeof handler === 'string') {
     handler = vm[handler];
   }
-  vm.$watch(key, handler, options);
+  return vm.$watch(keyOrFn, handler, options)
 }
 
 function stateMixin (Vue) {
@@ -44499,6 +47831,9 @@ function stateMixin (Vue) {
     options
   ) {
     var vm = this;
+    if (isPlainObject(cb)) {
+      return createWatcher(vm, expOrFn, cb, options)
+    }
     options = options || {};
     options.user = true;
     var watcher = new Watcher(vm, expOrFn, cb, options);
@@ -44525,6 +47860,7 @@ function initProvide (vm) {
 function initInjections (vm) {
   var result = resolveInject(vm.$options.inject, vm);
   if (result) {
+    observerState.shouldConvert = false;
     Object.keys(result).forEach(function (key) {
       /* istanbul ignore else */
       if (true) {
@@ -44540,24 +47876,24 @@ function initInjections (vm) {
         defineReactive$$1(vm, key, result[key]);
       }
     });
+    observerState.shouldConvert = true;
   }
 }
 
 function resolveInject (inject, vm) {
   if (inject) {
     // inject is :any because flow is not smart enough to figure out cached
-    // isArray here
-    var isArray = Array.isArray(inject);
     var result = Object.create(null);
-    var keys = isArray
-      ? inject
-      : hasSymbol
-        ? Reflect.ownKeys(inject)
+    var keys = hasSymbol
+        ? Reflect.ownKeys(inject).filter(function (key) {
+          /* istanbul ignore next */
+          return Object.getOwnPropertyDescriptor(inject, key).enumerable
+        })
         : Object.keys(inject);
 
     for (var i = 0; i < keys.length; i++) {
       var key = keys[i];
-      var provideKey = isArray ? key : inject[key];
+      var provideKey = inject[key];
       var source = vm;
       while (source) {
         if (source._provided && provideKey in source._provided) {
@@ -44565,6 +47901,9 @@ function resolveInject (inject, vm) {
           break
         }
         source = source.$parent;
+      }
+      if ("development" !== 'production' && !source) {
+        warn(("Injection \"" + key + "\" not found"), vm);
       }
     }
     return result
@@ -44584,7 +47923,7 @@ function createFunctionalComponent (
   var propOptions = Ctor.options.props;
   if (isDef(propOptions)) {
     for (var key in propOptions) {
-      props[key] = validateProp(key, propOptions, propsData || {});
+      props[key] = validateProp(key, propOptions, propsData || emptyObject);
     }
   } else {
     if (isDef(data.attrs)) { mergeProps(props, data.attrs); }
@@ -44599,7 +47938,7 @@ function createFunctionalComponent (
     props: props,
     children: children,
     parent: context,
-    listeners: data.on || {},
+    listeners: data.on || emptyObject,
     injections: resolveInject(Ctor.options.inject, context),
     slots: function () { return resolveSlots(children, context); }
   });
@@ -44719,20 +48058,29 @@ function createComponent (
   }
 
   // async component
+  var asyncFactory;
   if (isUndef(Ctor.cid)) {
-    Ctor = resolveAsyncComponent(Ctor, baseCtor, context);
+    asyncFactory = Ctor;
+    Ctor = resolveAsyncComponent(asyncFactory, baseCtor, context);
     if (Ctor === undefined) {
-      // return nothing if this is indeed an async component
-      // wait for the callback to trigger parent update.
-      return
+      // return a placeholder node for async component, which is rendered
+      // as a comment node but preserves all the raw information for the node.
+      // the information will be used for async server-rendering and hydration.
+      return createAsyncPlaceholder(
+        asyncFactory,
+        data,
+        context,
+        children,
+        tag
+      )
     }
   }
+
+  data = data || {};
 
   // resolve constructor options in case global mixins are applied after
   // component constructor creation
   resolveConstructorOptions(Ctor);
-
-  data = data || {};
 
   // transform component v-model data into props & events
   if (isDef(data.model)) {
@@ -44751,12 +48099,19 @@ function createComponent (
   // child component listeners instead of DOM listeners
   var listeners = data.on;
   // replace with listeners with .native modifier
+  // so it gets processed during parent component patch.
   data.on = data.nativeOn;
 
   if (isTrue(Ctor.options.abstract)) {
     // abstract components do not keep anything
-    // other than props & listeners
+    // other than props & listeners & slot
+
+    // work around flow
+    var slot = data.slot;
     data = {};
+    if (slot) {
+      data.slot = slot;
+    }
   }
 
   // merge component management hooks onto the placeholder node
@@ -44767,7 +48122,8 @@ function createComponent (
   var vnode = new VNode(
     ("vue-component-" + (Ctor.cid) + (name ? ("-" + name) : '')),
     data, undefined, undefined, undefined, context,
-    { Ctor: Ctor, propsData: propsData, listeners: listeners, tag: tag, children: children }
+    { Ctor: Ctor, propsData: propsData, listeners: listeners, tag: tag, children: children },
+    asyncFactory
   );
   return vnode
 }
@@ -44872,9 +48228,23 @@ function _createElement (
     );
     return createEmptyVNode()
   }
+  // object syntax in v-bind
+  if (isDef(data) && isDef(data.is)) {
+    tag = data.is;
+  }
   if (!tag) {
     // in case of component :is set to falsy value
     return createEmptyVNode()
+  }
+  // warn against non-primitive key
+  if ("development" !== 'production' &&
+    isDef(data) && isDef(data.key) && !isPrimitive(data.key)
+  ) {
+    warn(
+      'Avoid using non-primitive value as key, ' +
+      'use string/number value instead.',
+      context
+    );
   }
   // support single function children as default scoped slot
   if (Array.isArray(children) &&
@@ -44892,7 +48262,7 @@ function _createElement (
   var vnode, ns;
   if (typeof tag === 'string') {
     var Ctor;
-    ns = config.getTagNamespace(tag);
+    ns = (context.$vnode && context.$vnode.ns) || config.getTagNamespace(tag);
     if (config.isReservedTag(tag)) {
       // platform built-in elements
       vnode = new VNode(
@@ -44988,7 +48358,7 @@ function renderSlot (
   if (scopedSlotFn) { // scoped slot
     props = props || {};
     if (bindObject) {
-      extend(props, bindObject);
+      props = extend(extend({}, bindObject), props);
     }
     return scopedSlotFn(props) || fallback
   } else {
@@ -45042,7 +48412,8 @@ function bindObjectProps (
   data,
   tag,
   value,
-  asProp
+  asProp,
+  isSync
 ) {
   if (value) {
     if (!isObject(value)) {
@@ -45055,8 +48426,12 @@ function bindObjectProps (
         value = toObject(value);
       }
       var hash;
-      for (var key in value) {
-        if (key === 'class' || key === 'style') {
+      var loop = function ( key ) {
+        if (
+          key === 'class' ||
+          key === 'style' ||
+          isReservedAttribute(key)
+        ) {
           hash = data;
         } else {
           var type = data.attrs && data.attrs.type;
@@ -45066,8 +48441,17 @@ function bindObjectProps (
         }
         if (!(key in hash)) {
           hash[key] = value[key];
+
+          if (isSync) {
+            var on = data.on || (data.on = {});
+            on[("update:" + key)] = function ($event) {
+              value[key] = $event;
+            };
+          }
         }
-      }
+      };
+
+      for (var key in value) loop( key );
     }
   }
   return data
@@ -45134,6 +48518,27 @@ function markStaticNode (node, key, isOnce) {
 
 /*  */
 
+function bindObjectListeners (data, value) {
+  if (value) {
+    if (!isPlainObject(value)) {
+      "development" !== 'production' && warn(
+        'v-on without argument expects an Object value',
+        this
+      );
+    } else {
+      var on = data.on = data.on ? extend({}, data.on) : {};
+      for (var key in value) {
+        var existing = on[key];
+        var ours = value[key];
+        on[key] = existing ? [].concat(ours, existing) : ours;
+      }
+    }
+  }
+  return data
+}
+
+/*  */
+
 function initRender (vm) {
   vm._vnode = null; // the root of the child tree
   vm._staticTrees = null;
@@ -45149,6 +48554,23 @@ function initRender (vm) {
   // normalization is always applied for the public version, used in
   // user-written render functions.
   vm.$createElement = function (a, b, c, d) { return createElement(vm, a, b, c, d, true); };
+
+  // $attrs & $listeners are exposed for easier HOC creation.
+  // they need to be reactive so that HOCs using them are always updated
+  var parentData = parentVnode && parentVnode.data;
+
+  /* istanbul ignore else */
+  if (true) {
+    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, function () {
+      !isUpdatingChildComponent && warn("$attrs is readonly.", vm);
+    }, true);
+    defineReactive$$1(vm, '$listeners', vm.$options._parentListeners || emptyObject, function () {
+      !isUpdatingChildComponent && warn("$listeners is readonly.", vm);
+    }, true);
+  } else {
+    defineReactive$$1(vm, '$attrs', parentData && parentData.attrs || emptyObject, null, true);
+    defineReactive$$1(vm, '$listeners', vm.$options._parentListeners || emptyObject, null, true);
+  }
 }
 
 function renderMixin (Vue) {
@@ -45164,9 +48586,13 @@ function renderMixin (Vue) {
     var _parentVnode = ref._parentVnode;
 
     if (vm._isMounted) {
-      // clone slot nodes on re-renders
+      // if the parent didn't update, the slot nodes will be the ones from
+      // last render. They need to be cloned to ensure "freshness" for this render.
       for (var key in vm.$slots) {
-        vm.$slots[key] = cloneVNodes(vm.$slots[key]);
+        var slot = vm.$slots[key];
+        if (slot._rendered) {
+          vm.$slots[key] = cloneVNodes(slot, true /* deep */);
+        }
       }
     }
 
@@ -45228,6 +48654,7 @@ function renderMixin (Vue) {
   Vue.prototype._v = createTextVNode;
   Vue.prototype._e = createEmptyVNode;
   Vue.prototype._u = resolveScopedSlots;
+  Vue.prototype._g = bindObjectListeners;
 }
 
 /*  */
@@ -45386,10 +48813,11 @@ renderMixin(Vue$3);
 
 function initUse (Vue) {
   Vue.use = function (plugin) {
-    /* istanbul ignore if */
-    if (plugin.installed) {
+    var installedPlugins = (this._installedPlugins || (this._installedPlugins = []));
+    if (installedPlugins.indexOf(plugin) > -1) {
       return this
     }
+
     // additional parameters
     var args = toArray(arguments, 1);
     args.unshift(this);
@@ -45398,7 +48826,7 @@ function initUse (Vue) {
     } else if (typeof plugin === 'function') {
       plugin.apply(null, args);
     }
-    plugin.installed = true;
+    installedPlugins.push(plugin);
     return this
   };
 }
@@ -45549,14 +48977,16 @@ function initAssetRegisters (Vue) {
 
 /*  */
 
-var patternTypes = [String, RegExp];
+var patternTypes = [String, RegExp, Array];
 
 function getComponentName (opts) {
   return opts && (opts.Ctor.options.name || opts.tag)
 }
 
 function matches (pattern, name) {
-  if (typeof pattern === 'string') {
+  if (Array.isArray(pattern)) {
+    return pattern.indexOf(name) > -1
+  } else if (typeof pattern === 'string') {
     return pattern.split(',').indexOf(name) > -1
   } else if (isRegExp(pattern)) {
     return pattern.test(name)
@@ -45703,11 +49133,11 @@ Object.defineProperty(Vue$3.prototype, '$isServer', {
 Object.defineProperty(Vue$3.prototype, '$ssrContext', {
   get: function get () {
     /* istanbul ignore next */
-    return this.$vnode.ssrContext
+    return this.$vnode && this.$vnode.ssrContext
   }
 });
 
-Vue$3.version = '2.3.3';
+Vue$3.version = '2.4.4';
 
 /*  */
 
@@ -45716,7 +49146,7 @@ Vue$3.version = '2.3.3';
 var isReservedAttr = makeMap('style,class');
 
 // attributes that should be using props for binding
-var acceptValue = makeMap('input,textarea,option,select');
+var acceptValue = makeMap('input,textarea,option,select,progress');
 var mustUseProp = function (tag, type, attr) {
   return (
     (attr === 'value' && acceptValue(tag)) && type !== 'button' ||
@@ -45768,7 +49198,7 @@ function genClassForVnode (vnode) {
       data = mergeClassData(data, parentNode.data);
     }
   }
-  return genClassFromData(data)
+  return renderClass(data.staticClass, data.class)
 }
 
 function mergeClassData (child, parent) {
@@ -45780,9 +49210,10 @@ function mergeClassData (child, parent) {
   }
 }
 
-function genClassFromData (data) {
-  var dynamicClass = data.class;
-  var staticClass = data.staticClass;
+function renderClass (
+  staticClass,
+  dynamicClass
+) {
   if (isDef(staticClass) || isDef(dynamicClass)) {
     return concat(staticClass, stringifyClass(dynamicClass))
   }
@@ -45795,31 +49226,39 @@ function concat (a, b) {
 }
 
 function stringifyClass (value) {
-  if (isUndef(value)) {
-    return ''
+  if (Array.isArray(value)) {
+    return stringifyArray(value)
+  }
+  if (isObject(value)) {
+    return stringifyObject(value)
   }
   if (typeof value === 'string') {
     return value
   }
-  var res = '';
-  if (Array.isArray(value)) {
-    var stringified;
-    for (var i = 0, l = value.length; i < l; i++) {
-      if (isDef(value[i])) {
-        if (isDef(stringified = stringifyClass(value[i])) && stringified !== '') {
-          res += stringified + ' ';
-        }
-      }
-    }
-    return res.slice(0, -1)
-  }
-  if (isObject(value)) {
-    for (var key in value) {
-      if (value[key]) { res += key + ' '; }
-    }
-    return res.slice(0, -1)
-  }
   /* istanbul ignore next */
+  return ''
+}
+
+function stringifyArray (value) {
+  var res = '';
+  var stringified;
+  for (var i = 0, l = value.length; i < l; i++) {
+    if (isDef(stringified = stringifyClass(value[i])) && stringified !== '') {
+      if (res) { res += ' '; }
+      res += stringified;
+    }
+  }
+  return res
+}
+
+function stringifyObject (value) {
+  var res = '';
+  for (var key in value) {
+    if (value[key]) {
+      if (res) { res += ' '; }
+      res += key;
+    }
+  }
   return res
 }
 
@@ -45833,7 +49272,7 @@ var namespaceMap = {
 var isHTMLTag = makeMap(
   'html,body,base,head,link,meta,style,title,' +
   'address,article,aside,footer,header,h1,h2,h3,h4,h5,h6,hgroup,nav,section,' +
-  'div,dd,dl,dt,figcaption,figure,hr,img,li,main,ol,p,pre,ul,' +
+  'div,dd,dl,dt,figcaption,figure,picture,hr,img,li,main,ol,p,pre,ul,' +
   'a,b,abbr,bdi,bdo,br,cite,code,data,dfn,em,i,kbd,mark,q,rp,rt,rtc,ruby,' +
   's,samp,small,span,strong,sub,sup,time,u,var,wbr,area,audio,map,track,video,' +
   'embed,object,param,source,canvas,script,noscript,del,ins,' +
@@ -45841,7 +49280,7 @@ var isHTMLTag = makeMap(
   'button,datalist,fieldset,form,input,label,legend,meter,optgroup,option,' +
   'output,progress,select,textarea,' +
   'details,dialog,menu,menuitem,summary,' +
-  'content,element,shadow,template'
+  'content,element,shadow,template,blockquote,iframe,tfoot'
 );
 
 // this map is intentionally selective, only covering SVG elements that may
@@ -45895,6 +49334,8 @@ function isUnknownElement (tag) {
     return (unknownElementCache[tag] = /HTMLUnknownElement/.test(el.toString()))
   }
 }
+
+var isTextInputType = makeMap('text,number,password,search,email,tel,url');
 
 /*  */
 
@@ -46022,10 +49463,11 @@ function registerRef (vnode, isRemoval) {
     }
   } else {
     if (vnode.data.refInFor) {
-      if (Array.isArray(refs[key]) && refs[key].indexOf(ref) < 0) {
-        refs[key].push(ref);
-      } else {
+      if (!Array.isArray(refs[key])) {
         refs[key] = [ref];
+      } else if (refs[key].indexOf(ref) < 0) {
+        // $flow-disable-line
+        refs[key].push(ref);
       }
     } else {
       refs[key] = ref;
@@ -46041,8 +49483,6 @@ function registerRef (vnode, isRemoval) {
  *
  * modified by Evan You (@yyx990803)
  *
-
-/*
  * Not type-checking this because this file is perf-critical and the cost
  * of making flow understand it is not worth it.
  */
@@ -46053,22 +49493,27 @@ var hooks = ['create', 'activate', 'update', 'remove', 'destroy'];
 
 function sameVnode (a, b) {
   return (
-    a.key === b.key &&
-    a.tag === b.tag &&
-    a.isComment === b.isComment &&
-    isDef(a.data) === isDef(b.data) &&
-    sameInputType(a, b)
+    a.key === b.key && (
+      (
+        a.tag === b.tag &&
+        a.isComment === b.isComment &&
+        isDef(a.data) === isDef(b.data) &&
+        sameInputType(a, b)
+      ) || (
+        isTrue(a.isAsyncPlaceholder) &&
+        a.asyncFactory === b.asyncFactory &&
+        isUndef(b.asyncFactory.error)
+      )
+    )
   )
 }
 
-// Some browsers do not support dynamically changing type for <input>
-// so they need to be treated as different nodes
 function sameInputType (a, b) {
   if (a.tag !== 'input') { return true }
   var i;
   var typeA = isDef(i = a.data) && isDef(i = i.attrs) && i.type;
   var typeB = isDef(i = b.data) && isDef(i = i.attrs) && i.type;
-  return typeA === typeB
+  return typeA === typeB || isTextInputType(typeA) && isTextInputType(typeB)
 }
 
 function createKeyToOldIdx (children, beginIdx, endIdx) {
@@ -46198,6 +49643,7 @@ function createPatchFunction (backend) {
   function initComponent (vnode, insertedVnodeQueue) {
     if (isDef(vnode.data.pendingInsert)) {
       insertedVnodeQueue.push.apply(insertedVnodeQueue, vnode.data.pendingInsert);
+      vnode.data.pendingInsert = null;
     }
     vnode.elm = vnode.componentInstance.$el;
     if (isPatchable(vnode)) {
@@ -46234,11 +49680,11 @@ function createPatchFunction (backend) {
     insert(parentElm, vnode.elm, refElm);
   }
 
-  function insert (parent, elm, ref) {
+  function insert (parent, elm, ref$$1) {
     if (isDef(parent)) {
-      if (isDef(ref)) {
-        if (ref.parentNode === parent) {
-          nodeOps.insertBefore(parent, elm, ref);
+      if (isDef(ref$$1)) {
+        if (ref$$1.parentNode === parent) {
+          nodeOps.insertBefore(parent, elm, ref$$1);
         }
       } else {
         nodeOps.appendChild(parent, elm);
@@ -46399,10 +49845,11 @@ function createPatchFunction (backend) {
         newStartVnode = newCh[++newStartIdx];
       } else {
         if (isUndef(oldKeyToIdx)) { oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx); }
-        idxInOld = isDef(newStartVnode.key) ? oldKeyToIdx[newStartVnode.key] : null;
+        idxInOld = isDef(newStartVnode.key)
+          ? oldKeyToIdx[newStartVnode.key]
+          : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx);
         if (isUndef(idxInOld)) { // New element
           createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm);
-          newStartVnode = newCh[++newStartIdx];
         } else {
           elmToMove = oldCh[idxInOld];
           /* istanbul ignore if */
@@ -46415,14 +49862,13 @@ function createPatchFunction (backend) {
           if (sameVnode(elmToMove, newStartVnode)) {
             patchVnode(elmToMove, newStartVnode, insertedVnodeQueue);
             oldCh[idxInOld] = undefined;
-            canMove && nodeOps.insertBefore(parentElm, newStartVnode.elm, oldStartVnode.elm);
-            newStartVnode = newCh[++newStartIdx];
+            canMove && nodeOps.insertBefore(parentElm, elmToMove.elm, oldStartVnode.elm);
           } else {
             // same key but different element. treat as new element
             createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm);
-            newStartVnode = newCh[++newStartIdx];
           }
         }
+        newStartVnode = newCh[++newStartIdx];
       }
     }
     if (oldStartIdx > oldEndIdx) {
@@ -46433,10 +49879,29 @@ function createPatchFunction (backend) {
     }
   }
 
+  function findIdxInOld (node, oldCh, start, end) {
+    for (var i = start; i < end; i++) {
+      var c = oldCh[i];
+      if (isDef(c) && sameVnode(node, c)) { return i }
+    }
+  }
+
   function patchVnode (oldVnode, vnode, insertedVnodeQueue, removeOnly) {
     if (oldVnode === vnode) {
       return
     }
+
+    var elm = vnode.elm = oldVnode.elm;
+
+    if (isTrue(oldVnode.isAsyncPlaceholder)) {
+      if (isDef(vnode.asyncFactory.resolved)) {
+        hydrate(oldVnode.elm, vnode, insertedVnodeQueue);
+      } else {
+        vnode.isAsyncPlaceholder = true;
+      }
+      return
+    }
+
     // reuse element for static trees.
     // note we only do this if the vnode is cloned -
     // if the new node is not cloned it means the render functions have been
@@ -46446,16 +49911,16 @@ function createPatchFunction (backend) {
       vnode.key === oldVnode.key &&
       (isTrue(vnode.isCloned) || isTrue(vnode.isOnce))
     ) {
-      vnode.elm = oldVnode.elm;
       vnode.componentInstance = oldVnode.componentInstance;
       return
     }
+
     var i;
     var data = vnode.data;
     if (isDef(data) && isDef(i = data.hook) && isDef(i = i.prepatch)) {
       i(oldVnode, vnode);
     }
-    var elm = vnode.elm = oldVnode.elm;
+
     var oldCh = oldVnode.children;
     var ch = vnode.children;
     if (isDef(data) && isPatchable(vnode)) {
@@ -46500,6 +49965,11 @@ function createPatchFunction (backend) {
 
   // Note: this is a browser-only function so we can assume elms are DOM nodes.
   function hydrate (elm, vnode, insertedVnodeQueue) {
+    if (isTrue(vnode.isComment) && isDef(vnode.asyncFactory)) {
+      vnode.elm = elm;
+      vnode.isAsyncPlaceholder = true;
+      return true
+    }
     if (true) {
       if (!assertNodeMatch(elm, vnode)) {
         return false
@@ -46523,27 +49993,46 @@ function createPatchFunction (backend) {
         if (!elm.hasChildNodes()) {
           createChildren(vnode, children, insertedVnodeQueue);
         } else {
-          var childrenMatch = true;
-          var childNode = elm.firstChild;
-          for (var i$1 = 0; i$1 < children.length; i$1++) {
-            if (!childNode || !hydrate(childNode, children[i$1], insertedVnodeQueue)) {
-              childrenMatch = false;
-              break
+          // v-html and domProps: innerHTML
+          if (isDef(i = data) && isDef(i = i.domProps) && isDef(i = i.innerHTML)) {
+            if (i !== elm.innerHTML) {
+              /* istanbul ignore if */
+              if ("development" !== 'production' &&
+                typeof console !== 'undefined' &&
+                !bailed
+              ) {
+                bailed = true;
+                console.warn('Parent: ', elm);
+                console.warn('server innerHTML: ', i);
+                console.warn('client innerHTML: ', elm.innerHTML);
+              }
+              return false
             }
-            childNode = childNode.nextSibling;
-          }
-          // if childNode is not null, it means the actual childNodes list is
-          // longer than the virtual children list.
-          if (!childrenMatch || childNode) {
-            if ("development" !== 'production' &&
-              typeof console !== 'undefined' &&
-              !bailed
-            ) {
-              bailed = true;
-              console.warn('Parent: ', elm);
-              console.warn('Mismatching childNodes vs. VNodes: ', elm.childNodes, children);
+          } else {
+            // iterate and compare children lists
+            var childrenMatch = true;
+            var childNode = elm.firstChild;
+            for (var i$1 = 0; i$1 < children.length; i$1++) {
+              if (!childNode || !hydrate(childNode, children[i$1], insertedVnodeQueue)) {
+                childrenMatch = false;
+                break
+              }
+              childNode = childNode.nextSibling;
             }
-            return false
+            // if childNode is not null, it means the actual childNodes list is
+            // longer than the virtual children list.
+            if (!childrenMatch || childNode) {
+              /* istanbul ignore if */
+              if ("development" !== 'production' &&
+                typeof console !== 'undefined' &&
+                !bailed
+              ) {
+                bailed = true;
+                console.warn('Parent: ', elm);
+                console.warn('Mismatching childNodes vs. VNodes: ', elm.childNodes, children);
+              }
+              return false
+            }
           }
         }
       }
@@ -46634,14 +50123,28 @@ function createPatchFunction (backend) {
           // component root element replaced.
           // update parent placeholder node element, recursively
           var ancestor = vnode.parent;
+          var patchable = isPatchable(vnode);
           while (ancestor) {
-            ancestor.elm = vnode.elm;
-            ancestor = ancestor.parent;
-          }
-          if (isPatchable(vnode)) {
-            for (var i = 0; i < cbs.create.length; ++i) {
-              cbs.create[i](emptyNode, vnode.parent);
+            for (var i = 0; i < cbs.destroy.length; ++i) {
+              cbs.destroy[i](ancestor);
             }
+            ancestor.elm = vnode.elm;
+            if (patchable) {
+              for (var i$1 = 0; i$1 < cbs.create.length; ++i$1) {
+                cbs.create[i$1](emptyNode, ancestor);
+              }
+              // #6513
+              // invoke insert hooks that may have been merged by create hooks.
+              // e.g. for directives that uses the "inserted" hook.
+              var insert = ancestor.data.hook.insert;
+              if (insert.merged) {
+                // start at index 1 to avoid re-invoking component mounted hook
+                for (var i$2 = 1; i$2 < insert.fns.length; i$2++) {
+                  insert.fns[i$2]();
+                }
+              }
+            }
+            ancestor = ancestor.parent;
           }
         }
 
@@ -46779,6 +50282,10 @@ var baseModules = [
 /*  */
 
 function updateAttrs (oldVnode, vnode) {
+  var opts = vnode.componentOptions;
+  if (isDef(opts) && opts.Ctor.options.inheritAttrs === false) {
+    return
+  }
   if (isUndef(oldVnode.data.attrs) && isUndef(vnode.data.attrs)) {
     return
   }
@@ -46821,7 +50328,12 @@ function setAttr (el, key, value) {
     if (isFalsyAttrValue(value)) {
       el.removeAttribute(key);
     } else {
-      el.setAttribute(key, key);
+      // technically allowfullscreen is a boolean attribute for <iframe>,
+      // but Flash expects a value of "true" when used on <embed> tag
+      value = key === 'allowfullscreen' && el.tagName === 'EMBED'
+        ? 'true'
+        : key;
+      el.setAttribute(key, value);
     }
   } else if (isEnumeratedAttr(key)) {
     el.setAttribute(key, isFalsyAttrValue(value) || value === 'false' ? 'false' : 'true');
@@ -47144,10 +50656,7 @@ function genAssignmentCode (
   if (modelRs.idx === null) {
     return (value + "=" + assignment)
   } else {
-    return "var $$exp = " + (modelRs.exp) + ", $$idx = " + (modelRs.idx) + ";" +
-      "if (!Array.isArray($$exp)){" +
-        value + "=" + assignment + "}" +
-      "else{$$exp.splice($$idx, 1, " + assignment + ")}"
+    return ("$set(" + (modelRs.exp) + ", " + (modelRs.idx) + ", " + assignment + ")")
   }
 }
 
@@ -47278,7 +50787,11 @@ function model (
     }
   }
 
-  if (tag === 'select') {
+  if (el.component) {
+    genComponentModel(el, value, modifiers);
+    // component v-model doesn't need extra runtime
+    return false
+  } else if (tag === 'select') {
     genSelect(el, value, modifiers);
   } else if (tag === 'input' && type === 'checkbox') {
     genCheckboxModel(el, value, modifiers);
@@ -47327,7 +50840,7 @@ function genCheckboxModel (
     'if(Array.isArray($$a)){' +
       "var $$v=" + (number ? '_n(' + valueBinding + ')' : valueBinding) + "," +
           '$$i=_i($$a,$$v);' +
-      "if($$c){$$i<0&&(" + value + "=$$a.concat($$v))}" +
+      "if($$el.checked){$$i<0&&(" + value + "=$$a.concat([$$v]))}" +
       "else{$$i>-1&&(" + value + "=$$a.slice(0,$$i).concat($$a.slice($$i+1)))}" +
     "}else{" + (genAssignmentCode(value, '$$c')) + "}",
     null, true
@@ -47395,7 +50908,7 @@ function genDefaultModel (
 
   addProp(el, 'value', ("(" + value + ")"));
   addHandler(el, event, code, null, true);
-  if (trim || number || type === 'number') {
+  if (trim || number) {
     addHandler(el, 'blur', '$forceUpdate()');
   }
 }
@@ -47539,14 +51052,19 @@ function shouldUpdateValue (
 }
 
 function isDirty (elm, checkVal) {
-  // return true when textbox (.number and .trim) loses focus and its value is not equal to the updated value
-  return document.activeElement !== elm && elm.value !== checkVal
+  // return true when textbox (.number and .trim) loses focus and its value is
+  // not equal to the updated value
+  var notInFocus = true;
+  // #6157
+  // work around IE bug when accessing document.activeElement in an iframe
+  try { notInFocus = document.activeElement !== elm; } catch (e) {}
+  return notInFocus && elm.value !== checkVal
 }
 
 function isInputChanged (elm, newVal) {
   var value = elm.value;
   var modifiers = elm._vModifiers; // injected by v-model runtime
-  if ((isDef(modifiers) && modifiers.number) || elm.type === 'number') {
+  if (isDef(modifiers) && modifiers.number) {
     return toNumber(value) !== toNumber(newVal)
   }
   if (isDef(modifiers) && modifiers.trim) {
@@ -47652,20 +51170,20 @@ var setProp = function (el, name, val) {
   }
 };
 
-var prefixes = ['Webkit', 'Moz', 'ms'];
+var vendorNames = ['Webkit', 'Moz', 'ms'];
 
-var testEl;
+var emptyStyle;
 var normalize = cached(function (prop) {
-  testEl = testEl || document.createElement('div');
+  emptyStyle = emptyStyle || document.createElement('div').style;
   prop = camelize(prop);
-  if (prop !== 'filter' && (prop in testEl.style)) {
+  if (prop !== 'filter' && (prop in emptyStyle)) {
     return prop
   }
-  var upper = prop.charAt(0).toUpperCase() + prop.slice(1);
-  for (var i = 0; i < prefixes.length; i++) {
-    var prefixed = prefixes[i] + upper;
-    if (prefixed in testEl.style) {
-      return prefixed
+  var capName = prop.charAt(0).toUpperCase() + prop.slice(1);
+  for (var i = 0; i < vendorNames.length; i++) {
+    var name = vendorNames[i] + capName;
+    if (name in emptyStyle) {
+      return name
     }
   }
 });
@@ -47691,7 +51209,7 @@ function updateStyle (oldVnode, vnode) {
   var style = normalizeStyleBinding(vnode.data.style) || {};
 
   // store normalized style under a different key for next diff
-  // make sure to clone it if it's reactive, since the user likley wants
+  // make sure to clone it if it's reactive, since the user likely wants
   // to mutate it.
   vnode.data.normalizedStyle = isDef(style.__ob__)
     ? extend({}, style)
@@ -47762,13 +51280,21 @@ function removeClass (el, cls) {
     } else {
       el.classList.remove(cls);
     }
+    if (!el.classList.length) {
+      el.removeAttribute('class');
+    }
   } else {
     var cur = " " + (el.getAttribute('class') || '') + " ";
     var tar = ' ' + cls + ' ';
     while (cur.indexOf(tar) >= 0) {
       cur = cur.replace(tar, ' ');
     }
-    el.setAttribute('class', cur.trim());
+    cur = cur.trim();
+    if (cur) {
+      el.setAttribute('class', cur);
+    } else {
+      el.removeAttribute('class');
+    }
   }
 }
 
@@ -47839,8 +51365,11 @@ function nextFrame (fn) {
 }
 
 function addTransitionClass (el, cls) {
-  (el._transitionClasses || (el._transitionClasses = [])).push(cls);
-  addClass(el, cls);
+  var transitionClasses = el._transitionClasses || (el._transitionClasses = []);
+  if (transitionClasses.indexOf(cls) < 0) {
+    transitionClasses.push(cls);
+    addClass(el, cls);
+  }
 }
 
 function removeTransitionClass (el, cls) {
@@ -48299,15 +51828,9 @@ if (isIE9) {
 var model$1 = {
   inserted: function inserted (el, binding, vnode) {
     if (vnode.tag === 'select') {
-      var cb = function () {
-        setSelected(el, binding, vnode.context);
-      };
-      cb();
-      /* istanbul ignore if */
-      if (isIE || isEdge) {
-        setTimeout(cb, 0);
-      }
-    } else if (vnode.tag === 'textarea' || el.type === 'text' || el.type === 'password') {
+      setSelected(el, binding, vnode.context);
+      el._vOptions = [].map.call(el.options, getValue);
+    } else if (vnode.tag === 'textarea' || isTextInputType(el.type)) {
       el._vModifiers = binding.modifiers;
       if (!binding.modifiers.lazy) {
         // Safari < 10.2 & UIWebView doesn't fire compositionend when
@@ -48333,17 +51856,33 @@ var model$1 = {
       // it's possible that the value is out-of-sync with the rendered options.
       // detect such cases and filter out values that no longer has a matching
       // option in the DOM.
-      var needReset = el.multiple
-        ? binding.value.some(function (v) { return hasNoMatchingOption(v, el.options); })
-        : binding.value !== binding.oldValue && hasNoMatchingOption(binding.value, el.options);
-      if (needReset) {
-        trigger(el, 'change');
+      var prevOptions = el._vOptions;
+      var curOptions = el._vOptions = [].map.call(el.options, getValue);
+      if (curOptions.some(function (o, i) { return !looseEqual(o, prevOptions[i]); })) {
+        // trigger change event if
+        // no matching option found for at least one value
+        var needReset = el.multiple
+          ? binding.value.some(function (v) { return hasNoMatchingOption(v, curOptions); })
+          : binding.value !== binding.oldValue && hasNoMatchingOption(binding.value, curOptions);
+        if (needReset) {
+          trigger(el, 'change');
+        }
       }
     }
   }
 };
 
 function setSelected (el, binding, vm) {
+  actuallySetSelected(el, binding, vm);
+  /* istanbul ignore if */
+  if (isIE || isEdge) {
+    setTimeout(function () {
+      actuallySetSelected(el, binding, vm);
+    }, 0);
+  }
+}
+
+function actuallySetSelected (el, binding, vm) {
   var value = binding.value;
   var isMultiple = el.multiple;
   if (isMultiple && !Array.isArray(value)) {
@@ -48377,12 +51916,7 @@ function setSelected (el, binding, vm) {
 }
 
 function hasNoMatchingOption (value, options) {
-  for (var i = 0, l = options.length; i < l; i++) {
-    if (looseEqual(getValue(options[i]), value)) {
-      return false
-    }
-  }
-  return true
+  return options.every(function (o) { return !looseEqual(o, value); })
 }
 
 function getValue (option) {
@@ -48422,10 +51956,10 @@ var show = {
     var value = ref.value;
 
     vnode = locateNode(vnode);
-    var transition = vnode.data && vnode.data.transition;
+    var transition$$1 = vnode.data && vnode.data.transition;
     var originalDisplay = el.__vOriginalDisplay =
       el.style.display === 'none' ? '' : el.style.display;
-    if (value && transition && !isIE9) {
+    if (value && transition$$1) {
       vnode.data.show = true;
       enter(vnode, function () {
         el.style.display = originalDisplay;
@@ -48442,8 +51976,8 @@ var show = {
     /* istanbul ignore if */
     if (value === oldValue) { return }
     vnode = locateNode(vnode);
-    var transition = vnode.data && vnode.data.transition;
-    if (transition && !isIE9) {
+    var transition$$1 = vnode.data && vnode.data.transition;
+    if (transition$$1) {
       vnode.data.show = true;
       if (value) {
         enter(vnode, function () {
@@ -48555,13 +52089,13 @@ var Transition = {
   render: function render (h) {
     var this$1 = this;
 
-    var children = this.$slots.default;
+    var children = this.$options._renderChildren;
     if (!children) {
       return
     }
 
     // filter out text nodes (possible whitespaces)
-    children = children.filter(function (c) { return c.tag; });
+    children = children.filter(function (c) { return c.tag || isAsyncPlaceholder(c); });
     /* istanbul ignore if */
     if (!children.length) {
       return
@@ -48613,7 +52147,9 @@ var Transition = {
     // during entering.
     var id = "__transition-" + (this._uid) + "-";
     child.key = child.key == null
-      ? id + child.tag
+      ? child.isComment
+        ? id + 'comment'
+        : id + child.tag
       : isPrimitive(child.key)
         ? (String(child.key).indexOf(id) === 0 ? child.key : id + child.key)
         : child.key;
@@ -48628,7 +52164,12 @@ var Transition = {
       child.data.show = true;
     }
 
-    if (oldChild && oldChild.data && !isSameChild(child, oldChild)) {
+    if (
+      oldChild &&
+      oldChild.data &&
+      !isSameChild(child, oldChild) &&
+      !isAsyncPlaceholder(oldChild)
+    ) {
       // replace old child transition data with fresh one
       // important for dynamic transitions!
       var oldData = oldChild && (oldChild.data.transition = extend({}, data));
@@ -48642,6 +52183,9 @@ var Transition = {
         });
         return placeholder(h, rawChild)
       } else if (mode === 'in-out') {
+        if (isAsyncPlaceholder(child)) {
+          return oldRawChild
+        }
         var delayedLeave;
         var performLeave = function () { delayedLeave(); };
         mergeVNodeHook(data, 'afterEnter', performLeave);
@@ -48771,7 +52315,8 @@ var TransitionGroup = {
       if (!hasTransition) {
         return false
       }
-      if (this._hasMove != null) {
+      /* istanbul ignore if */
+      if (this._hasMove) {
         return this._hasMove
       }
       // Detect whether an element with the move class applied has
@@ -48881,13 +52426,165 @@ setTimeout(function () {
 // check whether current browser encodes a char inside attribute values
 function shouldDecode (content, encoded) {
   var div = document.createElement('div');
-  div.innerHTML = "<div a=\"" + content + "\">";
+  div.innerHTML = "<div a=\"" + content + "\"/>";
   return div.innerHTML.indexOf(encoded) > 0
 }
 
 // #3663
 // IE encodes newlines inside attribute values while other browsers don't
 var shouldDecodeNewlines = inBrowser ? shouldDecode('\n', '&#10;') : false;
+
+/*  */
+
+var defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g;
+var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
+
+var buildRegex = cached(function (delimiters) {
+  var open = delimiters[0].replace(regexEscapeRE, '\\$&');
+  var close = delimiters[1].replace(regexEscapeRE, '\\$&');
+  return new RegExp(open + '((?:.|\\n)+?)' + close, 'g')
+});
+
+function parseText (
+  text,
+  delimiters
+) {
+  var tagRE = delimiters ? buildRegex(delimiters) : defaultTagRE;
+  if (!tagRE.test(text)) {
+    return
+  }
+  var tokens = [];
+  var lastIndex = tagRE.lastIndex = 0;
+  var match, index;
+  while ((match = tagRE.exec(text))) {
+    index = match.index;
+    // push text token
+    if (index > lastIndex) {
+      tokens.push(JSON.stringify(text.slice(lastIndex, index)));
+    }
+    // tag token
+    var exp = parseFilters(match[1].trim());
+    tokens.push(("_s(" + exp + ")"));
+    lastIndex = index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    tokens.push(JSON.stringify(text.slice(lastIndex)));
+  }
+  return tokens.join('+')
+}
+
+/*  */
+
+function transformNode (el, options) {
+  var warn = options.warn || baseWarn;
+  var staticClass = getAndRemoveAttr(el, 'class');
+  if ("development" !== 'production' && staticClass) {
+    var expression = parseText(staticClass, options.delimiters);
+    if (expression) {
+      warn(
+        "class=\"" + staticClass + "\": " +
+        'Interpolation inside attributes has been removed. ' +
+        'Use v-bind or the colon shorthand instead. For example, ' +
+        'instead of <div class="{{ val }}">, use <div :class="val">.'
+      );
+    }
+  }
+  if (staticClass) {
+    el.staticClass = JSON.stringify(staticClass);
+  }
+  var classBinding = getBindingAttr(el, 'class', false /* getStatic */);
+  if (classBinding) {
+    el.classBinding = classBinding;
+  }
+}
+
+function genData (el) {
+  var data = '';
+  if (el.staticClass) {
+    data += "staticClass:" + (el.staticClass) + ",";
+  }
+  if (el.classBinding) {
+    data += "class:" + (el.classBinding) + ",";
+  }
+  return data
+}
+
+var klass$1 = {
+  staticKeys: ['staticClass'],
+  transformNode: transformNode,
+  genData: genData
+};
+
+/*  */
+
+function transformNode$1 (el, options) {
+  var warn = options.warn || baseWarn;
+  var staticStyle = getAndRemoveAttr(el, 'style');
+  if (staticStyle) {
+    /* istanbul ignore if */
+    if (true) {
+      var expression = parseText(staticStyle, options.delimiters);
+      if (expression) {
+        warn(
+          "style=\"" + staticStyle + "\": " +
+          'Interpolation inside attributes has been removed. ' +
+          'Use v-bind or the colon shorthand instead. For example, ' +
+          'instead of <div style="{{ val }}">, use <div :style="val">.'
+        );
+      }
+    }
+    el.staticStyle = JSON.stringify(parseStyleText(staticStyle));
+  }
+
+  var styleBinding = getBindingAttr(el, 'style', false /* getStatic */);
+  if (styleBinding) {
+    el.styleBinding = styleBinding;
+  }
+}
+
+function genData$1 (el) {
+  var data = '';
+  if (el.staticStyle) {
+    data += "staticStyle:" + (el.staticStyle) + ",";
+  }
+  if (el.styleBinding) {
+    data += "style:(" + (el.styleBinding) + "),";
+  }
+  return data
+}
+
+var style$1 = {
+  staticKeys: ['staticStyle'],
+  transformNode: transformNode$1,
+  genData: genData$1
+};
+
+var modules$1 = [
+  klass$1,
+  style$1
+];
+
+/*  */
+
+function text (el, dir) {
+  if (dir.value) {
+    addProp(el, 'textContent', ("_s(" + (dir.value) + ")"));
+  }
+}
+
+/*  */
+
+function html (el, dir) {
+  if (dir.value) {
+    addProp(el, 'innerHTML', ("_s(" + (dir.value) + ")"));
+  }
+}
+
+var directives$1 = {
+  model: model,
+  text: text,
+  html: html
+};
 
 /*  */
 
@@ -48914,13 +52611,30 @@ var isNonPhrasingTag = makeMap(
 
 /*  */
 
+var baseOptions = {
+  expectHTML: true,
+  modules: modules$1,
+  directives: directives$1,
+  isPreTag: isPreTag,
+  isUnaryTag: isUnaryTag,
+  mustUseProp: mustUseProp,
+  canBeLeftOpenTag: canBeLeftOpenTag,
+  isReservedTag: isReservedTag,
+  getTagNamespace: getTagNamespace,
+  staticKeys: genStaticKeys(modules$1)
+};
+
+/*  */
+
 var decoder;
 
-function decode (html) {
-  decoder = decoder || document.createElement('div');
-  decoder.innerHTML = html;
-  return decoder.textContent
-}
+var he = {
+  decode: function decode (html) {
+    decoder = decoder || document.createElement('div');
+    decoder.innerHTML = html;
+    return decoder.textContent
+  }
+};
 
 /**
  * Not type-checking this file because it's mostly vendor code.
@@ -48934,29 +52648,14 @@ function decode (html) {
  */
 
 // Regular Expressions for parsing tags and attributes
-var singleAttrIdentifier = /([^\s"'<>/=]+)/;
-var singleAttrAssign = /(?:=)/;
-var singleAttrValues = [
-  // attr value double quotes
-  /"([^"]*)"+/.source,
-  // attr value, single quotes
-  /'([^']*)'+/.source,
-  // attr value, no quotes
-  /([^\s"'=<>`]+)/.source
-];
-var attribute = new RegExp(
-  '^\\s*' + singleAttrIdentifier.source +
-  '(?:\\s*(' + singleAttrAssign.source + ')' +
-  '\\s*(?:' + singleAttrValues.join('|') + '))?'
-);
-
+var attribute = /^\s*([^\s"'<>\/=]+)(?:\s*(=)\s*(?:"([^"]*)"+|'([^']*)'+|([^\s"'=<>`]+)))?/;
 // could use https://www.w3.org/TR/1999/REC-xml-names-19990114/#NT-QName
 // but for Vue templates we can enforce a simple charset
 var ncname = '[a-zA-Z_][\\w\\-\\.]*';
-var qnameCapture = '((?:' + ncname + '\\:)?' + ncname + ')';
-var startTagOpen = new RegExp('^<' + qnameCapture);
+var qnameCapture = "((?:" + ncname + "\\:)?" + ncname + ")";
+var startTagOpen = new RegExp(("^<" + qnameCapture));
 var startTagClose = /^\s*(\/?)>/;
-var endTag = new RegExp('^<\\/' + qnameCapture + '[^>]*>');
+var endTag = new RegExp(("^<\\/" + qnameCapture + "[^>]*>"));
 var doctype = /^<!DOCTYPE [^>]+>/i;
 var comment = /^<!--/;
 var conditionalComment = /^<!\[/;
@@ -48979,6 +52678,10 @@ var decodingMap = {
 };
 var encodedAttr = /&(?:lt|gt|quot|amp);/g;
 var encodedAttrWithNewLines = /&(?:lt|gt|quot|amp|#10);/g;
+
+// #5992
+var isIgnoreNewlineTag = makeMap('pre,textarea', true);
+var shouldIgnoreFirstNewline = function (tag, html) { return tag && isIgnoreNewlineTag(tag) && html[0] === '\n'; };
 
 function decodeAttr (value, shouldDecodeNewlines) {
   var re = shouldDecodeNewlines ? encodedAttrWithNewLines : encodedAttr;
@@ -49003,6 +52706,9 @@ function parseHTML (html, options) {
           var commentEnd = html.indexOf('-->');
 
           if (commentEnd >= 0) {
+            if (options.shouldKeepComment) {
+              options.comment(html.substring(4, commentEnd));
+            }
             advance(commentEnd + 3);
             continue
           }
@@ -49038,24 +52744,27 @@ function parseHTML (html, options) {
         var startTagMatch = parseStartTag();
         if (startTagMatch) {
           handleStartTag(startTagMatch);
+          if (shouldIgnoreFirstNewline(lastTag, html)) {
+            advance(1);
+          }
           continue
         }
       }
 
-      var text = (void 0), rest$1 = (void 0), next = (void 0);
+      var text = (void 0), rest = (void 0), next = (void 0);
       if (textEnd >= 0) {
-        rest$1 = html.slice(textEnd);
+        rest = html.slice(textEnd);
         while (
-          !endTag.test(rest$1) &&
-          !startTagOpen.test(rest$1) &&
-          !comment.test(rest$1) &&
-          !conditionalComment.test(rest$1)
+          !endTag.test(rest) &&
+          !startTagOpen.test(rest) &&
+          !comment.test(rest) &&
+          !conditionalComment.test(rest)
         ) {
           // < in plain text, be forgiving and treat it as text
-          next = rest$1.indexOf('<', 1);
+          next = rest.indexOf('<', 1);
           if (next < 0) { break }
           textEnd += next;
-          rest$1 = html.slice(textEnd);
+          rest = html.slice(textEnd);
         }
         text = html.substring(0, textEnd);
         advance(textEnd);
@@ -49070,23 +52779,26 @@ function parseHTML (html, options) {
         options.chars(text);
       }
     } else {
+      var endTagLength = 0;
       var stackedTag = lastTag.toLowerCase();
       var reStackedTag = reCache[stackedTag] || (reCache[stackedTag] = new RegExp('([\\s\\S]*?)(</' + stackedTag + '[^>]*>)', 'i'));
-      var endTagLength = 0;
-      var rest = html.replace(reStackedTag, function (all, text, endTag) {
+      var rest$1 = html.replace(reStackedTag, function (all, text, endTag) {
         endTagLength = endTag.length;
         if (!isPlainTextElement(stackedTag) && stackedTag !== 'noscript') {
           text = text
             .replace(/<!--([\s\S]*?)-->/g, '$1')
             .replace(/<!\[CDATA\[([\s\S]*?)]]>/g, '$1');
         }
+        if (shouldIgnoreFirstNewline(stackedTag, text)) {
+          text = text.slice(1);
+        }
         if (options.chars) {
           options.chars(text);
         }
         return ''
       });
-      index += html.length - rest.length;
-      html = rest;
+      index += html.length - rest$1.length;
+      html = rest$1;
       parseEndTag(stackedTag, index - endTagLength, index);
     }
 
@@ -49143,7 +52855,7 @@ function parseHTML (html, options) {
       }
     }
 
-    var unary = isUnaryTag$$1(tagName) || tagName === 'html' && lastTag === 'head' || !!unarySlash;
+    var unary = isUnaryTag$$1(tagName) || !!unarySlash;
 
     var l = match.attrs.length;
     var attrs = new Array(l);
@@ -49232,45 +52944,6 @@ function parseHTML (html, options) {
 
 /*  */
 
-var defaultTagRE = /\{\{((?:.|\n)+?)\}\}/g;
-var regexEscapeRE = /[-.*+?^${}()|[\]\/\\]/g;
-
-var buildRegex = cached(function (delimiters) {
-  var open = delimiters[0].replace(regexEscapeRE, '\\$&');
-  var close = delimiters[1].replace(regexEscapeRE, '\\$&');
-  return new RegExp(open + '((?:.|\\n)+?)' + close, 'g')
-});
-
-function parseText (
-  text,
-  delimiters
-) {
-  var tagRE = delimiters ? buildRegex(delimiters) : defaultTagRE;
-  if (!tagRE.test(text)) {
-    return
-  }
-  var tokens = [];
-  var lastIndex = tagRE.lastIndex = 0;
-  var match, index;
-  while ((match = tagRE.exec(text))) {
-    index = match.index;
-    // push text token
-    if (index > lastIndex) {
-      tokens.push(JSON.stringify(text.slice(lastIndex, index)));
-    }
-    // tag token
-    var exp = parseFilters(match[1].trim());
-    tokens.push(("_s(" + exp + ")"));
-    lastIndex = index + match[0].length;
-  }
-  if (lastIndex < text.length) {
-    tokens.push(JSON.stringify(text.slice(lastIndex)));
-  }
-  return tokens.join('+')
-}
-
-/*  */
-
 var onRE = /^@|^v-on:/;
 var dirRE = /^v-|^@|^:/;
 var forAliasRE = /(.*?)\s+(?:in|of)\s+(.*)/;
@@ -49280,7 +52953,7 @@ var argRE = /:(.*)$/;
 var bindRE = /^:|^v-bind:/;
 var modifierRE = /\.[^.]+/g;
 
-var decodeHTMLCached = cached(decode);
+var decodeHTMLCached = cached(he.decode);
 
 // configurable state
 var warn$2;
@@ -49300,12 +52973,15 @@ function parse (
   options
 ) {
   warn$2 = options.warn || baseWarn;
-  platformGetTagNamespace = options.getTagNamespace || no;
-  platformMustUseProp = options.mustUseProp || no;
+
   platformIsPreTag = options.isPreTag || no;
-  preTransforms = pluckModuleFunction(options.modules, 'preTransformNode');
+  platformMustUseProp = options.mustUseProp || no;
+  platformGetTagNamespace = options.getTagNamespace || no;
+
   transforms = pluckModuleFunction(options.modules, 'transformNode');
+  preTransforms = pluckModuleFunction(options.modules, 'preTransformNode');
   postTransforms = pluckModuleFunction(options.modules, 'postTransformNode');
+
   delimiters = options.delimiters;
 
   var stack = [];
@@ -49339,6 +53015,7 @@ function parse (
     isUnaryTag: options.isUnaryTag,
     canBeLeftOpenTag: options.canBeLeftOpenTag,
     shouldDecodeNewlines: options.shouldDecodeNewlines,
+    shouldKeepComment: options.comments,
     start: function start (tag, attrs, unary) {
       // check namespace.
       // inherit parent ns if there is one
@@ -49522,6 +53199,13 @@ function parse (
           });
         }
       }
+    },
+    comment: function comment (text) {
+      currentParent.children.push({
+        type: 3,
+        text: text,
+        isComment: true
+      });
     }
   });
   return root
@@ -49671,6 +53355,8 @@ function processSlot (el) {
     var slotTarget = getBindingAttr(el, 'slot');
     if (slotTarget) {
       el.slotTarget = slotTarget === '""' ? '"default"' : slotTarget;
+      // preserve slot as an attribute for native shadow DOM compat
+      addAttr(el, 'slot', slotTarget);
     }
     if (el.tag === 'template') {
       el.slotScope = getAndRemoveAttr(el, 'scope');
@@ -49723,7 +53409,9 @@ function processAttrs (el) {
             );
           }
         }
-        if (isProp || platformMustUseProp(el.tag, el.attrsMap.type, name)) {
+        if (isProp || (
+          !el.component && platformMustUseProp(el.tag, el.attrsMap.type, name)
+        )) {
           addProp(el, name, value);
         } else {
           addAttr(el, name, value);
@@ -49898,6 +53586,15 @@ function markStatic$1 (node) {
         node.static = false;
       }
     }
+    if (node.ifConditions) {
+      for (var i$1 = 1, l$1 = node.ifConditions.length; i$1 < l$1; i$1++) {
+        var block = node.ifConditions[i$1].block;
+        markStatic$1(block);
+        if (!block.static) {
+          node.static = false;
+        }
+      }
+    }
   }
 }
 
@@ -49924,14 +53621,10 @@ function markStaticRoots (node, isInFor) {
       }
     }
     if (node.ifConditions) {
-      walkThroughConditionsBlocks(node.ifConditions, isInFor);
+      for (var i$1 = 1, l$1 = node.ifConditions.length; i$1 < l$1; i$1++) {
+        markStaticRoots(node.ifConditions[i$1].block, isInFor);
+      }
     }
-  }
-}
-
-function walkThroughConditionsBlocks (conditionBlocks, isInFor) {
-  for (var i = 1, len = conditionBlocks.length; i < len; i++) {
-    markStaticRoots(conditionBlocks[i].block, isInFor);
   }
 }
 
@@ -50089,99 +53782,101 @@ function genFilterCode (key) {
 
 /*  */
 
+function on (el, dir) {
+  if ("development" !== 'production' && dir.modifiers) {
+    warn("v-on without argument does not support modifiers.");
+  }
+  el.wrapListeners = function (code) { return ("_g(" + code + "," + (dir.value) + ")"); };
+}
+
+/*  */
+
 function bind$1 (el, dir) {
   el.wrapData = function (code) {
-    return ("_b(" + code + ",'" + (el.tag) + "'," + (dir.value) + (dir.modifiers && dir.modifiers.prop ? ',true' : '') + ")")
+    return ("_b(" + code + ",'" + (el.tag) + "'," + (dir.value) + "," + (dir.modifiers && dir.modifiers.prop ? 'true' : 'false') + (dir.modifiers && dir.modifiers.sync ? ',true' : '') + ")")
   };
 }
 
 /*  */
 
 var baseDirectives = {
+  on: on,
   bind: bind$1,
   cloak: noop
 };
 
 /*  */
 
-// configurable state
-var warn$3;
-var transforms$1;
-var dataGenFns;
-var platformDirectives$1;
-var isPlatformReservedTag$1;
-var staticRenderFns;
-var onceCount;
-var currentOptions;
+var CodegenState = function CodegenState (options) {
+  this.options = options;
+  this.warn = options.warn || baseWarn;
+  this.transforms = pluckModuleFunction(options.modules, 'transformCode');
+  this.dataGenFns = pluckModuleFunction(options.modules, 'genData');
+  this.directives = extend(extend({}, baseDirectives), options.directives);
+  var isReservedTag = options.isReservedTag || no;
+  this.maybeComponent = function (el) { return !isReservedTag(el.tag); };
+  this.onceId = 0;
+  this.staticRenderFns = [];
+};
+
+
 
 function generate (
   ast,
   options
 ) {
-  // save previous staticRenderFns so generate calls can be nested
-  var prevStaticRenderFns = staticRenderFns;
-  var currentStaticRenderFns = staticRenderFns = [];
-  var prevOnceCount = onceCount;
-  onceCount = 0;
-  currentOptions = options;
-  warn$3 = options.warn || baseWarn;
-  transforms$1 = pluckModuleFunction(options.modules, 'transformCode');
-  dataGenFns = pluckModuleFunction(options.modules, 'genData');
-  platformDirectives$1 = options.directives || {};
-  isPlatformReservedTag$1 = options.isReservedTag || no;
-  var code = ast ? genElement(ast) : '_c("div")';
-  staticRenderFns = prevStaticRenderFns;
-  onceCount = prevOnceCount;
+  var state = new CodegenState(options);
+  var code = ast ? genElement(ast, state) : '_c("div")';
   return {
     render: ("with(this){return " + code + "}"),
-    staticRenderFns: currentStaticRenderFns
+    staticRenderFns: state.staticRenderFns
   }
 }
 
-function genElement (el) {
+function genElement (el, state) {
   if (el.staticRoot && !el.staticProcessed) {
-    return genStatic(el)
+    return genStatic(el, state)
   } else if (el.once && !el.onceProcessed) {
-    return genOnce(el)
+    return genOnce(el, state)
   } else if (el.for && !el.forProcessed) {
-    return genFor(el)
+    return genFor(el, state)
   } else if (el.if && !el.ifProcessed) {
-    return genIf(el)
+    return genIf(el, state)
   } else if (el.tag === 'template' && !el.slotTarget) {
-    return genChildren(el) || 'void 0'
+    return genChildren(el, state) || 'void 0'
   } else if (el.tag === 'slot') {
-    return genSlot(el)
+    return genSlot(el, state)
   } else {
     // component or element
     var code;
     if (el.component) {
-      code = genComponent(el.component, el);
+      code = genComponent(el.component, el, state);
     } else {
-      var data = el.plain ? undefined : genData(el);
+      var data = el.plain ? undefined : genData$2(el, state);
 
-      var children = el.inlineTemplate ? null : genChildren(el, true);
+      var children = el.inlineTemplate ? null : genChildren(el, state, true);
       code = "_c('" + (el.tag) + "'" + (data ? ("," + data) : '') + (children ? ("," + children) : '') + ")";
     }
     // module transforms
-    for (var i = 0; i < transforms$1.length; i++) {
-      code = transforms$1[i](el, code);
+    for (var i = 0; i < state.transforms.length; i++) {
+      code = state.transforms[i](el, code);
     }
     return code
   }
 }
 
 // hoist static sub-trees out
-function genStatic (el) {
+function genStatic (el, state) {
   el.staticProcessed = true;
-  staticRenderFns.push(("with(this){return " + (genElement(el)) + "}"));
-  return ("_m(" + (staticRenderFns.length - 1) + (el.staticInFor ? ',true' : '') + ")")
+  state.staticRenderFns.push(("with(this){return " + (genElement(el, state)) + "}"));
+  return ("_m(" + (state.staticRenderFns.length - 1) + (el.staticInFor ? ',true' : '') + ")")
 }
 
 // v-once
-function genOnce (el) {
+function genOnce (el, state) {
   el.onceProcessed = true;
   if (el.if && !el.ifProcessed) {
-    return genIf(el)
+    return genIf(el, state)
   } else if (el.staticInFor) {
     var key = '';
     var parent = el.parent;
@@ -50193,51 +53888,72 @@ function genOnce (el) {
       parent = parent.parent;
     }
     if (!key) {
-      "development" !== 'production' && warn$3(
+      "development" !== 'production' && state.warn(
         "v-once can only be used inside v-for that is keyed. "
       );
-      return genElement(el)
+      return genElement(el, state)
     }
-    return ("_o(" + (genElement(el)) + "," + (onceCount++) + (key ? ("," + key) : "") + ")")
+    return ("_o(" + (genElement(el, state)) + "," + (state.onceId++) + "," + key + ")")
   } else {
-    return genStatic(el)
+    return genStatic(el, state)
   }
 }
 
-function genIf (el) {
+function genIf (
+  el,
+  state,
+  altGen,
+  altEmpty
+) {
   el.ifProcessed = true; // avoid recursion
-  return genIfConditions(el.ifConditions.slice())
+  return genIfConditions(el.ifConditions.slice(), state, altGen, altEmpty)
 }
 
-function genIfConditions (conditions) {
+function genIfConditions (
+  conditions,
+  state,
+  altGen,
+  altEmpty
+) {
   if (!conditions.length) {
-    return '_e()'
+    return altEmpty || '_e()'
   }
 
   var condition = conditions.shift();
   if (condition.exp) {
-    return ("(" + (condition.exp) + ")?" + (genTernaryExp(condition.block)) + ":" + (genIfConditions(conditions)))
+    return ("(" + (condition.exp) + ")?" + (genTernaryExp(condition.block)) + ":" + (genIfConditions(conditions, state, altGen, altEmpty)))
   } else {
     return ("" + (genTernaryExp(condition.block)))
   }
 
   // v-if with v-once should generate code like (a)?_m(0):_m(1)
   function genTernaryExp (el) {
-    return el.once ? genOnce(el) : genElement(el)
+    return altGen
+      ? altGen(el, state)
+      : el.once
+        ? genOnce(el, state)
+        : genElement(el, state)
   }
 }
 
-function genFor (el) {
+function genFor (
+  el,
+  state,
+  altGen,
+  altHelper
+) {
   var exp = el.for;
   var alias = el.alias;
   var iterator1 = el.iterator1 ? ("," + (el.iterator1)) : '';
   var iterator2 = el.iterator2 ? ("," + (el.iterator2)) : '';
 
-  if (
-    "development" !== 'production' &&
-    maybeComponent(el) && el.tag !== 'slot' && el.tag !== 'template' && !el.key
+  if ("development" !== 'production' &&
+    state.maybeComponent(el) &&
+    el.tag !== 'slot' &&
+    el.tag !== 'template' &&
+    !el.key
   ) {
-    warn$3(
+    state.warn(
       "<" + (el.tag) + " v-for=\"" + alias + " in " + exp + "\">: component lists rendered with " +
       "v-for should have explicit keys. " +
       "See https://vuejs.org/guide/list.html#key for more info.",
@@ -50246,18 +53962,18 @@ function genFor (el) {
   }
 
   el.forProcessed = true; // avoid recursion
-  return "_l((" + exp + ")," +
+  return (altHelper || '_l') + "((" + exp + ")," +
     "function(" + alias + iterator1 + iterator2 + "){" +
-      "return " + (genElement(el)) +
+      "return " + ((altGen || genElement)(el, state)) +
     '})'
 }
 
-function genData (el) {
+function genData$2 (el, state) {
   var data = '{';
 
   // directives first.
   // directives may mutate the el's other properties before they are generated.
-  var dirs = genDirectives(el);
+  var dirs = genDirectives(el, state);
   if (dirs) { data += dirs + ','; }
 
   // key
@@ -50280,8 +53996,8 @@ function genData (el) {
     data += "tag:\"" + (el.tag) + "\",";
   }
   // module data generation functions
-  for (var i = 0; i < dataGenFns.length; i++) {
-    data += dataGenFns[i](el);
+  for (var i = 0; i < state.dataGenFns.length; i++) {
+    data += state.dataGenFns[i](el);
   }
   // attributes
   if (el.attrs) {
@@ -50293,10 +54009,10 @@ function genData (el) {
   }
   // event handlers
   if (el.events) {
-    data += (genHandlers(el.events, false, warn$3)) + ",";
+    data += (genHandlers(el.events, false, state.warn)) + ",";
   }
   if (el.nativeEvents) {
-    data += (genHandlers(el.nativeEvents, true, warn$3)) + ",";
+    data += (genHandlers(el.nativeEvents, true, state.warn)) + ",";
   }
   // slot target
   if (el.slotTarget) {
@@ -50304,7 +54020,7 @@ function genData (el) {
   }
   // scoped slots
   if (el.scopedSlots) {
-    data += (genScopedSlots(el.scopedSlots)) + ",";
+    data += (genScopedSlots(el.scopedSlots, state)) + ",";
   }
   // component v-model
   if (el.model) {
@@ -50312,7 +54028,7 @@ function genData (el) {
   }
   // inline-template
   if (el.inlineTemplate) {
-    var inlineTemplate = genInlineTemplate(el);
+    var inlineTemplate = genInlineTemplate(el, state);
     if (inlineTemplate) {
       data += inlineTemplate + ",";
     }
@@ -50322,10 +54038,14 @@ function genData (el) {
   if (el.wrapData) {
     data = el.wrapData(data);
   }
+  // v-on data wrap
+  if (el.wrapListeners) {
+    data = el.wrapListeners(data);
+  }
   return data
 }
 
-function genDirectives (el) {
+function genDirectives (el, state) {
   var dirs = el.directives;
   if (!dirs) { return }
   var res = 'directives:[';
@@ -50334,11 +54054,11 @@ function genDirectives (el) {
   for (i = 0, l = dirs.length; i < l; i++) {
     dir = dirs[i];
     needRuntime = true;
-    var gen = platformDirectives$1[dir.name] || baseDirectives[dir.name];
+    var gen = state.directives[dir.name];
     if (gen) {
       // compile-time directive that manipulates AST.
       // returns true if it also needs a runtime counterpart.
-      needRuntime = !!gen(el, dir, warn$3);
+      needRuntime = !!gen(el, dir, state.warn);
     }
     if (needRuntime) {
       hasRuntime = true;
@@ -50350,34 +54070,47 @@ function genDirectives (el) {
   }
 }
 
-function genInlineTemplate (el) {
+function genInlineTemplate (el, state) {
   var ast = el.children[0];
   if ("development" !== 'production' && (
     el.children.length > 1 || ast.type !== 1
   )) {
-    warn$3('Inline-template components must have exactly one child element.');
+    state.warn('Inline-template components must have exactly one child element.');
   }
   if (ast.type === 1) {
-    var inlineRenderFns = generate(ast, currentOptions);
+    var inlineRenderFns = generate(ast, state.options);
     return ("inlineTemplate:{render:function(){" + (inlineRenderFns.render) + "},staticRenderFns:[" + (inlineRenderFns.staticRenderFns.map(function (code) { return ("function(){" + code + "}"); }).join(',')) + "]}")
   }
 }
 
-function genScopedSlots (slots) {
-  return ("scopedSlots:_u([" + (Object.keys(slots).map(function (key) { return genScopedSlot(key, slots[key]); }).join(',')) + "])")
+function genScopedSlots (
+  slots,
+  state
+) {
+  return ("scopedSlots:_u([" + (Object.keys(slots).map(function (key) {
+      return genScopedSlot(key, slots[key], state)
+    }).join(',')) + "])")
 }
 
-function genScopedSlot (key, el) {
+function genScopedSlot (
+  key,
+  el,
+  state
+) {
   if (el.for && !el.forProcessed) {
-    return genForScopedSlot(key, el)
+    return genForScopedSlot(key, el, state)
   }
   return "{key:" + key + ",fn:function(" + (String(el.attrsMap.scope)) + "){" +
     "return " + (el.tag === 'template'
-      ? genChildren(el) || 'void 0'
-      : genElement(el)) + "}}"
+      ? genChildren(el, state) || 'void 0'
+      : genElement(el, state)) + "}}"
 }
 
-function genForScopedSlot (key, el) {
+function genForScopedSlot (
+  key,
+  el,
+  state
+) {
   var exp = el.for;
   var alias = el.alias;
   var iterator1 = el.iterator1 ? ("," + (el.iterator1)) : '';
@@ -50385,11 +54118,17 @@ function genForScopedSlot (key, el) {
   el.forProcessed = true; // avoid recursion
   return "_l((" + exp + ")," +
     "function(" + alias + iterator1 + iterator2 + "){" +
-      "return " + (genScopedSlot(key, el)) +
+      "return " + (genScopedSlot(key, el, state)) +
     '})'
 }
 
-function genChildren (el, checkSkip) {
+function genChildren (
+  el,
+  state,
+  checkSkip,
+  altGenElement,
+  altGenNode
+) {
   var children = el.children;
   if (children.length) {
     var el$1 = children[0];
@@ -50399,10 +54138,13 @@ function genChildren (el, checkSkip) {
       el$1.tag !== 'template' &&
       el$1.tag !== 'slot'
     ) {
-      return genElement(el$1)
+      return (altGenElement || genElement)(el$1, state)
     }
-    var normalizationType = checkSkip ? getNormalizationType(children) : 0;
-    return ("[" + (children.map(genNode).join(',')) + "]" + (normalizationType ? ("," + normalizationType) : ''))
+    var normalizationType = checkSkip
+      ? getNormalizationType(children, state.maybeComponent)
+      : 0;
+    var gen = altGenNode || genNode;
+    return ("[" + (children.map(function (c) { return gen(c, state); }).join(',')) + "]" + (normalizationType ? ("," + normalizationType) : ''))
   }
 }
 
@@ -50410,7 +54152,10 @@ function genChildren (el, checkSkip) {
 // 0: no normalization needed
 // 1: simple normalization needed (possible 1-level deep nested array)
 // 2: full normalization needed
-function getNormalizationType (children) {
+function getNormalizationType (
+  children,
+  maybeComponent
+) {
   var res = 0;
   for (var i = 0; i < children.length; i++) {
     var el = children[i];
@@ -50434,13 +54179,11 @@ function needsNormalization (el) {
   return el.for !== undefined || el.tag === 'template' || el.tag === 'slot'
 }
 
-function maybeComponent (el) {
-  return !isPlatformReservedTag$1(el.tag)
-}
-
-function genNode (node) {
+function genNode (node, state) {
   if (node.type === 1) {
-    return genElement(node)
+    return genElement(node, state)
+  } if (node.type === 3 && node.isComment) {
+    return genComment(node)
   } else {
     return genText(node)
   }
@@ -50452,9 +54195,13 @@ function genText (text) {
     : transformSpecialNewlines(JSON.stringify(text.text))) + ")")
 }
 
-function genSlot (el) {
+function genComment (comment) {
+  return ("_e(" + (JSON.stringify(comment.text)) + ")")
+}
+
+function genSlot (el, state) {
   var slotName = el.slotName || '"default"';
-  var children = genChildren(el);
+  var children = genChildren(el, state);
   var res = "_t(" + slotName + (children ? ("," + children) : '');
   var attrs = el.attrs && ("{" + (el.attrs.map(function (a) { return ((camelize(a.name)) + ":" + (a.value)); }).join(',')) + "}");
   var bind$$1 = el.attrsMap['v-bind'];
@@ -50471,9 +54218,13 @@ function genSlot (el) {
 }
 
 // componentName is el.component, take it as argument to shun flow's pessimistic refinement
-function genComponent (componentName, el) {
-  var children = el.inlineTemplate ? null : genChildren(el, true);
-  return ("_c(" + componentName + "," + (genData(el)) + (children ? ("," + children) : '') + ")")
+function genComponent (
+  componentName,
+  el,
+  state
+) {
+  var children = el.inlineTemplate ? null : genChildren(el, state, true);
+  return ("_c(" + componentName + "," + (genData$2(el, state)) + (children ? ("," + children) : '') + ")")
 }
 
 function genProps (props) {
@@ -50591,21 +54342,7 @@ function checkExpression (exp, text, errors) {
 
 /*  */
 
-function baseCompile (
-  template,
-  options
-) {
-  var ast = parse(template.trim(), options);
-  optimize(ast, options);
-  var code = generate(ast, options);
-  return {
-    ast: ast,
-    render: code.render,
-    staticRenderFns: code.staticRenderFns
-  }
-}
-
-function makeFunction (code, errors) {
+function createFunction (code, errors) {
   try {
     return new Function(code)
   } catch (err) {
@@ -50614,50 +54351,10 @@ function makeFunction (code, errors) {
   }
 }
 
-function createCompiler (baseOptions) {
-  var functionCompileCache = Object.create(null);
+function createCompileToFunctionFn (compile) {
+  var cache = Object.create(null);
 
-  function compile (
-    template,
-    options
-  ) {
-    var finalOptions = Object.create(baseOptions);
-    var errors = [];
-    var tips = [];
-    finalOptions.warn = function (msg, tip$$1) {
-      (tip$$1 ? tips : errors).push(msg);
-    };
-
-    if (options) {
-      // merge custom modules
-      if (options.modules) {
-        finalOptions.modules = (baseOptions.modules || []).concat(options.modules);
-      }
-      // merge custom directives
-      if (options.directives) {
-        finalOptions.directives = extend(
-          Object.create(baseOptions.directives),
-          options.directives
-        );
-      }
-      // copy other options
-      for (var key in options) {
-        if (key !== 'modules' && key !== 'directives') {
-          finalOptions[key] = options[key];
-        }
-      }
-    }
-
-    var compiled = baseCompile(template, finalOptions);
-    if (true) {
-      errors.push.apply(errors, detectErrors(compiled.ast));
-    }
-    compiled.errors = errors;
-    compiled.tips = tips;
-    return compiled
-  }
-
-  function compileToFunctions (
+  return function compileToFunctions (
     template,
     options,
     vm
@@ -50686,8 +54383,8 @@ function createCompiler (baseOptions) {
     var key = options.delimiters
       ? String(options.delimiters) + template
       : template;
-    if (functionCompileCache[key]) {
-      return functionCompileCache[key]
+    if (cache[key]) {
+      return cache[key]
     }
 
     // compile
@@ -50710,12 +54407,10 @@ function createCompiler (baseOptions) {
     // turn code into functions
     var res = {};
     var fnGenErrors = [];
-    res.render = makeFunction(compiled.render, fnGenErrors);
-    var l = compiled.staticRenderFns.length;
-    res.staticRenderFns = new Array(l);
-    for (var i = 0; i < l; i++) {
-      res.staticRenderFns[i] = makeFunction(compiled.staticRenderFns[i], fnGenErrors);
-    }
+    res.render = createFunction(compiled.render, fnGenErrors);
+    res.staticRenderFns = compiled.staticRenderFns.map(function (code) {
+      return createFunction(code, fnGenErrors)
+    });
 
     // check function generation errors.
     // this should only happen if there is a bug in the compiler itself.
@@ -50736,142 +54431,82 @@ function createCompiler (baseOptions) {
       }
     }
 
-    return (functionCompileCache[key] = res)
-  }
-
-  return {
-    compile: compile,
-    compileToFunctions: compileToFunctions
+    return (cache[key] = res)
   }
 }
 
 /*  */
 
-function transformNode (el, options) {
-  var warn = options.warn || baseWarn;
-  var staticClass = getAndRemoveAttr(el, 'class');
-  if ("development" !== 'production' && staticClass) {
-    var expression = parseText(staticClass, options.delimiters);
-    if (expression) {
-      warn(
-        "class=\"" + staticClass + "\": " +
-        'Interpolation inside attributes has been removed. ' +
-        'Use v-bind or the colon shorthand instead. For example, ' +
-        'instead of <div class="{{ val }}">, use <div :class="val">.'
-      );
-    }
-  }
-  if (staticClass) {
-    el.staticClass = JSON.stringify(staticClass);
-  }
-  var classBinding = getBindingAttr(el, 'class', false /* getStatic */);
-  if (classBinding) {
-    el.classBinding = classBinding;
-  }
-}
+function createCompilerCreator (baseCompile) {
+  return function createCompiler (baseOptions) {
+    function compile (
+      template,
+      options
+    ) {
+      var finalOptions = Object.create(baseOptions);
+      var errors = [];
+      var tips = [];
+      finalOptions.warn = function (msg, tip) {
+        (tip ? tips : errors).push(msg);
+      };
 
-function genData$1 (el) {
-  var data = '';
-  if (el.staticClass) {
-    data += "staticClass:" + (el.staticClass) + ",";
-  }
-  if (el.classBinding) {
-    data += "class:" + (el.classBinding) + ",";
-  }
-  return data
-}
-
-var klass$1 = {
-  staticKeys: ['staticClass'],
-  transformNode: transformNode,
-  genData: genData$1
-};
-
-/*  */
-
-function transformNode$1 (el, options) {
-  var warn = options.warn || baseWarn;
-  var staticStyle = getAndRemoveAttr(el, 'style');
-  if (staticStyle) {
-    /* istanbul ignore if */
-    if (true) {
-      var expression = parseText(staticStyle, options.delimiters);
-      if (expression) {
-        warn(
-          "style=\"" + staticStyle + "\": " +
-          'Interpolation inside attributes has been removed. ' +
-          'Use v-bind or the colon shorthand instead. For example, ' +
-          'instead of <div style="{{ val }}">, use <div :style="val">.'
-        );
+      if (options) {
+        // merge custom modules
+        if (options.modules) {
+          finalOptions.modules =
+            (baseOptions.modules || []).concat(options.modules);
+        }
+        // merge custom directives
+        if (options.directives) {
+          finalOptions.directives = extend(
+            Object.create(baseOptions.directives),
+            options.directives
+          );
+        }
+        // copy other options
+        for (var key in options) {
+          if (key !== 'modules' && key !== 'directives') {
+            finalOptions[key] = options[key];
+          }
+        }
       }
+
+      var compiled = baseCompile(template, finalOptions);
+      if (true) {
+        errors.push.apply(errors, detectErrors(compiled.ast));
+      }
+      compiled.errors = errors;
+      compiled.tips = tips;
+      return compiled
     }
-    el.staticStyle = JSON.stringify(parseStyleText(staticStyle));
-  }
 
-  var styleBinding = getBindingAttr(el, 'style', false /* getStatic */);
-  if (styleBinding) {
-    el.styleBinding = styleBinding;
-  }
-}
-
-function genData$2 (el) {
-  var data = '';
-  if (el.staticStyle) {
-    data += "staticStyle:" + (el.staticStyle) + ",";
-  }
-  if (el.styleBinding) {
-    data += "style:(" + (el.styleBinding) + "),";
-  }
-  return data
-}
-
-var style$1 = {
-  staticKeys: ['staticStyle'],
-  transformNode: transformNode$1,
-  genData: genData$2
-};
-
-var modules$1 = [
-  klass$1,
-  style$1
-];
-
-/*  */
-
-function text (el, dir) {
-  if (dir.value) {
-    addProp(el, 'textContent', ("_s(" + (dir.value) + ")"));
+    return {
+      compile: compile,
+      compileToFunctions: createCompileToFunctionFn(compile)
+    }
   }
 }
 
 /*  */
 
-function html (el, dir) {
-  if (dir.value) {
-    addProp(el, 'innerHTML', ("_s(" + (dir.value) + ")"));
+// `createCompilerCreator` allows creating compilers that use alternative
+// parser/optimizer/codegen, e.g the SSR optimizing compiler.
+// Here we just export a default compiler using the default parts.
+var createCompiler = createCompilerCreator(function baseCompile (
+  template,
+  options
+) {
+  var ast = parse(template.trim(), options);
+  optimize(ast, options);
+  var code = generate(ast, options);
+  return {
+    ast: ast,
+    render: code.render,
+    staticRenderFns: code.staticRenderFns
   }
-}
-
-var directives$1 = {
-  model: model,
-  text: text,
-  html: html
-};
+});
 
 /*  */
-
-var baseOptions = {
-  expectHTML: true,
-  modules: modules$1,
-  directives: directives$1,
-  isPreTag: isPreTag,
-  isUnaryTag: isUnaryTag,
-  mustUseProp: mustUseProp,
-  canBeLeftOpenTag: canBeLeftOpenTag,
-  isReservedTag: isReservedTag,
-  getTagNamespace: getTagNamespace,
-  staticKeys: genStaticKeys(modules$1)
-};
 
 var ref$1 = createCompiler(baseOptions);
 var compileToFunctions = ref$1.compileToFunctions;
@@ -50933,7 +54568,8 @@ Vue$3.prototype.$mount = function (
 
       var ref = compileToFunctions(template, {
         shouldDecodeNewlines: shouldDecodeNewlines,
-        delimiters: options.delimiters
+        delimiters: options.delimiters,
+        comments: options.comments
       }, this);
       var render = ref.render;
       var staticRenderFns = ref.staticRenderFns;
@@ -51230,7 +54866,7 @@ var _vue = __webpack_require__("./node_modules/vue/dist/vue.common.js");
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _veeValidate = __webpack_require__("./node_modules/vee-validate/dist/vee-validate.js");
+var _veeValidate = __webpack_require__("./node_modules/vee-validate/dist/vee-validate.esm.js");
 
 var _veeValidate2 = _interopRequireDefault(_veeValidate);
 
@@ -51261,10 +54897,10 @@ _vue2.default.use(_veeValidate2.default);
  * Add vue components to the project.
  */
 _vue2.default.component('main-page', __webpack_require__("./resources/assets/js/components/main-page.vue"));
-_vue2.default.component('main-shopping-cart', __webpack_require__("./resources/assets/js/components/main-shopping-cart.vue")
+_vue2.default.component('main-shopping-cart', __webpack_require__("./resources/assets/js/components/main-shopping-cart.vue"));
 
 //Auth Pages
-);_vue2.default.component('registration-form', __webpack_require__("./resources/assets/js/components/auth/registration-form.vue"));
+_vue2.default.component('registration-form', __webpack_require__("./resources/assets/js/components/auth/registration-form.vue"));
 _vue2.default.component('login-form', __webpack_require__("./resources/assets/js/components/auth/login-form.vue"));
 
 //Shopping Cart Pages
@@ -51292,6 +54928,7 @@ _vue2.default.component('error-message', __webpack_require__("./resources/assets
 //Navbar
 _vue2.default.component('navbar-cart', __webpack_require__("./resources/assets/js/components/navbar/navbar-cart.vue"));
 _vue2.default.component('search-products', __webpack_require__("./resources/assets/js/components/navbar/search-products.vue"));
+_vue2.default.component('search-products-screen', __webpack_require__("./resources/assets/js/components/navbar/search-products-screen.vue"));
 _vue2.default.component('categories-navbar', __webpack_require__("./resources/assets/js/components/navbar/categories-navbar.vue"));
 
 //User Account
@@ -51393,7 +55030,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/account/address-box.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-710dcf78\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/address-box.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-710dcf78\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/address-box.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -51434,7 +55071,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/account/user-account-address.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-7ec0463c\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-address.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-7ec0463c\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-address.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -51475,7 +55112,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/account/user-account-header.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-40b90216\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-header.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-40b90216\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-header.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -51516,7 +55153,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/account/user-account-order.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-6a0cbed4\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-order.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-6a0cbed4\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account-order.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -51557,7 +55194,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/account/user-account.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-71a000d6\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-71a000d6\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/account/user-account.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -51598,7 +55235,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/auth/login-form.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0e9f43d7\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/auth/login-form.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0e9f43d7\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/auth/login-form.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -51639,7 +55276,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/auth/registration-form.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5ab1390e\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/auth/registration-form.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5ab1390e\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/auth/registration-form.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -51684,7 +55321,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/animations/fade-out-animation.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-75da4b78\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/animations/fade-out-animation.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-75da4b78\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/animations/fade-out-animation.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -51729,7 +55366,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/animations/slide-in-animation.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-13d976bc\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/animations/slide-in-animation.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-13d976bc\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/animations/slide-in-animation.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -51774,7 +55411,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/messages/error-message.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-41e7436a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/error-message.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-41e7436a\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/error-message.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -51819,7 +55456,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/messages/success-message.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b20ad8f4\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/success-message.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b20ad8f4\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/messages/success-message.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -51864,7 +55501,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/modal/confirm-modal.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-44b537bc\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/confirm-modal.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-44b537bc\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/confirm-modal.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -51909,7 +55546,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/modal/form-modal.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-306f45dc\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/form-modal.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-306f45dc\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/form-modal.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -51950,7 +55587,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/modal/message-modal.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-037c5eae\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/message-modal.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-037c5eae\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/modal/message-modal.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -51991,7 +55628,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/review-stars.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-13e110b8\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/review-stars.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-13e110b8\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/review-stars.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52036,7 +55673,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/screen/full-screen.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-58512a5a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/screen/full-screen.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-58512a5a\",\"hasScoped\":true}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/screen/full-screen.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -52077,7 +55714,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/select-cart-quantity.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b2cf91da\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/select-cart-quantity.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b2cf91da\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/select-cart-quantity.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52118,7 +55755,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/functionality/view-message.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-fc400b2a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/view-message.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-fc400b2a\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/functionality/view-message.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52239,7 +55876,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/navbar/categories-navbar.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5a26a2ea\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/categories-navbar.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-5a26a2ea\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/categories-navbar.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52280,7 +55917,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/navbar/navbar-cart.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-35f37f86\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/navbar-cart.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-35f37f86\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/navbar-cart.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52313,21 +55950,58 @@ module.exports = Component.exports
 
 /***/ }),
 
+/***/ "./resources/assets/js/components/navbar/search-products-screen.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
+  /* script */
+  __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/navbar/search-products-screen.vue"),
+  /* template */
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-cd57dfd2\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/search-products-screen.vue"),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/shawnlegge/Projects/ecommerce/resources/assets/js/components/navbar/search-products-screen.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] search-products-screen.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-loader/node_modules/vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-cd57dfd2", Component.options)
+  } else {
+    hotAPI.reload("data-v-cd57dfd2", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
 /***/ "./resources/assets/js/components/navbar/search-products.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-f82ceb9c\",\"scoped\":false,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/navbar/search-products.vue")
-}
 var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/navbar/search-products.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f82ceb9c\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/search-products.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f82ceb9c\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/navbar/search-products.vue"),
   /* styles */
-  injectStyle,
+  null,
   /* scopeId */
   null,
   /* moduleIdentifier (server only) */
@@ -52366,7 +56040,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/address/select-user-address.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-50aedfaf\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/address/select-user-address.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-50aedfaf\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/address/select-user-address.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52407,7 +56081,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/confirm-cart/order-information.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-780935d4\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/confirm-cart/order-information.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-780935d4\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/confirm-cart/order-information.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52448,7 +56122,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/confirm-cart/user-order-item.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b4397b4a\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/confirm-cart/user-order-item.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b4397b4a\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/confirm-cart/user-order-item.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52489,7 +56163,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/invoice/user-order.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-e07681d2\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/invoice/user-order.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-e07681d2\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/invoice/user-order.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52530,7 +56204,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/order-details.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-208ec0aa\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/order-details.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-208ec0aa\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/order-details.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52571,7 +56245,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/order-page.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0a4a4a52\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/order-page.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-0a4a4a52\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/order-page.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52616,7 +56290,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/payment/billing-form.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-78e225a8\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/payment/billing-form.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-78e225a8\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/payment/billing-form.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -52657,7 +56331,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/payment/order-payment.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-7ebcbfa5\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/payment/order-payment.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-7ebcbfa5\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/payment/order-payment.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52698,7 +56372,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/shared/order-total-details.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c4b8fc0e\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/shared/order-total-details.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c4b8fc0e\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/shared/order-total-details.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52739,7 +56413,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/shared/user-order-header.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-30bf5ded\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/shared/user-order-header.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-30bf5ded\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/shared/user-order-header.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52784,7 +56458,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/order/step-progress-bar.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-2391ffbb\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/step-progress-bar.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-2391ffbb\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/order/step-progress-bar.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -52829,7 +56503,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shared-information/address/add-new-address.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-341fbcfd\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/add-new-address.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-341fbcfd\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/add-new-address.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -52870,7 +56544,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shared-information/address/delete-address.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f0b2e840\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/delete-address.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f0b2e840\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/delete-address.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52911,7 +56585,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shared-information/address/edit-address.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b242f982\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/edit-address.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-b242f982\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/edit-address.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52952,7 +56626,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shared-information/address/shipping-address.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-01a7b1e3\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/shipping-address.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-01a7b1e3\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/shipping-address.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -52997,7 +56671,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shared-information/address/user-address-form.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-53035ca1\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/user-address-form.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-53035ca1\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/user-address-form.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -53038,7 +56712,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shared-information/address/user-address.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c14b3100\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/user-address.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-c14b3100\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/address/user-address.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -53083,7 +56757,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shared-information/order/order-list-item.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f10203c2\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/order/order-list-item.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-f10203c2\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/order/order-list-item.vue"),
   /* styles */
   injectStyle,
   /* scopeId */
@@ -53124,7 +56798,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shared-information/user-details.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-a07575da\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/user-details.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-a07575da\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shared-information/user-details.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -53165,7 +56839,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shopping-cart/add-cart-icon.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-d5cb6ed0\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shopping-cart/add-cart-icon.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-d5cb6ed0\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shopping-cart/add-cart-icon.vue"),
   /* styles */
   null,
   /* scopeId */
@@ -53206,7 +56880,7 @@ var Component = __webpack_require__("./node_modules/vue-loader/lib/component-nor
   /* script */
   __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/shopping-cart/remove-item-icon.vue"),
   /* template */
-  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-26989a9c\"}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shopping-cart/remove-item-icon.vue"),
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-26989a9c\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/shopping-cart/remove-item-icon.vue"),
   /* styles */
   null,
   /* scopeId */

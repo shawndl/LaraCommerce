@@ -67,10 +67,7 @@ class UpdateAddressSuccessTest extends AbstractHttpAjaxTestClass
     public function it_must_return_a_list_of_user_addresses()
     {
         $this->postResponse->assertJsonStructure([
-            'message',
-            'addresses' => [
-                ['id', 'street_address', 'city', 'state', 'state_id', 'postal_code']
-            ]
+            'message'
         ]);
     }
 

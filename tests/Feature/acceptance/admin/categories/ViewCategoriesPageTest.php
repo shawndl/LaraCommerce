@@ -29,6 +29,7 @@ class ViewCategoriesPageTest extends AbstractHttpTestClass
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function only_an_admin_can_view_this_page()
@@ -40,6 +41,7 @@ class ViewCategoriesPageTest extends AbstractHttpTestClass
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_use_the_admin_index_page()
@@ -51,6 +53,7 @@ class ViewCategoriesPageTest extends AbstractHttpTestClass
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_have_the_categories_table_attached_to_the_view()

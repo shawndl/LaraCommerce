@@ -139,11 +139,14 @@
              * @return {boolean}
              */
             beforeSubmit() {
-                this.$validator.validateAll().then(() => {
-                    if(this.editAddress) {
-                        this.edit();
-                    } else {
-                        this.ajaxRequest(window.Laravel.urls.address_url)
+                let self = this;
+                this.$validator.validateAll().then(function () {
+                    if (!self.errors.any()) {
+                        if(self.editAddress) {
+                            self.edit();
+                        } else {
+                            self.ajaxRequest(window.Laravel.urls.address_url)
+                        }
                     }
                 });
             },

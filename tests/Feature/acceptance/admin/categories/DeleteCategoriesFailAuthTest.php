@@ -39,6 +39,7 @@ class DeleteCategoriesFailAuthTest extends AbstractHttpAjaxTestClass
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function guests_can_not_submit_this_form()

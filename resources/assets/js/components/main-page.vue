@@ -13,6 +13,7 @@
                     showMessage : false,
                     showError : false,
                     fullScreen : false,
+                    search : false
                 }
             }
         },
@@ -34,6 +35,9 @@
             );
             Event.$on('full-screen-window',
                 () => this.showComponents.fullScreen = true
+            );
+            Event.$on('show-search-screen',
+                () => this.showComponents.search = !this.showComponents.search
             );
         },
 

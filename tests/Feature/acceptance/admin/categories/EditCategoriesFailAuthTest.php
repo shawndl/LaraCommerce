@@ -25,6 +25,7 @@ class EditCategoriesFailAuthTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function guests_can_not_submit_this_form()
@@ -35,6 +36,7 @@ class EditCategoriesFailAuthTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_not_update_the_database()

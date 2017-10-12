@@ -64,7 +64,6 @@ class OrderController extends UserPagesController
     protected function onSuccess()
     {
         return view('ecommerce.order', [
-            'addresses' => json_encode(AddressTransformer::transform(Auth::user()->addresses)),
             'order' => json_encode($this->getOrder()),
             'stage' => $this->getParameter
         ]);
@@ -77,8 +76,7 @@ class OrderController extends UserPagesController
      */
     private function getOrder()
     {
-        //$order = session()->get('user_order');
-        $order = null;
+        $order = session()->get('user_order');
         if(is_null($order))
         {
             return false;

@@ -38,6 +38,7 @@ class DeleteTaxSuccessTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_return_a_status_of_200()
@@ -49,6 +50,7 @@ class DeleteTaxSuccessTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_return_a_success_message()
@@ -61,6 +63,7 @@ class DeleteTaxSuccessTest extends AbstractTestPost
     /**
      * @group tax
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_delete_the_category_from_the_database()

@@ -34,6 +34,7 @@ class CreateCategoriesSuccessTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_return_a_status_of_200()
@@ -44,6 +45,7 @@ class CreateCategoriesSuccessTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_return_a_success_message()
@@ -54,6 +56,7 @@ class CreateCategoriesSuccessTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_have_the_new_category_in_the_database()

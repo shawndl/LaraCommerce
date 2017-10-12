@@ -62,8 +62,9 @@ class SearchByScoutAjaxRequestTest extends AbstractHttpAjaxTestClass
                     "price" => "18.00",
                     "description" => "A cool book",
                     "weight" => "14.29",
-                    "category" => "clothes",
-                    "image" => "http://lorempixel.com/400/200"
+                    "category" => "Clothes",
+                    "image" => "http://lorempixel.com/400/200",
+                    "thumbnail" => null
                 ],
                 [
                     "product_id" => 2,
@@ -71,8 +72,9 @@ class SearchByScoutAjaxRequestTest extends AbstractHttpAjaxTestClass
                     "price" => "21.94",
                     "description" => "Another cool book",
                     "weight" => "13.29",
-                    "category" => "clothes",
-                    "image" => "http://lorempixel.com/400/200"
+                    "category" => "Clothes",
+                    "image" => "http://lorempixel.com/400/200",
+                    "thumbnail" => null
                 ]
             ],
             "search" => "book"

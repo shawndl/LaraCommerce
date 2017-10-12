@@ -29,6 +29,7 @@ class CreateCategoriesFailValidationTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function validation_errors_must_return_a_status_of_422()
@@ -40,6 +41,7 @@ class CreateCategoriesFailValidationTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_have_a_name()
@@ -51,6 +53,7 @@ class CreateCategoriesFailValidationTest extends AbstractTestPost
     /**
      * @group category
      * @group acceptance
+     * @group admin
      * @test
      */
     public function it_must_have_only_letters_and_spances()

@@ -23,18 +23,17 @@
 
 <style scoped>
     .full-screen-container {
-        max-height: 90%;
         position: fixed;
-        top: 10%;
-        left: 10%;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         overflow: scroll;
         border: 1px solid #8c8c8c;
         border-radius: 5px;
         background-color: #DDDDDD;
         margin: 0;
         padding: 20px;
-        width: 80%;
-        height: auto;
         z-index: 1000;
     }
 

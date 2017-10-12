@@ -28,7 +28,7 @@ class OrderPagePreviousOrderTest extends AbstractHttpTestClass
     protected $getRoute = 'order/edit-order';
 
     protected $fakeOrder = ['user_order' => [
-        'order_id'  => 1,
+        'order'  => 1,
         'address'   => [],
         'user'      => []
     ]];
@@ -54,29 +54,8 @@ class OrderPagePreviousOrderTest extends AbstractHttpTestClass
      *  @group order
      *  @group acceptance
      */
-    public function the_view_must_have_the_users_addresses()
-    {
-        $this->getResponse->assertViewHas('addresses');
-    }
-
-    /**
-     *  @test
-     *  @group order
-     *  @group acceptance
-     */
     public function the_view_must_have_the_stage()
     {
         $this->getResponse->assertViewHas('stage', 'edit-order');
-    }
-
-    /**
-     *  @test
-     *  @group order
-     *  @group acceptance
-     */
-    public function the_view_must_have_an_order_equal_to_the_fake_order()
-    {
-        $this->getResponse->assertViewHas('order',
-            json_encode($this->fakeOrder['user_order']));
     }
 }

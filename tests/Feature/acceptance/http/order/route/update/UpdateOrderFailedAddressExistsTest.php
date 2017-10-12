@@ -34,7 +34,7 @@ class UpdateOrderFailedAddressExistsTest extends AbstractFailedUpdateOrder
     /**
      * @var string
      */
-    protected $message = ['error' => 'There was an error processing your request!  Please try again.'];
+    protected $message = ['error' => 'Sorry there was an error processing your.  Please try again'];
 
     protected function setUp()
     {

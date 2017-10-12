@@ -52,15 +52,26 @@
                 let self = this;
                 let url = (this.isEdit) ? window.Laravel.urls.category_api_url + '/' + self.currentCategory.id
                     : window.Laravel.urls.category_api_url
-                this.$validator.validateAll().then(() => {
-                    axios.post(url, self.category)
-                        .then(
-                            (response) => self.updateMessage(response.data.message)
-                        )
-                        .catch(
-                            () => self.updateError()
-                        );
+                this.$validator.validateAll().then(function() {
+                    if (!self.errors.any()) {
+                        self.ajaxRequest(url);
+                    }
+
                 });
+            },
+
+            /**
+             *  Sends an ajax requests for a new or update a category
+             *  @return void
+             */
+            ajaxRequest(url){
+                axios.post(url, this.category)
+                    .then(
+                        (response) => this.updateMessage(response.data.message)
+                    )
+                    .catch(
+                        () => this.updateError()
+                    );
             },
 
             /**
