@@ -56,7 +56,7 @@ class CreateCategoriesFailValidationTest extends AbstractTestPost
      * @group admin
      * @test
      */
-    public function it_must_have_only_letters_and_spances()
+    public function it_must_have_only_letters_and_spaces()
     {
         $this->post['name'] = '281 Cows';
         $this->sendRequest();

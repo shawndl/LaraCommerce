@@ -16,12 +16,11 @@ class State extends Model
     ];
 
     /**
-     * a state has many cities
+     * The created at and updated at must be hidden
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @var array
      */
-    public function cities()
-    {
-        return $this->hasMany('App\City');
-    }
+    protected $hidden = [
+        'created_at', 'updated_at'
+    ];
 }

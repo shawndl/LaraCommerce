@@ -76,6 +76,11 @@ Vue.component('tax-row', require('./components/admin/taxes/tax-row.vue'));
 Vue.component('tax-form', require('./components/admin/taxes/tax-form.vue'));
 Vue.component('delete-tax-button', require('./components/admin/taxes/delete-tax-button.vue'));
 
+// States
+Vue.component('states-table', require('./components/admin/states/states-tables.vue'));
+Vue.component('state-row', require('./components/admin/states/state-row.vue'));
+Vue.component('state-form', require('./components/admin/states/states-form.vue'));
+
 const app = new Vue({
     el: '#app'
 });

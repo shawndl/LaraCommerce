@@ -17,7 +17,7 @@ class EditCategoriesFailAuthTest extends AbstractTestPost
     {
         parent::setUp();
         $this->setUpCategory();
-        $this->postRoute = $this->postRoute . '/' . $this->category->id . '/edit';
+        $this->postRoute = $this->postRoute . '/' . $this->category->id;
         $this->sendRequest(true, false);
     }
 
@@ -30,7 +30,7 @@ class EditCategoriesFailAuthTest extends AbstractTestPost
      */
     public function guests_can_not_submit_this_form()
     {
-        $this->postResponse->assertStatus(405);
+        $this->postResponse->assertStatus(302);
     }
 
     /**

@@ -10,7 +10,6 @@
                 <div class="modal-body">
                     <slot name="body">default body</slot>
                 </div><!-- /.modal-body -->
-
                 <div class="modal-footer">
                     <slot name="footer">
                         <div class="row">

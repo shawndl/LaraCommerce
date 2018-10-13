@@ -15,8 +15,7 @@
                     </h4>
                     <p>{{ $product->description }}</p>
                 </div><!-- /.caption -->
-                <add-cart-icon :product_id="'{{ $product->id }}'"
-                @add-to-cart="addToCart">
+                <add-cart-icon :product_id="'{{ $product->id }}'" @add-to-cart="addToCart">
 
                 </add-cart-icon>
                 <div class="ratings">

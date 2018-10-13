@@ -39,13 +39,12 @@
              * @return void
              */
             onDelete(){
-                let self = this;
-                axios.post(window.Laravel.urls.category_api_url + '/' + self.category.id, self.post)
+                axios.post(window.Laravel.urls.category_api_url + '/' + this.category.id, this.post)
                     .then(
-                        (response) => self.updateMessage(response.data.message)
+                        (response) => this.updateMessage(response.data.message)
                     )
                     .catch(
-                        () => self.updateError()
+                        () => this.updateError()
                     )
             },
 

@@ -90,7 +90,11 @@ Route::get('admin/taxes', 'Admin\TaxesController@index');
 Route::get('admin/api/taxes/all', 'Admin\API\TaxesAPIController@all');
 Route::resource('admin/api/taxes', 'Admin\API\TaxesAPIController');
 
-
+//States
+Route::get('admin/states', 'Admin\StatesController@index');
+Route::resource('admin/api/states', 'Admin\API\StatesAPIController', ['only' => [
+    'index', 'store', 'update', 'destroy'
+]]);
 
 Route::get('/test', function(){
     dd(\Illuminate\Support\Facades\Schema::hasTable('roles'));

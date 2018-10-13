@@ -52,6 +52,11 @@
                         <i class="fa fa-money" aria-hidden="true"></i>Taxes
                     </a>
                 </li>
+                <li>
+                    <a href="{{ action('Admin\StatesController@index') }}">
+                        <i class="fa fa-map-o" aria-hidden="true"></i>States
+                    </a>
+                </li>
             </ul>
         </div><!-- /.menu_section -->
     </div><!-- /.sidebar-menu -->

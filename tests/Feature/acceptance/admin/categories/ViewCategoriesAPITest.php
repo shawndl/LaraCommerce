@@ -50,7 +50,5 @@ class ViewCategoriesAPITest extends AbstractHttpAjaxTestClass
         {
             $this->getResponse->assertJsonFragment(['id' => $category->id, 'name' => $category->name]);
         }
-
-
     }
 }

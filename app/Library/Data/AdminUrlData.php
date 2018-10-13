@@ -23,7 +23,8 @@ class AdminUrlData
             'sale_url' => action('Admin\SalesController@index'),
             'order_url' => action('Admin\API\OrdersAPIController@show', ['order' => null]),
             'category_url' => action('Admin\CategoriesController@index'),
-            'category_api_url' => action('Admin\API\CategoriesAPIController@index')
+            'category_api_url' => action('Admin\API\CategoriesAPIController@index'),
+            'state_api_url' => action('Admin\API\StatesAPIController@index')
         ];
     }
 }

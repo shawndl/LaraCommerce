@@ -32,6 +32,7 @@
                             <li><a href="{{ action('Admin\OrdersController@index') }}">Orders Page</a></li>
                             <li><a href="{{ action('Admin\CategoriesController@index') }}">Categories Page</a></li>
                             <li><a href="{{ action('Admin\TaxesController@index') }}">Taxes Page</a></li>
+                            <li><a href="{{ action('Admin\StatesController@index') }}">States Page</a></li>
                         </ul>
                     </li>
                 @endif

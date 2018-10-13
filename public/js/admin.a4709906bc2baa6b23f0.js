@@ -2821,11 +2821,12 @@ exports.default = {
          * @return void
          */
         onDelete: function onDelete() {
-            var self = this;
-            axios.post(window.Laravel.urls.category_api_url + '/' + self.category.id, self.post).then(function (response) {
-                return self.updateMessage(response.data.message);
+            var _this = this;
+
+            axios.post(window.Laravel.urls.category_api_url + '/' + this.category.id, this.post).then(function (response) {
+                return _this.updateMessage(response.data.message);
             }).catch(function () {
-                return self.updateError();
+                return _this.updateError();
             });
         },
 
@@ -4408,6 +4409,406 @@ exports.default = {
             axios.get(window.Laravel.urls.sale_url + '/' + this.saleId).then(function (response) {
                 return self.sale = response.data.sale;
             }).catch();
+        }
+    }
+};
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/states/state-row.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    props: ['state', 'refresh', 'openEdit'],
+
+    data: function data() {
+        return {
+            show: {
+                deleteForm: false
+            }
+        };
+    },
+
+    methods: {
+        /**
+         * closes the delete form
+         */
+        close: function close() {
+            this.show.deleteForm = false;
+        },
+
+
+        /**
+         * deletes a state
+         * @return void
+         */
+        onDelete: function onDelete() {
+            var _this = this;
+
+            axios.post(window.Laravel.urls.state_api_url + '/' + this.state.id, { _method: 'DELETE' }).then(function (response) {
+                return _this.updateMessage(response.data.message);
+            }).catch(function () {
+                return _this.updateError();
+            });
+        },
+
+
+        /**
+         * updates a user error
+         * @param message
+         * @return void
+         */
+        updateMessage: function updateMessage(message) {
+            this.close();
+            this.refresh();
+            Event.$emit('update-user-message', message);
+        },
+
+
+        /**
+         * updates a user error
+         * @return void
+         */
+        updateError: function updateError() {
+            Event.$emit('update-user-error', 'An error has occurred please try again!');
+            this.close();
+        }
+    }
+};
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/states/states-form.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    props: ['isEdit', 'oldState', 'close', 'refresh'],
+    data: function data() {
+        return {
+            state: {
+                name: '',
+                abbreviation: ''
+            }
+        };
+    },
+
+    mounted: function mounted() {
+        if (this.isEdit) {
+            this.setEditForm();
+        }
+    },
+
+
+    methods: {
+        /**
+         * sets form values if it is an edit form
+         *
+         * @return void
+         */
+        setEditForm: function setEditForm() {
+            this.state = {
+                name: this.oldState.name,
+                abbreviation: this.oldState.abbreviation
+            };
+        },
+
+
+        /**
+         *  checks if the form passed validation before submitting results
+         *  @return void
+         */
+        beforeSubmit: function beforeSubmit() {
+            var _this = this;
+
+            var self = this;
+            this.$validator.validateAll().then(function () {
+                if (!self.errors.any()) {
+                    if (self.isEdit) {
+                        _this.edit();
+                    } else {
+                        _this.ajaxRequest(window.Laravel.urls.state_api_url);
+                    }
+                }
+            });
+        },
+
+
+        /**
+         *  adds the patch to the method request
+         *  @return void
+         */
+        edit: function edit() {
+            this.state._method = 'patch';
+            this.ajaxRequest(window.Laravel.urls.state_api_url + '/' + this.oldState.id);
+        },
+
+
+        /**
+         *  performs an ajax request and updates the user message
+         *  @return void
+         */
+        ajaxRequest: function ajaxRequest(url) {
+            var self = this;
+            axios.post(url, this.state).then(function (response) {
+                return self.updateMessage(response.data);
+            }).catch(function () {
+                return self.updateError();
+            });
+        },
+
+
+        /**
+         *  updates the user message and closes the form
+         *  @return void
+         */
+        updateMessage: function updateMessage(data) {
+            Event.$emit('update-user-message', data.message);
+            this.refresh();
+            this.close();
+        },
+
+
+        /**
+         * updates a user error
+         */
+        updateError: function updateError() {
+            Event.$emit('update-user-error', 'An error has occurred please try again!');
+            this.close();
+        }
+    }
+};
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/states/states-tables.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+exports.default = {
+    data: function data() {
+        return {
+            page: 1,
+            lastPage: null,
+            states: null,
+            form: {
+                header: 'Add a State',
+                isEdit: false,
+                state: null
+            },
+            show: {
+                form: false
+            }
+        };
+    },
+
+    mounted: function mounted() {
+        this.getStates();
+    },
+
+
+    methods: {
+        /**
+         * performs an ajax request to get all categories
+         * @return void
+         */
+        getStates: function getStates() {
+            var _this = this;
+
+            this.states = null;
+            axios.get(window.Laravel.urls.state_api_url + '?page=' + this.page).then(function (response) {
+                return _this.setProperties(response.data.states);
+            }).catch(function () {
+                return _this.setError();
+            });
+        },
+
+
+        /**
+         * Sets properties if the ajax request was a success
+         * @return void
+         */
+        setProperties: function setProperties(response) {
+            console.log(response);
+            this.page = response.current_page;
+            this.lastPage = response.last_page;
+            this.states = response.data;
+        },
+
+
+        /**
+         * If there was an error it must emit an error
+         * @return void
+         */
+        setError: function setError() {
+            Event.$emit('update-user-error', 'There was an error retrieving the states.  Please try again later!');
+        },
+
+
+        /**
+         * sets the new page
+         * @param page
+         * @return void
+         */
+        setPage: function setPage(page) {
+            this.page = page;
+            this.getStates();
+        },
+
+
+        /**
+         * closes the tax form and resets the values
+         * @return void
+         */
+        closeForm: function closeForm() {
+            this.show.form = false;
+            this.form.header = 'Add a Tax';
+            this.form.isEdit = false;
+            this.form.state = null;
+        },
+
+
+        /**
+         * prepares form for edit mode
+         * @param state
+         * @return void
+         */
+        onEdit: function onEdit(state) {
+            this.form.state = state;
+            this.form.isEdit = true;
+            this.form.header = 'Edit this State';
+            this.show.form = true;
         }
     }
 };
@@ -66313,6 +66714,122 @@ if (false) {
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-70f19bcb\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/states/states-tables.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('div', {
+    staticClass: "pull-right"
+  }, [_c('button', {
+    staticClass: "btn btn-primary",
+    on: {
+      "click": function($event) {
+        _vm.show.form = true
+      }
+    }
+  }, [_vm._v("Create State")])]), _vm._v(" "), (_vm.show.form) ? _c('full-screen', {
+    attrs: {
+      "close": _vm.closeForm
+    }
+  }, [_c('h3', {
+    attrs: {
+      "slot": "header"
+    },
+    slot: "header"
+  }, [_vm._v(_vm._s(_vm.form.header))]), _vm._v(" "), _c('div', {
+    attrs: {
+      "slot": "body"
+    },
+    slot: "body"
+  }, [_c('state-form', {
+    attrs: {
+      "oldState": _vm.form.state,
+      "isEdit": _vm.form.isEdit,
+      "close": _vm.closeForm,
+      "refresh": _vm.getStates
+    }
+  })], 1)]) : _vm._e(), _vm._v(" "), _c('table', {
+    staticClass: "table"
+  }, [_vm._m(0), _vm._v(" "), _c('fade-out-animation', [(_vm.states) ? _c('tbody', _vm._l((_vm.states), function(state) {
+    return _c('state-row', {
+      key: state.id,
+      attrs: {
+        "state": state,
+        "refresh": _vm.getStates,
+        "openEdit": _vm.onEdit
+      }
+    })
+  })) : _vm._e()])], 1), _vm._v(" "), (_vm.states) ? _c('paginate-items', {
+    attrs: {
+      "number": _vm.lastPage,
+      "current": _vm.page
+    },
+    on: {
+      "select-page": _vm.setPage
+    }
+  }) : _vm._e()], 1)
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('thead', [_c('tr', [_c('th', [_vm._v("Name")]), _vm._v(" "), _c('th', [_vm._v("Abbreviation")]), _vm._v(" "), _c('th', [_vm._v("Edit")]), _vm._v(" "), _c('th', [_vm._v("Delete")])])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-70f19bcb", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-715f7c59\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/states/state-row.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return (_vm.state) ? _c('tr', [_c('td', {
+    staticClass: "table-element"
+  }, [_vm._v(_vm._s(_vm.state.name))]), _vm._v(" "), _c('td', {
+    staticClass: "table-element"
+  }, [_vm._v(_vm._s(_vm.state.abbreviation))]), _vm._v(" "), _c('td', [_c('button', {
+    staticClass: "btn btn-primary",
+    on: {
+      "click": function($event) {
+        _vm.openEdit(_vm.state)
+      }
+    }
+  }, [_vm._v("Edit State")])]), _vm._v(" "), _c('td', [_c('button', {
+    staticClass: "btn btn-danger",
+    on: {
+      "click": function($event) {
+        _vm.show.deleteForm = true
+      }
+    }
+  }, [_vm._v("Delete State")]), _vm._v(" "), (_vm.show.deleteForm) ? _c('confirm-modal', {
+    on: {
+      "cancel": _vm.close,
+      "confirm": _vm.onDelete
+    }
+  }, [_c('h3', {
+    attrs: {
+      "slot": "header"
+    },
+    slot: "header"
+  }, [_vm._v("Delete " + _vm._s(_vm.state.name))]), _vm._v(" "), _c('p', {
+    attrs: {
+      "slot": "body"
+    },
+    slot: "body"
+  }, [_vm._v("\n                Are you sure you want to delete this state?\n            ")])]) : _vm._e()], 1)]) : _vm._e()
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-715f7c59", module.exports)
+  }
+}
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-74ae204e\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/categories/edit-category-button.vue":
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -66902,6 +67419,139 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
      require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-da7cce8c", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-db39c3ac\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/states/states-form.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('form', {
+    on: {
+      "submit": function($event) {
+        $event.preventDefault();
+        _vm.beforeSubmit($event)
+      }
+    }
+  }, [_c('div', {
+    staticClass: "row"
+  }, [_c('div', {
+    staticClass: "col-sm-6"
+  }, [_c('div', {
+    class: {
+      'form-group': true, 'has-error': _vm.errors.has('state-name')
+    }
+  }, [_c('label', {
+    staticClass: "control-label",
+    attrs: {
+      "for": "state-name"
+    }
+  }, [_vm._v("Name: ")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.state.name),
+      expression: "state.name"
+    }, {
+      name: "validate",
+      rawName: "v-validate",
+      value: ('required|alpha_spaces'),
+      expression: "'required|alpha_spaces'"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "name": "state-name",
+      "id": "state-name"
+    },
+    domProps: {
+      "value": (_vm.state.name)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.state.name = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.errors.has('state-name')),
+      expression: "errors.has('state-name')"
+    }],
+    staticClass: "help-block"
+  }, [_c('strong', [_vm._v(_vm._s(_vm.errors.first('state-name')))])])])]), _vm._v(" "), _c('div', {
+    staticClass: "col-sm-6"
+  }, [_c('div', {
+    class: {
+      'form-group': true, 'has-error': _vm.errors.has('abbreviation')
+    }
+  }, [_c('label', [_vm._v("Percent ")]), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: (_vm.state.abbreviation),
+      expression: "state.abbreviation"
+    }, {
+      name: "validate",
+      rawName: "v-validate",
+      value: ('required|alpha'),
+      expression: "'required|alpha'"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      "type": "text",
+      "name": "abbreviation",
+      "id": "abbreviation"
+    },
+    domProps: {
+      "value": (_vm.state.abbreviation)
+    },
+    on: {
+      "input": function($event) {
+        if ($event.target.composing) { return; }
+        _vm.state.abbreviation = $event.target.value
+      }
+    }
+  }), _vm._v(" "), _c('span', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.errors.has('abbreviation')),
+      expression: "errors.has('abbreviation')"
+    }],
+    staticClass: "help-block"
+  }, [_c('strong', [_vm._v(_vm._s(_vm.errors.first('abbreviation')))])])])])]), _vm._v(" "), _c('div', {
+    staticClass: "row"
+  }, [_vm._m(0), _vm._v(" "), _c('div', {
+    staticClass: "pull-right"
+  }, [_c('button', {
+    staticClass: "btn btn-danger",
+    attrs: {
+      "type": "button"
+    },
+    on: {
+      "click": _vm.close
+    }
+  }, [_vm._v("Cancel")])])])])
+},staticRenderFns: [function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', {
+    staticClass: "pull-left"
+  }, [_c('button', {
+    staticClass: "btn btn-primary",
+    attrs: {
+      "type": "submit"
+    }
+  }, [_vm._v("Submit")])])
+}]}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-loader/node_modules/vue-hot-reload-api").rerender("data-v-db39c3ac", module.exports)
   }
 }
 
@@ -78773,6 +79423,11 @@ _vue2.default.component('tax-row', __webpack_require__("./resources/assets/js/co
 _vue2.default.component('tax-form', __webpack_require__("./resources/assets/js/components/admin/taxes/tax-form.vue"));
 _vue2.default.component('delete-tax-button', __webpack_require__("./resources/assets/js/components/admin/taxes/delete-tax-button.vue"));
 
+// States
+_vue2.default.component('states-table', __webpack_require__("./resources/assets/js/components/admin/states/states-tables.vue"));
+_vue2.default.component('state-row', __webpack_require__("./resources/assets/js/components/admin/states/state-row.vue"));
+_vue2.default.component('state-form', __webpack_require__("./resources/assets/js/components/admin/states/states-form.vue"));
+
 var app = new _vue2.default({
   el: '#app'
 });
@@ -79446,6 +80101,129 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-76f5fb49", Component.options)
   } else {
     hotAPI.reload("data-v-76f5fb49", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/admin/states/state-row.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
+  /* script */
+  __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/states/state-row.vue"),
+  /* template */
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-715f7c59\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/states/state-row.vue"),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/shawnlegge/Projects/ecommerce/resources/assets/js/components/admin/states/state-row.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] state-row.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-loader/node_modules/vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-715f7c59", Component.options)
+  } else {
+    hotAPI.reload("data-v-715f7c59", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/admin/states/states-form.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
+  /* script */
+  __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/states/states-form.vue"),
+  /* template */
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-db39c3ac\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/states/states-form.vue"),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/shawnlegge/Projects/ecommerce/resources/assets/js/components/admin/states/states-form.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] states-form.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-loader/node_modules/vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-db39c3ac", Component.options)
+  } else {
+    hotAPI.reload("data-v-db39c3ac", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/admin/states/states-tables.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var Component = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")(
+  /* script */
+  __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/admin/states/states-tables.vue"),
+  /* template */
+  __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-70f19bcb\",\"hasScoped\":false}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/admin/states/states-tables.vue"),
+  /* styles */
+  null,
+  /* scopeId */
+  null,
+  /* moduleIdentifier (server only) */
+  null
+)
+Component.options.__file = "/Users/shawnlegge/Projects/ecommerce/resources/assets/js/components/admin/states/states-tables.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key.substr(0, 2) !== "__"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] states-tables.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-loader/node_modules/vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-70f19bcb", Component.options)
+  } else {
+    hotAPI.reload("data-v-70f19bcb", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
