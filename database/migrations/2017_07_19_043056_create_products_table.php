@@ -20,7 +20,7 @@ class CreateProductsTable extends Migration
             $table->integer('image_id')->unsigned()->nullable();
             $table->string('title');
             $table->decimal('price');
-            $table->string('description', 500);
+            $table->longText('description', 500);
             $table->float('weight');
             $table->timestamps();
 

@@ -17,7 +17,7 @@ class CreateTaxesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->float('percent');
-            $table->string('description');
+            $table->longText('description');
             $table->timestamps();
         });
     }
