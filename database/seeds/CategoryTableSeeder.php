@@ -4,6 +4,15 @@ use Illuminate\Database\Seeder;
 
 class CategoryTableSeeder extends Seeder
 {
+    protected $categories = [
+        'Women',
+        'Men',
+        'Kids',
+        'Shoes',
+        'Exercise',
+        'Watches'
+    ];
+
     /**
      * Run the database seeds.
      *
@@ -11,6 +20,11 @@ class CategoryTableSeeder extends Seeder
      */
     public function run()
     {
-        factory('App\Category', 10)->create();
+        foreach ($this->categories as $category)
+        {
+            \App\Category::create([
+               'name' => $category
+            ]);
+        }
     }
 }

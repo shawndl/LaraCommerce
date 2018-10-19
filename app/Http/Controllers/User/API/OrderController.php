@@ -83,7 +83,7 @@ class OrderController extends AbstractUserAPIController
     {
         $this->message = 'You have selected an address!';
         try {
-            $this->address = $this->address->find($request->address_id);
+            $this->address = $this->address->findOrFail($request->address_id);
             $apiErrorTracker = $this->errorBuilder->create(Auth::user(), $this->address);
             if(!$apiErrorTracker->hasError())
             {

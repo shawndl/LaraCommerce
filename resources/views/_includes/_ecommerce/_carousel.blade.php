@@ -8,10 +8,10 @@
             </ol>
             <div class="carousel-inner">
                 <div class="item active">
-                    <img class="slide-image" src="http://via.placeholder.com/700x300" alt="">
+                    <img class="slide-image" src="{{ asset('images/headerimagescale.jpg') }}" alt="Image header of sale">
                 </div>
                 <div class="item">
-                    <img class="slide-image" src="http://via.placeholder.com/700x300" alt="">
+                    <img class="slide-image"  src="{{ asset('images/headerimagescale2.jpg') }}" alt="Image header of sale two">
                 </div>
             </div><!-- /.carousel-indicators -->
             <a class="left carousel-control" href="#ecommerce-carousel" data-slide="prev">

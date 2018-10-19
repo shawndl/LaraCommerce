@@ -97,7 +97,7 @@ class ImageDatabase
         }
         return self::$image->create([
             'path' => self::$request['image'],
-            'thumbnail' => self::$request['thumbnail']
+            'thumbnail' => (isset(self::$request['thumbnail'])) ? self::$request['thumbnail'] : null
         ]);
     }
 

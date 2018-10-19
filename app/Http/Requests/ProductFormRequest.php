@@ -13,7 +13,7 @@ class ProductFormRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;//TODO change to must be logged in
+        return true;
     }
 
     /**
@@ -26,7 +26,7 @@ class ProductFormRequest extends FormRequest
         return [
             'title' => 'required|alpha_spaces',
             'category' => 'required|numeric',
-            'description' => 'required',
+            'description' => 'required|basic_characters',
             'price' => 'required|regex:/^(\d{1,8})\.(\d{2})$/',
             'weight' => 'required|regex:/^\d*\.?\d*$/',
             'image' => 'required_without:upload|url',
