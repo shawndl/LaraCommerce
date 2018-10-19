@@ -16,9 +16,11 @@ class ProductsController extends Controller
      */
     public function show($title, Product $product)
     {
-        $query =  $product->where('title', $title)->with(['reviews' => function($query){
-            $query->latest()->limit(4);
-        } ])->first();
+        $query =  $product->where('title', $title)
+            ->with('image', 'category', 'tax')
+            ->with(['reviews' => function($query){
+                $query->with('user')->latest()->limit(4);
+            } ])->first();
 
         return view('ecommerce.show', [
             'product' => $query
